@@ -15,6 +15,7 @@
 namespace GE {
 	
 	class ShaderException;
+	class ShaderFile;
 	class Shader;
 	class VertexShader;
 	class FragmentShader;
