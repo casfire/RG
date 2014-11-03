@@ -1,8 +1,19 @@
 #include "Shader.hpp"
 
 namespace GE {
-
-
+	
+	
+	/* std::to_string replacement */
+	
+	
+	template <typename T>
+	const std::string to_string(T value) {
+		std::ostringstream os;
+		os << value;
+		return os.str();
+	}
+	
+	
 	/* ShaderException */
 
 
@@ -18,7 +29,7 @@ namespace GE {
 	
 	ShaderException::ShaderException(const Shader &shader, GLuint ID)
 	: info("Failed to compile " + std::string(shader.getTypeName())
-	+ " with ID " + std::to_string(ID) + ".") {
+	+ " with ID " + to_string(ID) + ".") {
 		GLint logSize = 0;
 		glGetShaderiv(ID, GL_INFO_LOG_LENGTH, &logSize);
 		infoLog.resize(static_cast<std::size_t>(logSize + 1));
@@ -38,7 +49,7 @@ namespace GE {
 	}
 	
 	ShaderException::ShaderException(const Program &program, GLuint ID)
-	: info("Failed to link program with ID " + std::to_string(ID) + ".") {
+	: info("Failed to link program with ID " + to_string(ID) + ".") {
 		(void) program;
 		GLint logSize = 0;
 		glGetProgramiv(ID, GL_INFO_LOG_LENGTH, &logSize);
@@ -249,6 +260,7 @@ namespace GE {
 	
 	GLuint Program::getID() const {
 		return ID;
-	}	
-
-} // namespace Graphics
+	}
+	
+	
+} // namespace GE
