@@ -6,7 +6,8 @@
 int main() {
 	
 	/* Create window and load OpenGL */
-	sf::Window window(sf::VideoMode(800, 800), "OpenGL", sf::Style::Titlebar|sf::Style::Close);
+	sf::Window window(sf::VideoMode(800, 800), "OpenGL", sf::Style::Default);
+	window.setFramerateLimit(60);
 	if(ogl_LoadFunctions() == ogl_LOAD_FAILED) {
 		std::cout << "Failed to load OpenGL" << std::endl;
 		return -1;	
@@ -15,21 +16,7 @@ int main() {
 	
 	
 	/* Shaders */
-	const char *strVertexShader = (
-		"#version 330\n"
-		"layout(location = 0) in vec4 position;\n"
-		"void main() {\n"
-		"   gl_Position = position;\n"
-		"}\n"
-	);
-	const char *strFragmentShader = (
-		"#version 330\n"
-		"out vec4 outputColor;\n"
-		"void main() {\n"
-		"   outputColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
-		"}\n"
-	);
-	GE::Program program = GE::Program(GE::VertexShader(strVertexShader), GE::FragmentShader(strFragmentShader));
+	GE::Program program = GE::Program(GE::ShaderFile("vertex.vert"), GE::ShaderFile("fragment.frag"));
 	
 	/* Vertex array */
 	GLuint vao;
@@ -51,7 +38,15 @@ int main() {
 	while (run) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
-			 if (event.type == sf::Event::Closed) run = false;
+			switch (event.type) {
+			case sf::Event::Resized:
+				glViewport(0, 0, static_cast<GLsizei>(event.size.width), static_cast<GLsizei>(event.size.height));
+				break;
+			case sf::Event::Closed:
+				run = false;
+				break;
+			default: break;
+			}
 		}
 		
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
