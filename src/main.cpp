@@ -97,7 +97,7 @@ public:
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*) 0);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*) (3 * sizeof(float)));
 		
-		glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, (GLvoid*) 0);
+		glDrawElements(GL_TRIANGLES, 3 * triangleCount, GL_UNSIGNED_INT, (GLvoid*) 0);
 		
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(0);
