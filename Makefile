@@ -1,5 +1,5 @@
 TARGET=hello
-CFLAGS=-std=c++11 -DSFML_STATIC
+CFLAGS=-Wall -Wextra -std=c++11 -DSFML_STATIC
 LFLAGS=-static -static-libgcc -static-libstdc++ -lsfml-graphics-s -lsfml-window-s -lsfml-system-s
 
 FILES_GRAPHICS=graphics/gl_core_3_3.c graphics/Shader.cpp
