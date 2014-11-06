@@ -15,7 +15,7 @@ float xrand(float min, float max) {
 }
 
 class Model {
-	std::uint32_t vertexCount;
+	std::uint32_t vertexCount, triangleCount;
 	std::vector<float> vertexBuffer;
 	std::vector<std::uint32_t> elementBuffer;
 	GLuint vao, vbo;
@@ -41,6 +41,7 @@ public:
 		elementBuffer.push_back(a);
 		elementBuffer.push_back(b);
 		elementBuffer.push_back(c);
+		triangleCount++;
 	}
 	
 	void addCube(float x, float y, float z, float sizeX = 1.0, float sizeY = 1.0, float sizeZ = 1.0) {
@@ -94,7 +95,7 @@ public:
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*) 0);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*) (3 * sizeof(float)));
 		
-		glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, (GLvoid*) 0);
+		glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, (GLvoid*) 0);
 		
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -123,7 +124,7 @@ int main() {
 	
 	/* Model */
 	Model model;
-	model.addCube(0, 0, 0, 1, 1, 1);
+	model.addCube(0, 0, 0, 4, 4, 4);
 	model.create();
 	
 	/* MVP */
@@ -154,14 +155,14 @@ int main() {
 			default: break;
 			}
 		}
-		
+		float elapsedSeconds = clock.getElapsedTime().asSeconds();
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		
 		glUseProgram(program.getID());
 		
 		/* Update MVP_m */
-		MVP_m = glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -7.f)) * glm::rotate(clock.getElapsedTime().asSeconds(), glm::vec3(0.f, 1.f, 0.1f));
+		MVP_m = glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -7.f)) * glm::rotate(elapsedSeconds, glm::vec3(0.f, 1.f, 0.1f));
 		glUniformMatrix4fv(MVP_m_ID, 1, GL_FALSE, glm::value_ptr(MVP_m));
 		
 		/* Draw */
