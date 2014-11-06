@@ -225,7 +225,8 @@ namespace GE {
 		link(vertex, fragment, geometry);
 	}
 	
-	Program::Program(const VertexShader &vertex, const FragmentShader &fragment, const GeometryShader &geometry) : ID(0) {
+	Program::Program(const VertexShader &vertex, const FragmentShader &fragment, const GeometryShader &geometry)
+	: ID(0) {
 		link(vertex, fragment, geometry);
 	}
 	
