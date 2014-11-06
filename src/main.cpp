@@ -140,6 +140,9 @@ int main() {
 	glUniformMatrix4fv(MVP_p_ID, 1, GL_FALSE, glm::value_ptr(MVP_p));
 	glUseProgram(0);
 	
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	
 	sf::Clock clock;
 	bool run = true;
 	while (run) {
@@ -157,7 +160,7 @@ int main() {
 		}
 		float elapsedSeconds = clock.getElapsedTime().asSeconds();
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		glUseProgram(program.getID());
 		
