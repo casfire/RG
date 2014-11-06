@@ -23,6 +23,8 @@ public:
 
 	Model() {
 		vertexCount = 0;
+		triangleCount = 0;
+		vao = 0; vbo = 0;
 	}
 	
 	std::uint32_t addVertex(float x, float y, float z, float r, float g, float b) {
@@ -97,8 +99,8 @@ public:
 		
 		glDrawElements(GL_TRIANGLES, triangleCount, GL_UNSIGNED_INT, (GLvoid*) 0);
 		
-		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(0);
 		
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -151,6 +153,10 @@ int main() {
 			switch (event.type) {
 			case sf::Event::Resized:
 				glViewport(0, 0, static_cast<GLsizei>(event.size.width), static_cast<GLsizei>(event.size.height));
+				MVP_p = glm::perspective(1.57079632f, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f);
+				glUseProgram(program.getID());
+				glUniformMatrix4fv(MVP_p_ID, 1, GL_FALSE, glm::value_ptr(MVP_p));
+				glUseProgram(0);
 				break;
 			case sf::Event::Closed:
 				run = false;
