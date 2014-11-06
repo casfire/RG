@@ -91,14 +91,10 @@ namespace GE {
 
 	Shader::Shader(GLenum type) : type(type), ID(0) {}
 	
-	Shader::Shader(GLenum type, const std::string &source) : type(type), ID(0) {
-		compile(source);
-	}
-
 	Shader::Shader(GLenum type, const GLchar *source) : type(type), ID(0) {
 		compile(source);
 	}
-
+	
 	Shader::Shader(GLenum type, std::istream &source) : type(type), ID(0) {
 		compile(source);
 	}
@@ -106,21 +102,27 @@ namespace GE {
 	Shader::Shader(GLenum type, const ShaderFile &file) : type(type), ID(0) {
 		compile(file);
 	}
+	
+	Shader::Shader(GLenum type, const std::string &source) : type(type), ID(0) {
+		compile(source);
+	}
 
 	Shader::~Shader() {
 		destroy();
 	}
 	
-	void Shader::compile(const ShaderFile &file) {
-		try {
-			std::ifstream stream;
-			stream.exceptions(std::ifstream::failbit);
-			stream.open(file.get(), std::ios::binary);
-			compile(stream);
-			stream.close();
-		} catch (std::ios_base::failure &fail) {
-			throw ShaderException(fail);
+	void Shader::compile(const GLchar *source) {
+		destroy();
+		GLuint shaderID = glCreateShader(type);
+		if (shaderID == 0) throw ShaderException(*this);
+		glShaderSource(shaderID, 1, &source, NULL);
+		glCompileShader(shaderID);
+		GLint status = GL_FALSE;
+		glGetShaderiv(shaderID, GL_COMPILE_STATUS, &status);
+		if (status == GL_FALSE) {
+			throw ShaderException(*this, shaderID);
 		}
+		ID = shaderID;
 	}
 	
 	void Shader::compile(std::istream &source) {
@@ -138,22 +140,20 @@ namespace GE {
 		}
 	}
 	
+	void Shader::compile(const ShaderFile &file) {
+		try {
+			std::ifstream stream;
+			stream.exceptions(std::ifstream::failbit);
+			stream.open(file.get(), std::ios::binary);
+			compile(stream);
+			stream.close();
+		} catch (std::ios_base::failure &fail) {
+			throw ShaderException(fail);
+		}
+	}
+	
 	void Shader::compile(const std::string &source) {
 		compile(static_cast<const GLchar*>(source.c_str()));
-	}
-
-	void Shader::compile(const GLchar *source) {
-		destroy();
-		GLuint shaderID = glCreateShader(type);
-		if (shaderID == 0) throw ShaderException(*this);
-		glShaderSource(shaderID, 1, &source, NULL);
-		glCompileShader(shaderID);
-		GLint status = GL_FALSE;
-		glGetShaderiv(shaderID, GL_COMPILE_STATUS, &status);
-		if (status == GL_FALSE) {
-			throw ShaderException(*this, shaderID);
-		}
-		ID = shaderID;
 	}
 	
 	void Shader::destroy() {
@@ -189,22 +189,22 @@ namespace GE {
 
 
 	VertexShader::VertexShader() : Shader(GL_VERTEX_SHADER) {}
-	VertexShader::VertexShader(const std::string &source) : Shader(GL_VERTEX_SHADER, source) {}
 	VertexShader::VertexShader(const GLchar *source) : Shader(GL_VERTEX_SHADER, source) {}
 	VertexShader::VertexShader(std::istream &source) : Shader(GL_VERTEX_SHADER, source) {}
 	VertexShader::VertexShader(const ShaderFile &file) : Shader(GL_VERTEX_SHADER, file) {}
+	VertexShader::VertexShader(const std::string &source) : Shader(GL_VERTEX_SHADER, source) {}
 
 	FragmentShader::FragmentShader() : Shader(GL_FRAGMENT_SHADER) {}
-	FragmentShader::FragmentShader(const std::string &source) : Shader(GL_FRAGMENT_SHADER, source) {}
 	FragmentShader::FragmentShader(const GLchar *source) : Shader(GL_FRAGMENT_SHADER, source) {}
 	FragmentShader::FragmentShader(std::istream &source) : Shader(GL_FRAGMENT_SHADER, source) {}
 	FragmentShader::FragmentShader(const ShaderFile &file) : Shader(GL_FRAGMENT_SHADER, file) {}
+	FragmentShader::FragmentShader(const std::string &source) : Shader(GL_FRAGMENT_SHADER, source) {}
 
 	GeometryShader::GeometryShader() : Shader(GL_GEOMETRY_SHADER) {}
-	GeometryShader::GeometryShader(const std::string &source) : Shader(GL_GEOMETRY_SHADER, source) {}
 	GeometryShader::GeometryShader(const GLchar *source) : Shader(GL_GEOMETRY_SHADER, source) {}
 	GeometryShader::GeometryShader(std::istream &source) : Shader(GL_GEOMETRY_SHADER, source) {}
 	GeometryShader::GeometryShader(const ShaderFile &file) : Shader(GL_GEOMETRY_SHADER, file) {}
+	GeometryShader::GeometryShader(const std::string &source) : Shader(GL_GEOMETRY_SHADER, source) {}
 	
 	
 	/* Program */
@@ -220,16 +220,21 @@ namespace GE {
 		link(vertex, fragment);
 	}
 	
+	Program::Program(const ShaderFile &vertex, const ShaderFile &fragment, const ShaderFile &geometry)
+	: ID(0) {
+		link(vertex, fragment, geometry);
+	}
+	
+	Program::Program(const VertexShader &vertex, const FragmentShader &fragment, const GeometryShader &geometry) : ID(0) {
+		link(vertex, fragment, geometry);
+	}
+	
 	Program::~Program() {
 		destroy();
 	}
 	
 	void Program::link(const ShaderFile &vertex, const ShaderFile &fragment) {
-		VertexShader vertexShader(vertex);
-		FragmentShader fragmentShader(fragment);
-		link(vertexShader, fragmentShader);
-		vertexShader.destroy();
-		fragmentShader.destroy();
+		link(VertexShader(vertex), FragmentShader(fragment));
 	}
 	
 	void Program::link(const VertexShader &vertex, const FragmentShader &fragment) {
@@ -245,6 +250,26 @@ namespace GE {
 			throw ShaderException(*this, programID);
 		}
 		ID = programID;
+	}
+	
+	void Program::link(const VertexShader &vertex, const FragmentShader &fragment, const GeometryShader &geometry) {
+		destroy();
+		GLuint programID = glCreateProgram();
+		if (programID == 0) throw ShaderException(*this);
+		glAttachShader(programID, vertex.getID());
+		glAttachShader(programID, fragment.getID());
+		glAttachShader(programID, geometry.getID());
+		glLinkProgram(programID);
+		GLint status = GL_FALSE;
+		glGetProgramiv(programID, GL_LINK_STATUS, &status);
+		if (status == GL_FALSE) {
+			throw ShaderException(*this, programID);
+		}
+		ID = programID;
+	}
+	
+	void Program::link(const ShaderFile &vertex, const ShaderFile &fragment, const ShaderFile &geometry) {
+		link(VertexShader(vertex), FragmentShader(fragment), GeometryShader(geometry));
 	}
 	
 	void Program::destroy() {
