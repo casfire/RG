@@ -145,6 +145,10 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CW);
+	
 	sf::Clock clock;
 	bool run = true;
 	while (run) {
@@ -171,7 +175,7 @@ int main() {
 		glUseProgram(program.getID());
 		
 		/* Update MVP_m */
-		MVP_m = glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -7.f)) * glm::rotate(elapsedSeconds, glm::vec3(0.f, 1.f, 0.1f));
+		MVP_m = glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -7.f)) * glm::rotate(elapsedSeconds * 4.f, glm::vec3(-0.1f, 1.f, 0.6f));
 		glUniformMatrix4fv(MVP_m_ID, 1, GL_FALSE, glm::value_ptr(MVP_m));
 		
 		/* Draw */
