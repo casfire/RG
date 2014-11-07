@@ -18,13 +18,13 @@ class Model {
 	std::uint32_t vertexCount, triangleCount;
 	std::vector<float> vertexBuffer;
 	std::vector<std::uint32_t> elementBuffer;
-	GLuint vao, vbo;
+	GLuint arrayBufferID, elementBufferID, vaoID;
 public:
 
 	Model() {
 		vertexCount = 0;
 		triangleCount = 0;
-		vao = 0; vbo = 0;
+		arrayBufferID = 0; elementBufferID = 0; vaoID = 0;
 	}
 	
 	std::uint32_t addVertex(float x, float y, float z, float r, float g, float b) {
@@ -74,36 +74,33 @@ public:
 	
 	void create() {
 		
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glGenBuffers(1, &arrayBufferID);
+		glBindBuffer(GL_ARRAY_BUFFER, arrayBufferID);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexBuffer.size(), static_cast<const GLvoid*>(&vertexBuffer[0]), GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
-		glGenBuffers(1, &vao);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vao);
+		glGenBuffers(1, &elementBufferID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(std::uint32_t) * elementBuffer.size(), static_cast<const GLvoid*>(&elementBuffer[0]), GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		
+		glGenVertexArrays(1, &vaoID);
+		glBindVertexArray(vaoID);
+		glBindBuffer(GL_ARRAY_BUFFER, arrayBufferID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*) 0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*) (3 * sizeof(float)));
+		glBindVertexArray(0);
 	}
 	
 	void draw() {
 		
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vao);
-		
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*) 0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*) (3 * sizeof(float)));
-		
+		glBindVertexArray(vaoID);
 		glDrawElements(GL_TRIANGLES, 3 * triangleCount, GL_UNSIGNED_INT, (GLvoid*) 0);
+		glBindVertexArray(0);
 		
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(0);
-		
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	
 
