@@ -1,7 +1,8 @@
 #include <iostream>
-#include "graphics/gl_core_3_3.h"
-#include "graphics/Shader.hpp"
+#include "Graphics/Graphics.hpp"
 #include <SFML/Window.hpp>
+#include <cstdint> // std::uint32_t
+#include <vector>
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -9,18 +10,21 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
+namespace GL = Graphics::GL;
 
 float xrand(float min, float max) {
-	return min + (max - min) * ((std::rand()) / (float) RAND_MAX);
+	return min + (max - min) * (std::rand() / (float) RAND_MAX);
 }
 
 class Model {
+	
 	std::uint32_t vertexCount, triangleCount;
 	std::vector<float> vertexBuffer;
 	std::vector<std::uint32_t> elementBuffer;
 	GLuint arrayBufferID, elementBufferID, vaoID;
+	
 public:
-
+	
 	Model() {
 		vertexCount = 0;
 		triangleCount = 0;
@@ -93,6 +97,7 @@ public:
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*) 0);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*) (3 * sizeof(float)));
 		glBindVertexArray(0);
+		
 	}
 	
 	void draw() {
@@ -103,23 +108,26 @@ public:
 		
 	}
 	
-
 };
 
 int main() {
 	
-	/* Create window and load OpenGL */
+	/* Create window and OpenGL context */
 	sf::Window window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default);
 	window.setFramerateLimit(60);
-	if(ogl_LoadFunctions() == ogl_LOAD_FAILED) {
+	
+	/* Load OpenGL functions */
+	if (ogl_LoadFunctions() == ogl_LOAD_FAILED) {
 		std::cout << "Failed to load OpenGL" << std::endl;
-		return -1;	
+		return -1;
 	}
 	std::cout << "OpenGL version " << glGetString(GL_VERSION) << " loaded." << std::endl;
 	
-	
-	/* Shaders */
-	GE::Program program = GE::Program(GE::ShaderFile("vertex.vert"), GE::ShaderFile("fragment.frag"));
+	/* Create GLSL Program */
+	GL::Program program = GL::Program(
+		GL::VertexShader(GL::ShaderFile("vertex.vert")),
+		GL::FragmentShader(GL::ShaderFile("fragment.frag"))
+	);
 	
 	/* Model */
 	Model model;
@@ -130,57 +138,57 @@ int main() {
 	glm::mat4 MVP_m = glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -7.f)) * glm::rotate(0.6f, glm::vec3(1.f, 1.f, 0.f));
 	glm::mat4 MVP_v = glm::mat4(1.0f); // identity
 	glm::mat4 MVP_p = glm::perspective(1.57079632f, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f);
-	GLuint MVP_m_ID = glGetUniformLocation(program.getID(), "MVP_m");
-	GLuint MVP_v_ID = glGetUniformLocation(program.getID(), "MVP_v");
-	GLuint MVP_p_ID = glGetUniformLocation(program.getID(), "MVP_p");
-	glUseProgram(program.getID());
+	GLuint MVP_m_ID = glGetUniformLocation(program.getObjectID(), "MVP_m");
+	GLuint MVP_v_ID = glGetUniformLocation(program.getObjectID(), "MVP_v");
+	GLuint MVP_p_ID = glGetUniformLocation(program.getObjectID(), "MVP_p");
+	program.bind();
 	glUniformMatrix4fv(MVP_m_ID, 1, GL_FALSE, glm::value_ptr(MVP_m));
 	glUniformMatrix4fv(MVP_v_ID, 1, GL_FALSE, glm::value_ptr(MVP_v));
 	glUniformMatrix4fv(MVP_p_ID, 1, GL_FALSE, glm::value_ptr(MVP_p));
-	glUseProgram(0);
 	
+	/* Set OpenGL parameters */
+	glClearColor(0.f, 0.f, 0.f, 0.f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-	
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CW);
-	
+
+	/* Main loop */
 	sf::Clock clock;
 	bool run = true;
 	while (run) {
+		
+		/* Handle events */
+		
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			switch (event.type) {
-			case sf::Event::Resized:
-				glViewport(0, 0, static_cast<GLsizei>(event.size.width), static_cast<GLsizei>(event.size.height));
-				MVP_p = glm::perspective(1.57079632f, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f);
-				glUseProgram(program.getID());
-				glUniformMatrix4fv(MVP_p_ID, 1, GL_FALSE, glm::value_ptr(MVP_p));
-				glUseProgram(0);
-				break;
 			case sf::Event::Closed:
 				run = false;
+				break;
+			case sf::Event::Resized:
+				glViewport(0, 0, event.size.width, event.size.height);
+				MVP_p = glm::perspective(1.57079632f, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f);
+				program.bind();
+				glUniformMatrix4fv(MVP_p_ID, 1, GL_FALSE, glm::value_ptr(MVP_p));
 				break;
 			default: break;
 			}
 		}
+		
 		float elapsedSeconds = clock.getElapsedTime().asSeconds();
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		glUseProgram(program.getID());
-		
-		/* Update MVP_m */
 		MVP_m = glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -7.f)) * glm::rotate(elapsedSeconds * 4.f, glm::vec3(-0.1f, 1.f, 0.6f));
 		glUniformMatrix4fv(MVP_m_ID, 1, GL_FALSE, glm::value_ptr(MVP_m));
-		
+
 		/* Draw */
+		
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		program.bind();
 		model.draw();
 		
-		glUseProgram(0);
-		
 		window.display();
+		
 	}
 	
 	return 0;
