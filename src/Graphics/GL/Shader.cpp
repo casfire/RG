@@ -142,7 +142,7 @@ inline const std::string to_string(const T &value) {
 	return os.str();
 }
 
-inline const char* fillShaderInfoLog(GLuint ID, std::vector<char> &log) {
+inline void fillShaderInfoLog(GLuint ID, std::vector<char> &log) {
 	GLint size = 0;
 	glGetShaderiv(ID, GL_INFO_LOG_LENGTH, &size);
 	log.resize(static_cast<std::size_t>(size + 1));
@@ -150,30 +150,15 @@ inline const char* fillShaderInfoLog(GLuint ID, std::vector<char> &log) {
 		glGetShaderInfoLog(ID, size, NULL, static_cast<GLchar*>(&log[0]));
 	}
 	log[static_cast<std::size_t>(size)] = '\0';
-	return static_cast<const char*>(&log[0]);
 }
 
-#ifdef GL_SHADER_APPEND_LOG
-	
-	GL::ShaderCompileException::ShaderCompileException(const Shader &shader)
-	: Exception(
-		"Failed to compile " + std::string(shader.getTypeName())
-		+ " with ID " + to_string(shader.getObjectID()) + ".\n"
-		+ fillShaderInfoLog(shader.getObjectID(), compileLog))
-		
-	{}
-	
-#else
-	
-	GL::ShaderCompileException::ShaderCompileException(const Shader &shader)
-	: Exception(
-		"Failed to compile " + std::string(shader.getTypeName())
-		+ " with ID " + to_string(shader.getObjectID()) + ".")
-	{
-		fillShaderInfoLog(shader.getObjectID(), compileLog);
-	}
-	
-#endif
+GL::ShaderCompileException::ShaderCompileException(const Shader &shader)
+: Exception(
+	"Failed to compile " + std::string(shader.getTypeName())
+	+ " with ID " + to_string(shader.getObjectID()) + ".")
+{
+	fillShaderInfoLog(shader.getObjectID(), compileLog);
+}
 
 const char* GL::ShaderCompileException::log() const
 {

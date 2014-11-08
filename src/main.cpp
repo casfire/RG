@@ -124,10 +124,18 @@ int main() {
 	std::cout << "OpenGL version " << glGetString(GL_VERSION) << " loaded." << std::endl;
 	
 	/* Create GLSL Program */
-	GL::Program program = GL::Program(
-		GL::VertexShader(GL::ShaderFile("vertex.vert")),
-		GL::FragmentShader(GL::ShaderFile("fragment.frag"))
-	);
+	GL::Program program;
+	try {
+		program.attach(GL::VertexShader(GL::ShaderFile("vertex.vert")));
+		program.attach(GL::FragmentShader(GL::ShaderFile("fragment.frag")));
+		program.link();
+	} catch (GL::ProgramLinkException &fail) {
+		std::cout << fail.what() << "\nLog:" << fail.log() << std::endl;
+		return -1;
+	} catch (GL::ShaderCompileException &fail) {
+		std::cout << fail.what()  << "\nLog: "fail.log() << std::endl;
+		return -1;
+	}
 	
 	/* Model */
 	Model model;

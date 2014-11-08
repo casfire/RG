@@ -92,7 +92,7 @@ inline const std::string to_string(const T &value) {
 	return os.str();
 }
 
-inline const char* fillProgramInfoLog(GLuint ID, std::vector<char> &log) {
+inline void fillProgramInfoLog(GLuint ID, std::vector<char> &log) {
 	GLint size = 0;
 	glGetProgramiv(ID, GL_INFO_LOG_LENGTH, &size);
 	log.resize(static_cast<std::size_t>(size + 1));
@@ -100,29 +100,15 @@ inline const char* fillProgramInfoLog(GLuint ID, std::vector<char> &log) {
 		glGetProgramInfoLog(ID, size, NULL, static_cast<GLchar*>(&log[0]));
 	}
 	log[static_cast<std::size_t>(size)] = '\0';
-	return static_cast<const char*>(&log[0]);
 }
 
-#ifdef GL_SHADER_APPEND_LOG
-	
-	GL::ProgramLinkException::ProgramLinkException(const Program &program)
-	: Exception(
-		"Failed to link program with ID "
-		+ to_string(program.getObjectID()) + ".\n"
-		+ fillProgramInfoLog(program.getObjectID(), linkLog))
-	{}
-	
-#else
-	
-	GL::ProgramLinkException::ProgramLinkException(const Program &program)
-	: Exception(
-		"Failed to link program with ID "
-		+ to_string(program.getObjectID()) + ".")
-	{
-		fillProgramInfoLog(program.getObjectID(), linkLog);
-	}
-	
-#endif
+GL::ProgramLinkException::ProgramLinkException(const Program &program)
+: Exception(
+	"Failed to link program with ID "
+	+ to_string(program.getObjectID()) + ".")
+{
+	fillProgramInfoLog(program.getObjectID(), linkLog);
+}
 
 const char* GL::ProgramLinkException::log() const
 {
