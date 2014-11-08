@@ -191,17 +191,17 @@ void GL::ProgramUniform::setMatrix4fv(GLsizei count, GLboolean transpose, const 
 	glUniformMatrix4fv(objectID, count, transpose, value);
 }
 
-void GL::ProgramUniform::setMatrix(const glm::mat2 &mat)
+void GL::ProgramUniform::set(const glm::mat2 &mat)
 {
 	glUniformMatrix2fv(objectID, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
-void GL::ProgramUniform::setMatrix(const glm::mat3 &mat)
+void GL::ProgramUniform::set(const glm::mat3 &mat)
 {
 	glUniformMatrix3fv(objectID, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
-void GL::ProgramUniform::setMatrix(const glm::mat4 &mat)
+void GL::ProgramUniform::set(const glm::mat4 &mat)
 {
 	glUniformMatrix4fv(objectID, 1, GL_FALSE, glm::value_ptr(mat));
 }

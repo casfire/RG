@@ -91,9 +91,9 @@ namespace Graphics { namespace GL {
 		void setMatrix3fv(GLsizei count, GLboolean transpose, const GLfloat *value);
 		void setMatrix4fv(GLsizei count, GLboolean transpose, const GLfloat *value);
 		
-		void setMatrix(const glm::mat2 &mat);
-		void setMatrix(const glm::mat3 &mat);
-		void setMatrix(const glm::mat4 &mat);
+		void set(const glm::mat2 &mat);
+		void set(const glm::mat3 &mat);
+		void set(const glm::mat4 &mat);
 		
 	};
 	

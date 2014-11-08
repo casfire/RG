@@ -143,16 +143,13 @@ int main() {
 	model.create();
 	
 	/* MVP */
-	glm::mat4 MVP_m = glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -7.f)) * glm::rotate(0.6f, glm::vec3(1.f, 1.f, 0.f));
-	glm::mat4 MVP_v = glm::mat4(1.0f); // identity
-	glm::mat4 MVP_p = glm::perspective(1.57079632f, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f);
-	GL::ProgramUniform MVP_m_obj = program.getUniform("MVP_m");
-	GL::ProgramUniform MVP_v_obj = program.getUniform("MVP_v");
-	GL::ProgramUniform MVP_p_obj = program.getUniform("MVP_p");
+	GL::ProgramUniform MVP_m = program.getUniform("MVP_m");
+	GL::ProgramUniform MVP_v = program.getUniform("MVP_v");
+	GL::ProgramUniform MVP_p = program.getUniform("MVP_p");
 	program.bind();
-	MVP_m_obj.setMatrix(MVP_m);
-	MVP_v_obj.setMatrix(MVP_v);
-	MVP_p_obj.setMatrix(MVP_p);
+	MVP_m.set(glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -7.f)) * glm::rotate(0.6f, glm::vec3(1.f, 1.f, 0.f)));
+	MVP_v.set(glm::mat4(1.0f));
+	MVP_p.set(glm::perspective(1.57079632f, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f));
 	
 	/* Set OpenGL parameters */
 	glClearColor(0.f, 0.f, 0.f, 0.f);
@@ -177,17 +174,15 @@ int main() {
 				break;
 			case sf::Event::Resized:
 				glViewport(0, 0, event.size.width, event.size.height);
-				MVP_p = glm::perspective(1.57079632f, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f);
 				program.bind();
-				MVP_p_obj.setMatrix(MVP_p);
+				MVP_p.set(glm::perspective(1.57079632f, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f));
 				break;
 			default: break;
 			}
 		}
 		
 		float elapsedSeconds = clock.getElapsedTime().asSeconds();
-		MVP_m = glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -7.f)) * glm::rotate(elapsedSeconds * 4.f, glm::vec3(-0.1f, 1.f, 0.6f));
-		MVP_m_obj.setMatrix(MVP_m);
+		MVP_m.set(glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -7.f)) * glm::rotate(elapsedSeconds * 4.f, glm::vec3(-0.1f, 1.f, 0.6f)));
 
 		/* Draw */
 		
