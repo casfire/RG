@@ -133,7 +133,7 @@ int main() {
 		std::cout << fail.what() << "\nLog:" << fail.log() << std::endl;
 		return -1;
 	} catch (GL::ShaderCompileException &fail) {
-		std::cout << fail.what()  << "\nLog: "fail.log() << std::endl;
+		std::cout << fail.what()  << "\nLog: " << fail.log() << std::endl;
 		return -1;
 	}
 	
