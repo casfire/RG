@@ -224,10 +224,20 @@ int main() {
 	MVP_v.set(glm::mat4(1.0f));
 	MVP_p.set(glm::perspective(1.57079632f, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f));
 	
-	/* Set OpenGL parameters */
+	/* Clear parameters */
 	glClearColor(0.f, 0.f, 0.f, 0.f);
+	glClearDepth(1.0f);
+	
+	/* Enable depth mask */
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LEQUAL);
+	glDepthRange(0.f, 1.f);
+	
+	/* Enable depth clamping */
+	glEnable(GL_DEPTH_CLAMP);
+	
+	/* Enable face culling */
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CW);
