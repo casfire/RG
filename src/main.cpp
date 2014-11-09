@@ -31,16 +31,29 @@ public:
 		arrayBufferID = 0; elementBufferID = 0; vaoID = 0;
 	}
 	
-	std::uint32_t addVertex(float x, float y, float z, float r, float g, float b) {
-		vertexBuffer.push_back(x);
-		vertexBuffer.push_back(y);
-		vertexBuffer.push_back(z);
-		vertexBuffer.push_back(r);
-		vertexBuffer.push_back(g);
-		vertexBuffer.push_back(b);
-		std::uint32_t ret = vertexCount;
-		vertexCount++;
-		return ret;
+	std::uint32_t addVertex(glm::vec3 position, glm::vec3 normal, glm::vec3 color) {
+		vertexBuffer.push_back(position.x);
+		vertexBuffer.push_back(position.y);
+		vertexBuffer.push_back(position.z);
+		vertexBuffer.push_back(normal.x);
+		vertexBuffer.push_back(normal.y);
+		vertexBuffer.push_back(normal.z);
+		vertexBuffer.push_back(color.x);
+		vertexBuffer.push_back(color.y);
+		vertexBuffer.push_back(color.z);
+		return vertexCount++;
+	}
+	
+	glm::vec3 getVertexPosition(std::uint32_t v) {
+		return glm::vec3(vertexBuffer[9 * v + 0], vertexBuffer[9 * v + 1], vertexBuffer[9 * v + 2]);	
+	}
+	
+	std::uint32_t addVertex(glm::vec3 position, glm::vec3 normal) {
+		return addVertex(position, normal, glm::vec3(xrand(0, 1), xrand(0, 1), xrand(0, 1)));
+	}
+	
+	std::uint32_t addVertex(glm::vec3 position) {
+		return addVertex(position, position, glm::vec3(xrand(0, 1), xrand(0, 1), xrand(0, 1)));
 	}
 	
 	void addTriangle(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
@@ -50,30 +63,89 @@ public:
 		triangleCount++;
 	}
 	
-	void addCube(float x, float y, float z, float sizeX = 1.0, float sizeY = 1.0, float sizeZ = 1.0) {
-		sizeX /= 2.f;
-		sizeY /= 2.f;
-		sizeZ /= 2.f;
-		std::uint32_t a = addVertex(x - sizeX, y - sizeY, z + sizeZ, xrand(0, 1), xrand(0, 1), xrand(0, 1));
-		std::uint32_t b = addVertex(x + sizeX, y - sizeY, z + sizeZ, xrand(0, 1), xrand(0, 1), xrand(0, 1));
-		std::uint32_t c = addVertex(x + sizeX, y - sizeY, z - sizeZ, xrand(0, 1), xrand(0, 1), xrand(0, 1));
-		std::uint32_t d = addVertex(x - sizeX, y - sizeY, z - sizeZ, xrand(0, 1), xrand(0, 1), xrand(0, 1));
-		std::uint32_t e = addVertex(x - sizeX, y + sizeY, z + sizeZ, xrand(0, 1), xrand(0, 1), xrand(0, 1));
-		std::uint32_t f = addVertex(x + sizeX, y + sizeY, z + sizeZ, xrand(0, 1), xrand(0, 1), xrand(0, 1));
-		std::uint32_t g = addVertex(x + sizeX, y + sizeY, z - sizeZ, xrand(0, 1), xrand(0, 1), xrand(0, 1));
-		std::uint32_t h = addVertex(x - sizeX, y + sizeY, z - sizeZ, xrand(0, 1), xrand(0, 1), xrand(0, 1));
-		addTriangle(a, f, b);
-		addTriangle(a, e, f);
-		addTriangle(b, g, c);
-		addTriangle(b, f, g);
-		addTriangle(c, g, d);
-		addTriangle(d, g, h);
-		addTriangle(d, e, a);
-		addTriangle(d, h, e);
-		addTriangle(e, g, f);
-		addTriangle(e, h, g);
-		addTriangle(a, b, c);
-		addTriangle(a, c, d);
+	void addCube() {
+		std::uint32_t a = addVertex(glm::vec3(-0.5f, -0.5f, +0.5f));
+		std::uint32_t b = addVertex(glm::vec3(+0.5f, -0.5f, +0.5f));
+		std::uint32_t c = addVertex(glm::vec3(+0.5f, -0.5f, -0.5f));
+		std::uint32_t d = addVertex(glm::vec3(-0.5f, -0.5f, -0.5f));
+		std::uint32_t e = addVertex(glm::vec3(-0.5f, +0.5f, +0.5f));
+		std::uint32_t f = addVertex(glm::vec3(+0.5f, +0.5f, +0.5f));
+		std::uint32_t g = addVertex(glm::vec3(+0.5f, +0.5f, -0.5f));
+		std::uint32_t h = addVertex(glm::vec3(-0.5f, +0.5f, -0.5f));
+		addTriangle(a, f, b); addTriangle(a, e, f);
+		addTriangle(b, g, c); addTriangle(b, f, g);
+		addTriangle(c, g, d); addTriangle(d, g, h);
+		addTriangle(d, e, a); addTriangle(d, h, e);
+		addTriangle(e, g, f); addTriangle(e, h, g);
+		addTriangle(a, b, c); addTriangle(a, c, d);
+	}
+	
+	void addIcosphere(int subdivisions = 5) {
+		float t = (std::sqrt(5.f) + 1.f) / 2.f;
+		std::vector<glm::vec3> v(12);
+		std::vector<glm::vec3> c(12);
+		std::vector<glm::ivec3> f;
+		v[0]  = glm::vec3( 0,  t, -1);
+		v[1]  = glm::vec3( 0,  t,  1);
+		v[2]  = glm::vec3( 0, -t, -1);
+		v[3]  = glm::vec3( 0, -t,  1);
+		v[4]  = glm::vec3( t, -1,  0);
+		v[5]  = glm::vec3( t,  1,  0);
+		v[6]  = glm::vec3(-t, -1,  0);
+		v[7]  = glm::vec3(-t,  1,  0);
+		v[8]  = glm::vec3(-1,  0,  t);
+		v[9]  = glm::vec3( 1,  0,  t);
+		v[10] = glm::vec3(-1,  0, -t);
+		v[11] = glm::vec3( 1,  0, -t);
+		for (unsigned i = 0; i < 12; i++) c[i] = glm::vec3(xrand(0, 1), xrand(0, 1), xrand(0, 1));
+		f.push_back(glm::ivec3(0, 11, 5));
+		f.push_back(glm::ivec3(0, 5, 1));
+		f.push_back(glm::ivec3(0, 1, 7));
+		f.push_back(glm::ivec3(0, 7, 10));
+		f.push_back(glm::ivec3(0, 10, 11));
+		f.push_back(glm::ivec3(1, 5, 9));
+		f.push_back(glm::ivec3(5, 11, 4));
+		f.push_back(glm::ivec3(11, 10, 2));
+		f.push_back(glm::ivec3(10, 7, 6));
+		f.push_back(glm::ivec3(7, 1, 8));
+		f.push_back(glm::ivec3(3, 9, 4));
+		f.push_back(glm::ivec3(3, 4, 2));
+		f.push_back(glm::ivec3(3, 2, 6));
+		f.push_back(glm::ivec3(3, 6, 8));
+		f.push_back(glm::ivec3(3, 8, 9));
+		f.push_back(glm::ivec3(4, 9, 5));
+		f.push_back(glm::ivec3(2, 4, 11));
+		f.push_back(glm::ivec3(6, 2, 10));
+		f.push_back(glm::ivec3(8, 6, 7));
+		f.push_back(glm::ivec3(9, 8, 1));
+		while (subdivisions-- > 0) {
+			std::vector<glm::ivec3> nf;
+			std::vector<glm::ivec3> nc;
+			for (unsigned i = 0; i < f.size(); i++) {
+				glm::ivec3 face = f[i];
+				int s = (int) v.size();
+				v.push_back(glm::mix(v[face.x], v[face.y], 0.5));
+				v.push_back(glm::mix(v[face.y], v[face.z], 0.5));
+				v.push_back(glm::mix(v[face.z], v[face.x], 0.5));
+				c.push_back(glm::mix(c[face.x], c[face.y], 0.5));
+				c.push_back(glm::mix(c[face.y], c[face.z], 0.5));
+				c.push_back(glm::mix(c[face.z], c[face.x], 0.5));
+				nf.push_back(glm::ivec3(face.x, s + 0, s + 2));
+				nf.push_back(glm::ivec3(s + 0, face.y, s + 1));
+				nf.push_back(glm::ivec3(s + 2, s + 1, face.z));
+				nf.push_back(glm::ivec3(s + 0, s + 1, s + 2));
+			}
+			f = nf;
+		}
+		std::vector<std::uint32_t> index(v.size());
+		for (unsigned i = 0; i < v.size(); i++) {
+			v[i] = glm::normalize(v[i]);
+			index[i] = addVertex(v[i], v[i], c[i]);
+		}
+		for (unsigned i = 0; i < f.size(); i++) {
+			glm::ivec3 face = f[i];
+			addTriangle(index[face.x], index[face.y], index[face.z]);
+		}
 	}
 	
 	void create() {
@@ -94,8 +166,10 @@ public:
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*) 0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*) (3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (GLvoid*) 0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (GLvoid*) (3 * sizeof(float)));
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (GLvoid*) (6 * sizeof(float)));
 		glBindVertexArray(0);
 		
 	}
@@ -139,15 +213,14 @@ int main() {
 	
 	/* Model */
 	Model model;
-	model.addCube(0, 0, 0, 4, 4, 4);
+	model.addIcosphere();
 	model.create();
 	
 	/* MVP */
-	GL::ProgramUniform MVP_m = program.getUniform("MVP_m");
-	GL::ProgramUniform MVP_v = program.getUniform("MVP_v");
-	GL::ProgramUniform MVP_p = program.getUniform("MVP_p");
+	GL::ProgramUniform MVP_m = program.getUniform("mat_M");
+	GL::ProgramUniform MVP_v = program.getUniform("mat_V");
+	GL::ProgramUniform MVP_p = program.getUniform("mat_P");
 	program.bind();
-	MVP_m.set(glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -7.f)) * glm::rotate(0.6f, glm::vec3(1.f, 1.f, 0.f)));
 	MVP_v.set(glm::mat4(1.0f));
 	MVP_p.set(glm::perspective(1.57079632f, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f));
 	
@@ -182,7 +255,12 @@ int main() {
 		}
 		
 		float elapsedSeconds = clock.getElapsedTime().asSeconds();
-		MVP_m.set(glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -7.f)) * glm::rotate(elapsedSeconds * 4.f, glm::vec3(-0.1f, 1.f, 0.6f)));
+		MVP_m.set(
+			  glm::translate(glm::vec3(0.f, 0.f, -7.f))
+			* glm::rotate(elapsedSeconds * 1.f, glm::vec3(0.f, 1.f, 0.f))
+			* glm::rotate(0.05f, glm::vec3(1.f, 0.f, 0.f))
+			* glm::scale(glm::vec3(4.f, 4.f, 4.f))
+		);
 
 		/* Draw */
 		

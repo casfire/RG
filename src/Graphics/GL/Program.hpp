@@ -48,7 +48,7 @@ namespace Graphics { namespace GL {
 		bool isLinked() const;
 		bool isAttached(const Shader &shader) const;
 		
-		/* Create a uniform variable */
+		/* Retrieve uniform variable */
 		ProgramUniform getUniform(const GLchar *name);
 		
 	};
@@ -59,12 +59,12 @@ namespace Graphics { namespace GL {
 	class ProgramUniform : public Object {
 	public:
 		
-		/* Create a new variable */
+		/* Retrieve uniform variable */
 		ProgramUniform(const Program &program, const GLchar *name);
 		
 		/*  IMPORTANT!
 		  Make sure the program is bound with Program::bind()
-		  before setting anything
+		  before setting the variable
 		*/
 		
 		void set1f(GLfloat v0);
@@ -96,6 +96,7 @@ namespace Graphics { namespace GL {
 		void set(const glm::mat4 &mat);
 		
 	};
+	
 	
 	
 	/* Exception thrown when program link fails */
