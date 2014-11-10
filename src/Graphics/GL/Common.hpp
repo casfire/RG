@@ -3,8 +3,8 @@
 #define _GRAPHICS_GL_COMMON_HPP_
 
 #include "gl_core_3_3.h"
-#include <exception>
-#include <string>
+#include <exception> // std::exception
+#include <string> // std::string
 
 namespace Graphics { namespace GL {
 	
