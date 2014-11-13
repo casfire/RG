@@ -12,7 +12,7 @@ namespace Graphics { namespace GL {
 	
 	class Object;
 	class Exception;
-	
+	class VAO;
 	
 	
 	/* Base class for all OpenGL objects */
@@ -46,6 +46,23 @@ namespace Graphics { namespace GL {
 	private:
 		
 		const std::string exceptionInfo;
+		
+	};
+	
+	
+	
+	/* Vertex array object */
+	class VAO : public Object {
+	public:
+		
+		/* Create a new VAO */
+		VAO();
+		
+		/* Bind this VAO */
+		void bind() const;
+		
+		/* Unbind VAO */
+		void unbind() const;
 		
 	};
 	

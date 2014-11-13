@@ -21,14 +21,15 @@ class Model {
 	std::uint32_t vertexCount, triangleCount;
 	std::vector<float> vertexBuffer;
 	std::vector<std::uint32_t> elementBuffer;
-	GLuint vaoID;
+	GL::VAO vao;
+	GL::ArrayBuffer arrayBufferObj;
+	GL::ElementBuffer32 elementBufferObj;
 	
 public:
 	
 	Model() {
 		vertexCount = 0;
 		triangleCount = 0;
-		vaoID = 0;
 	}
 	
 	std::uint32_t addVertex(glm::vec3 position, glm::vec3 normal, glm::vec3 color) {
@@ -149,28 +150,22 @@ public:
 	}
 	
 	void create() {
-		GL::ArrayBuffer arrayBufferObj(sizeof(float) * vertexBuffer.size(), &vertexBuffer[0]);
-		GL::ElementBuffer32 elementBufferObj(elementBuffer.size(), &elementBuffer[0]);
+		arrayBufferObj.data(sizeof(float) * vertexBuffer.size(), &vertexBuffer[0]);
+		elementBufferObj.elements(elementBuffer.size(), &elementBuffer[0]);
 		
-		glGenVertexArrays(1, &vaoID);
-		glBindVertexArray(vaoID);
-		arrayBufferObj.bind();
+		vao.bind();
 		elementBufferObj.bind();
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (GLvoid*) 0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (GLvoid*) (3 * sizeof(float)));
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (GLvoid*) (6 * sizeof(float)));
-		glBindVertexArray(0);
-		
+		arrayBufferObj.enableVertexAttribute(0, 3, GL_FLOAT, 9 * sizeof(float), 0);
+		arrayBufferObj.enableVertexAttribute(1, 3, GL_FLOAT, 9 * sizeof(float), 3 * sizeof(float));
+		arrayBufferObj.enableVertexAttribute(2, 3, GL_FLOAT, 9 * sizeof(float), 6 * sizeof(float));
+		vao.unbind();
 	}
 	
 	void draw() {
 		
-		glBindVertexArray(vaoID);
-		glDrawElements(GL_TRIANGLES, 3 * triangleCount, GL_UNSIGNED_INT, (GLvoid*) 0);
-		glBindVertexArray(0);
+		vao.bind();
+		elementBufferObj.drawTriangles(3 * triangleCount, 0);
+		vao.unbind();
 		
 	}
 	
@@ -207,6 +202,11 @@ int main() {
 	Model model;
 	model.addIcosphere();
 	model.create();
+	
+	Model model2;
+	model2.addIcosphere();
+	model2.create();
+	
 	
 	/* MVP */
 	GL::ProgramUniform MVP_m = program.getUniform("mat_M");
@@ -273,6 +273,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		program.bind();
 		model.draw();
+		model2.draw();
 		program.unbind();
 		
 		window.display();

@@ -9,14 +9,13 @@
 namespace Graphics { namespace GL {
 	
 	
-	
 	class Buffer;
 	class ElementBuffer;
 	class ElementBuffer8;
 	class ElementBuffer16;
 	class ElementBuffer32;
 	class ArrayBuffer;
-	
+	class VAO;
 	
 	
 	/* Base buffer object */
@@ -63,9 +62,21 @@ namespace Graphics { namespace GL {
 		ElementBuffer(GLenum type, GLenum usage);
 		
 		/* Getters */
-		GLenum getType();
-		const char* getTypeName();
-		int getTypeBits();
+		GLenum getType() const;
+		const char* getTypeName() const;
+		int getTypeBits() const;
+		
+		/*  IMPORTANT!
+		   Make sure the VAO is bound with VAO::bind()
+		   before drawing anything
+		*/
+		
+		void drawPoints       (GLsizei count, GLsizei start);
+		void drawLines        (GLsizei count, GLsizei start);
+		void drawTriangles    (GLsizei count, GLsizei start);
+		void drawLineStrip    (GLsizei count, GLsizei start);
+		void drawTriangleStrip(GLsizei count, GLsizei start);
+		void draw(GLenum mode, GLsizei count, GLsizei start);
 		
 	protected:
 	
@@ -141,6 +152,18 @@ namespace Graphics { namespace GL {
 		/* Create a new array buffer and set buffer data */
 		ArrayBuffer(GLsizeiptr size, const GLvoid *data,
 			GLenum usage = GL_STATIC_DRAW);
+		
+		/*  IMPORTANT!
+		   Make sure the VAO is bound with VAO::bind()
+		   before enabling vertex attributes
+		*/
+		
+		/* Enable vertex attribute */
+		void enableVertexAttribute(GLuint index, GLint count, GLenum type,
+			GLsizei stride, GLsizei start);
+		
+		/* Disable vertex attribute */
+		void disableVertexAttribute(GLuint index);
 		
 	};
 	

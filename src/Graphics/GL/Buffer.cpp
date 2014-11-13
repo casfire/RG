@@ -100,12 +100,12 @@ GL::ElementBuffer::ElementBuffer(GLenum type, GLenum usage)
 : Buffer(GL_ELEMENT_ARRAY_BUFFER, usage), type(type)
 {}
 
-GLenum GL::ElementBuffer::getType()
+GLenum GL::ElementBuffer::getType() const
 {
 	return type;
 }
 
-const char* GL::ElementBuffer::getTypeName()
+const char* GL::ElementBuffer::getTypeName() const
 {
 	switch(type) {
 		case GL_UNSIGNED_BYTE: return "GL_UNSIGNED_BYTE";
@@ -115,7 +115,7 @@ const char* GL::ElementBuffer::getTypeName()
 	}
 }
 
-int GL::ElementBuffer::getTypeBits()
+int GL::ElementBuffer::getTypeBits() const
 {
 	switch(type) {
 		case GL_UNSIGNED_BYTE: return 8;
@@ -123,6 +123,35 @@ int GL::ElementBuffer::getTypeBits()
 		case GL_UNSIGNED_INT: return 32;
 		default: return 0;
 	}
+}
+void GL::ElementBuffer::drawPoints(GLsizei count, GLsizei start)
+{
+	draw(GL_POINTS, count, start);
+}
+
+void GL::ElementBuffer::drawLines(GLsizei count, GLsizei start)
+{
+	draw(GL_LINES, count, start);
+}
+
+void GL::ElementBuffer::drawTriangles(GLsizei count, GLsizei start)
+{
+	draw(GL_TRIANGLES, count, start);
+}
+
+void GL::ElementBuffer::drawLineStrip(GLsizei count, GLsizei start)
+{
+	draw(GL_LINE_STRIP, count, start);
+}
+
+void GL::ElementBuffer::drawTriangleStrip(GLsizei count, GLsizei start)
+{
+	draw(GL_TRIANGLE_STRIP, count, start);
+}
+
+void GL::ElementBuffer::draw(GLenum mode, GLsizei count, GLsizei start)
+{
+	glDrawElements(mode, count, type, reinterpret_cast<const GLvoid*>(start));
 }
 
 
@@ -193,3 +222,20 @@ GL::ArrayBuffer::ArrayBuffer(GLenum usage)
 GL::ArrayBuffer::ArrayBuffer(GLsizeiptr size, const GLvoid *data, GLenum usage)
 : Buffer(GL_ARRAY_BUFFER, usage, size, data)
 {}
+
+void GL::ArrayBuffer::enableVertexAttribute(GLuint index, GLint count, GLenum type,
+	GLsizei stride, GLsizei start)
+{
+	bind();
+	glEnableVertexAttribArray(index);
+	glVertexAttribPointer(index, count, type, GL_FALSE,
+		stride, reinterpret_cast<const GLvoid*>(start));
+	unbind();
+}
+
+void GL::ArrayBuffer::disableVertexAttribute(GLuint index)
+{
+	bind();
+	glDisableVertexAttribArray(index);
+	unbind();
+}
