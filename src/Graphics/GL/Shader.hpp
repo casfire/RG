@@ -3,8 +3,8 @@
 #define _GRAPHICS_GL_SHADER_HPP_
 
 #include "Common.hpp"
-#include <string> // std::string
-#include <vector> // std::vector
+#include <string>
+#include <vector>
 
 namespace Graphics { namespace GL {
 	

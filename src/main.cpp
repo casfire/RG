@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Graphics/Graphics.hpp"
 #include <SFML/Window.hpp>
-#include <cstdint> // std::uint32_t
+#include <cstdint>
 #include <vector>
 
 #define GLM_FORCE_RADIANS
@@ -81,7 +81,7 @@ public:
 		addTriangle(a, b, c); addTriangle(a, c, d);
 	}
 	
-	void addIcosphere(int subdivisions = 1) {
+	void addIcosphere(int subdivisions = 0) {
 		float t = (std::sqrt(5.f) + 1.f) / 2.f;
 		std::vector<glm::vec3> v(12);
 		std::vector<glm::vec3> c(12);
@@ -200,13 +200,8 @@ int main() {
 	
 	/* Model */
 	Model model;
-	model.addIcosphere();
+	model.addIcosphere(5);
 	model.create();
-	
-	Model model2;
-	model2.addIcosphere();
-	model2.create();
-	
 	
 	/* MVP */
 	GL::ProgramUniform MVP_m = program.getUniform("mat_M");
@@ -273,7 +268,6 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		program.bind();
 		model.draw();
-		model2.draw();
 		program.unbind();
 		
 		window.display();

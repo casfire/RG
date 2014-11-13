@@ -58,7 +58,10 @@ namespace Graphics { namespace GL {
 		/* Create a new VAO */
 		VAO();
 		
-		/* Bind this VAO */
+		/* Delete VAO */
+		~VAO();
+		
+		/* Bind VAO */
 		void bind() const;
 		
 		/* Unbind VAO */

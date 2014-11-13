@@ -3,10 +3,11 @@
 #define _GRAPHICS_GL_BUFFER_HPP_
 
 #include "Common.hpp"
-#include <cstdint> // std::uint8_t, std::uint16_t, std::uint32_t
-#include <cstddef> // std::size_t
+#include <cstdint>
+#include <cstddef>
 
 namespace Graphics { namespace GL {
+	
 	
 	
 	class Buffer;
@@ -15,7 +16,7 @@ namespace Graphics { namespace GL {
 	class ElementBuffer16;
 	class ElementBuffer32;
 	class ArrayBuffer;
-	class VAO;
+	
 	
 	
 	/* Base buffer object */
@@ -34,10 +35,10 @@ namespace Graphics { namespace GL {
 		/* Set buffer data */
 		void data(GLsizeiptr size, const GLvoid *data);
 		
-		/* Bind the buffer */
+		/* Bind this buffer */
 		void bind() const;
 		
-		/* Unbind the buffer */
+		/* Unbind buffer */
 		void unbind() const;
 		
 		/* Getters */

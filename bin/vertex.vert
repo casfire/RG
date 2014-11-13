@@ -8,8 +8,8 @@ uniform mat4 mat_V;
 uniform mat4 mat_P;
 
 smooth out vec3 fColor;
-out vec3 fNormal;
-out vec3 fPosition;
+smooth out vec3 fNormal;
+smooth out vec3 fPosition;
 
 void main() {
 	

@@ -42,6 +42,11 @@ GL::VAO::VAO()
 : Object(createVAO())
 {}
 
+GL::VAO::~VAO()
+{
+	glDeleteVertexArrays(1, &objectID);
+}
+
 void GL::VAO::bind() const
 {
 	glBindVertexArray(objectID);

@@ -4,8 +4,8 @@
 
 #include "Common.hpp"
 #include "Shader.hpp"
-#include <vector> // std::vector
-#include <glm/glm.hpp> // glm::mat2, glm::mat3, glm::mat4
+#include <vector>
+#include <glm/glm.hpp>
 
 namespace Graphics { namespace GL {
 	
@@ -41,10 +41,10 @@ namespace Graphics { namespace GL {
 		/* Link attached shaders - throws ProgramLinkException */
 		void link();
 		
-		/* Use program */
+		/* Use this program */
 		void bind() const;
 		
-		/* Stops using program */
+		/* Stop using program */
 		void unbind() const;
 		
 		/* Getters */

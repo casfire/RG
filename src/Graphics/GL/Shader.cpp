@@ -1,6 +1,6 @@
 #include "Shader.hpp"
-#include <sstream> // to_string
-#include <fstream> // ShaderFile
+#include <sstream>
+#include <fstream>
 
 namespace GL = Graphics::GL;
 
