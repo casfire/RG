@@ -2,7 +2,7 @@ TARGET=hello
 CFLAGS=-Wall -Wextra -std=c++11 -DSFML_STATIC
 LFLAGS=-static -static-libgcc -static-libstdc++ -lsfml-graphics-s -lsfml-window-s -lsfml-system-s
 
-FILES_GRAPHICS_GL=gl_core_3_3.c Common.cpp Shader.cpp Program.cpp
+FILES_GRAPHICS_GL=gl_core_3_3.c Common.cpp Shader.cpp Program.cpp Buffer.cpp
 FILES_MAIN=main.cpp
 FILES=$(patsubst %,Graphics/GL/%,$(FILES_GRAPHICS_GL)) $(FILES_MAIN)
 

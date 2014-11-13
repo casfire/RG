@@ -21,14 +21,15 @@ class Model {
 	std::uint32_t vertexCount, triangleCount;
 	std::vector<float> vertexBuffer;
 	std::vector<std::uint32_t> elementBuffer;
-	GLuint arrayBufferID, elementBufferID, vaoID;
+	GL::VAO vao;
+	GL::ArrayBuffer arrayBufferObj;
+	GL::ElementBuffer32 elementBufferObj;
 	
 public:
 	
 	Model() {
 		vertexCount = 0;
 		triangleCount = 0;
-		arrayBufferID = 0; elementBufferID = 0; vaoID = 0;
 	}
 	
 	std::uint32_t addVertex(glm::vec3 position, glm::vec3 normal, glm::vec3 color) {
@@ -80,7 +81,7 @@ public:
 		addTriangle(a, b, c); addTriangle(a, c, d);
 	}
 	
-	void addIcosphere(int subdivisions = 5) {
+	void addIcosphere(int subdivisions = 1) {
 		float t = (std::sqrt(5.f) + 1.f) / 2.f;
 		std::vector<glm::vec3> v(12);
 		std::vector<glm::vec3> c(12);
@@ -149,36 +150,22 @@ public:
 	}
 	
 	void create() {
+		arrayBufferObj.data(sizeof(float) * vertexBuffer.size(), &vertexBuffer[0]);
+		elementBufferObj.elements(elementBuffer.size(), &elementBuffer[0]);
 		
-		glGenBuffers(1, &arrayBufferID);
-		glBindBuffer(GL_ARRAY_BUFFER, arrayBufferID);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexBuffer.size(), static_cast<const GLvoid*>(&vertexBuffer[0]), GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		
-		glGenBuffers(1, &elementBufferID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(std::uint32_t) * elementBuffer.size(), static_cast<const GLvoid*>(&elementBuffer[0]), GL_STATIC_DRAW);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		
-		glGenVertexArrays(1, &vaoID);
-		glBindVertexArray(vaoID);
-		glBindBuffer(GL_ARRAY_BUFFER, arrayBufferID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (GLvoid*) 0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (GLvoid*) (3 * sizeof(float)));
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (GLvoid*) (6 * sizeof(float)));
-		glBindVertexArray(0);
-		
+		vao.bind();
+		elementBufferObj.bind();
+		arrayBufferObj.enableVertexAttribute(0, 3, GL_FLOAT, 9 * sizeof(float), 0);
+		arrayBufferObj.enableVertexAttribute(1, 3, GL_FLOAT, 9 * sizeof(float), 3 * sizeof(float));
+		arrayBufferObj.enableVertexAttribute(2, 3, GL_FLOAT, 9 * sizeof(float), 6 * sizeof(float));
+		vao.unbind();
 	}
 	
 	void draw() {
 		
-		glBindVertexArray(vaoID);
-		glDrawElements(GL_TRIANGLES, 3 * triangleCount, GL_UNSIGNED_INT, (GLvoid*) 0);
-		glBindVertexArray(0);
+		vao.bind();
+		elementBufferObj.drawTriangles(3 * triangleCount, 0);
+		vao.unbind();
 		
 	}
 	
@@ -216,6 +203,11 @@ int main() {
 	model.addIcosphere();
 	model.create();
 	
+	Model model2;
+	model2.addIcosphere();
+	model2.create();
+	
+	
 	/* MVP */
 	GL::ProgramUniform MVP_m = program.getUniform("mat_M");
 	GL::ProgramUniform MVP_v = program.getUniform("mat_V");
@@ -223,6 +215,7 @@ int main() {
 	program.bind();
 	MVP_v.set(glm::mat4(1.0f));
 	MVP_p.set(glm::perspective(1.57079632f, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f));
+	program.unbind();
 	
 	/* Clear parameters */
 	glClearColor(0.f, 0.f, 0.f, 0.f);
@@ -259,24 +252,29 @@ int main() {
 				glViewport(0, 0, event.size.width, event.size.height);
 				program.bind();
 				MVP_p.set(glm::perspective(1.57079632f, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f));
+				program.unbind();
 				break;
 			default: break;
 			}
 		}
 		
 		float elapsedSeconds = clock.getElapsedTime().asSeconds();
+		program.bind();
 		MVP_m.set(
 			  glm::translate(glm::vec3(0.f, 0.f, -7.f))
 			* glm::rotate(elapsedSeconds * 1.f, glm::vec3(0.f, 1.f, 0.f))
 			* glm::rotate(0.05f, glm::vec3(1.f, 0.f, 0.f))
 			* glm::scale(glm::vec3(4.f, 4.f, 4.f))
 		);
-
+		program.unbind();
+		
 		/* Draw */
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		program.bind();
 		model.draw();
+		model2.draw();
+		program.unbind();
 		
 		window.display();
 		

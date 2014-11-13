@@ -4,8 +4,8 @@
 
 #include "Common.hpp"
 #include "Shader.hpp"
-#include <vector>
-#include <glm/glm.hpp>
+#include <vector> // std::vector
+#include <glm/glm.hpp> // glm::mat2, glm::mat3, glm::mat4
 
 namespace Graphics { namespace GL {
 	
@@ -43,6 +43,9 @@ namespace Graphics { namespace GL {
 		
 		/* Use program */
 		void bind() const;
+		
+		/* Stops using program */
+		void unbind() const;
 		
 		/* Getters */
 		bool isLinked() const;

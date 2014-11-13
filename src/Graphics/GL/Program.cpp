@@ -60,6 +60,11 @@ void GL::Program::bind() const
 	glUseProgram(objectID);
 }
 
+void GL::Program::unbind() const
+{
+	glUseProgram(0);
+}
+
 bool GL::Program::isLinked() const
 {
 	GLint status = GL_FALSE;
@@ -211,13 +216,15 @@ void GL::ProgramUniform::set(const glm::mat4 &mat)
 /* Graphics::GL::ProgramLinkException */
 
 template <typename T>
-inline const std::string to_string(const T &value) {
+inline const std::string to_string(const T &value)
+{
 	std::ostringstream os;
 	os << value;
 	return os.str();
 }
 
-inline void fillProgramInfoLog(GLuint ID, std::vector<char> &log) {
+inline void fillProgramInfoLog(GLuint ID, std::vector<char> &log)
+{
 	GLint size = 0;
 	glGetProgramiv(ID, GL_INFO_LOG_LENGTH, &size);
 	log.resize(static_cast<std::size_t>(size + 1));
