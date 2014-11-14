@@ -138,7 +138,6 @@ namespace Graphics { namespace GL {
 		/* Set elements */
 		void elements(std::size_t count, const std::uint32_t *elements);
 		
-		
 	};
 	
 	
