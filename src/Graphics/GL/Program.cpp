@@ -98,117 +98,122 @@ GL::ProgramUniform GL::Program::getUniform(const GLchar *name)
 /* Graphics::GL::ProgramUniform */
 
 GL::ProgramUniform::ProgramUniform(const Program &program, const GLchar *name)
-: Object(glGetUniformLocation(program.getObjectID(), name))
+: location(glGetUniformLocation(program.getObjectID(), name))
 {}
+
+GLuint GL::ProgramUniform::getLocation() const
+{
+	return location;
+}
 
 void GL::ProgramUniform::set1f(GLfloat v0)
 {
-	glUniform1f(objectID, v0);
+	glUniform1f(location, v0);
 }
 
 void GL::ProgramUniform::set2f(GLfloat v0, GLfloat v1)
 {
-	glUniform2f(objectID, v0, v1);
+	glUniform2f(location, v0, v1);
 }
 
 void GL::ProgramUniform::set3f(GLfloat v0, GLfloat v1, GLfloat v2)
 {
-	glUniform3f(objectID, v0, v1, v2);
+	glUniform3f(location, v0, v1, v2);
 }
 
 void GL::ProgramUniform::set4f(GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
 {
-	glUniform4f(objectID, v0, v1, v2, v3);
+	glUniform4f(location, v0, v1, v2, v3);
 }
 
 void GL::ProgramUniform::set1i(GLint v0)
 {
-	glUniform1i(objectID, v0);
+	glUniform1i(location, v0);
 }
 
 void GL::ProgramUniform::set2i(GLint v0, GLint v1)
 {
-	glUniform2i(objectID, v0, v1);
+	glUniform2i(location, v0, v1);
 }
 
 void GL::ProgramUniform::set3i(GLint v0, GLint v1, GLint v2)
 {
-	glUniform3i(objectID, v0, v1, v2);
+	glUniform3i(location, v0, v1, v2);
 }
 
 void GL::ProgramUniform::set4i(GLint v0, GLint v1, GLint v2, GLint v3)
 {
-	glUniform4i(objectID, v0, v1, v2, v3);
+	glUniform4i(location, v0, v1, v2, v3);
 }
 
 void GL::ProgramUniform::set1fv(GLsizei count, const GLfloat *value)
 {
-	glUniform1fv(objectID, count, value);
+	glUniform1fv(location, count, value);
 }
 
 void GL::ProgramUniform::set2fv(GLsizei count, const GLfloat *value)
 {
-	glUniform2fv(objectID, count, value);
+	glUniform2fv(location, count, value);
 }
 
 void GL::ProgramUniform::set3fv(GLsizei count, const GLfloat *value)
 {
-	glUniform3fv(objectID, count, value);
+	glUniform3fv(location, count, value);
 }
 
 void GL::ProgramUniform::set4fv(GLsizei count, const GLfloat *value)
 {
-	glUniform4fv(objectID, count, value);
+	glUniform4fv(location, count, value);
 }
 
 void GL::ProgramUniform::set1iv(GLsizei count, const GLint *value)
 {
-	glUniform1iv(objectID, count, value);
+	glUniform1iv(location, count, value);
 }
 
 void GL::ProgramUniform::set2iv(GLsizei count, const GLint *value)
 {
-	glUniform2iv(objectID, count, value);
+	glUniform2iv(location, count, value);
 }
 
 void GL::ProgramUniform::set3iv(GLsizei count, const GLint *value)
 {
-	glUniform3iv(objectID, count, value);
+	glUniform3iv(location, count, value);
 }
 
 void GL::ProgramUniform::set4iv(GLsizei count, const GLint *value)
 {
-	glUniform4iv(objectID, count, value);
+	glUniform4iv(location, count, value);
 }
 
 void GL::ProgramUniform::setMatrix2fv(GLsizei count, GLboolean transpose, const GLfloat *value)
 {
-	glUniformMatrix2fv(objectID, count, transpose, value);
+	glUniformMatrix2fv(location, count, transpose, value);
 }
 
 void GL::ProgramUniform::setMatrix3fv(GLsizei count, GLboolean transpose, const GLfloat *value)
 {
-	glUniformMatrix3fv(objectID, count, transpose, value);
+	glUniformMatrix3fv(location, count, transpose, value);
 }
 
 void GL::ProgramUniform::setMatrix4fv(GLsizei count, GLboolean transpose, const GLfloat *value)
 {
-	glUniformMatrix4fv(objectID, count, transpose, value);
+	glUniformMatrix4fv(location, count, transpose, value);
 }
 
 void GL::ProgramUniform::set(const glm::mat2 &mat)
 {
-	glUniformMatrix2fv(objectID, 1, GL_FALSE, glm::value_ptr(mat));
+	glUniformMatrix2fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
 void GL::ProgramUniform::set(const glm::mat3 &mat)
 {
-	glUniformMatrix3fv(objectID, 1, GL_FALSE, glm::value_ptr(mat));
+	glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
 void GL::ProgramUniform::set(const glm::mat4 &mat)
 {
-	glUniformMatrix4fv(objectID, 1, GL_FALSE, glm::value_ptr(mat));
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
 
@@ -223,7 +228,7 @@ inline const std::string to_string(const T &value)
 	return os.str();
 }
 
-inline void fillProgramInfoLog(GLuint ID, std::vector<char> &log)
+inline const char* fillProgramInfoLog(GLuint ID, std::vector<char> &log)
 {
 	GLint size = 0;
 	glGetProgramiv(ID, GL_INFO_LOG_LENGTH, &size);
@@ -232,15 +237,15 @@ inline void fillProgramInfoLog(GLuint ID, std::vector<char> &log)
 		glGetProgramInfoLog(ID, size, NULL, static_cast<GLchar*>(&log[0]));
 	}
 	log[static_cast<std::size_t>(size)] = '\0';
+	return static_cast<const char*>(&log[0]);
 }
 
 GL::ProgramLinkException::ProgramLinkException(const Program &program)
 : Exception(
 	"Failed to link program with ID "
-	+ to_string(program.getObjectID()) + ".")
-{
-	fillProgramInfoLog(program.getObjectID(), linkLog);
-}
+	+ to_string(program.getObjectID()) + ".\n"
+	+ std::string(fillProgramInfoLog(program.getObjectID(), linkLog)))
+{}
 
 const char* GL::ProgramLinkException::log() const
 {

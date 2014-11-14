@@ -1,0 +1,2 @@
+v assets/vertex.c
+f assets/fragment.c

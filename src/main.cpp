@@ -5,6 +5,7 @@
 
 namespace G = Graphics;
 namespace GL = Graphics::GL;
+namespace A = Graphics::Asset;
 
 int main() {
 	
@@ -19,8 +20,14 @@ int main() {
 	}
 	std::cout << "OpenGL version " << glGetString(GL_VERSION) << " loaded." << std::endl;
 	
-	G::AssetStorage storage;
+	/* Create asset storage */
+	A::Storage storage;
 	
+	/* Grab and release GLProgram from the storage */
+	A::GLProgram* program1 = storage.grab<A::GLProgram>("assets/program.txt");
+	A::GLProgram* program2 = storage.grab<A::GLProgram>("assets/program.txt");
+	storage.release(program1);
+	storage.release(program2);
 	
 	return 0;
 }

@@ -59,11 +59,14 @@ namespace Graphics { namespace GL {
 	
 	
 	/* Program uniform variable */
-	class ProgramUniform : public Object {
+	class ProgramUniform {
 	public:
 		
 		/* Retrieve uniform variable */
 		ProgramUniform(const Program &program, const GLchar *name);
+		
+		/* Get location of the uniform */
+		GLuint getLocation() const;
 		
 		/*  IMPORTANT!
 		  Make sure the program is bound with Program::bind()
@@ -97,6 +100,10 @@ namespace Graphics { namespace GL {
 		void set(const glm::mat2 &mat);
 		void set(const glm::mat3 &mat);
 		void set(const glm::mat4 &mat);
+		
+	private:
+		
+		const GLuint location;
 		
 	};
 	
