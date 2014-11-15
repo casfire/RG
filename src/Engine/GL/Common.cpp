@@ -1,10 +1,10 @@
 #include "Common.hpp"
 
-namespace GL = Graphics::GL;
+namespace GL = Engine::GL;
 
 
 
-/* Graphics::GL::Object */
+/* Engine::GL::Object */
 
 GL::Object::Object(GLuint ID)
 : objectID(ID)
@@ -17,7 +17,7 @@ GLuint GL::Object::getObjectID() const
 
 
 
-/* Graphics::GL::Exception */
+/* Engine::GL::Exception */
 
 GL::Exception::Exception(const std::string &info)
 : exceptionInfo(info)
@@ -30,7 +30,7 @@ const char* GL::Exception::what() const throw()
 
 
 
-/* Graphics::GL::VAO */
+/* Engine::GL::VAO */
 
 inline GLuint createVAO() {
 	GLuint ID;

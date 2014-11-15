@@ -1,12 +1,12 @@
 #pragma once
-#ifndef _GRAPHICS_GL_COMMON_HPP_
-#define _GRAPHICS_GL_COMMON_HPP_
+#ifndef _ENGINE_GL_COMMON_HPP_
+#define _ENGINE_GL_COMMON_HPP_
 
 #include "gl_core_3_3.h"
 #include <exception>
 #include <string>
 
-namespace Graphics { namespace GL {
+namespace Engine { namespace GL {
 	
 	
 	
@@ -79,6 +79,6 @@ namespace Graphics { namespace GL {
 	
 	
 	
-}} // namespace Graphics::GL
+}} // namespace Engine::GL
 
-#endif // _GRAPHICS_GL_COMMON_HPP_
+#endif // _ENGINE_GL_COMMON_HPP_

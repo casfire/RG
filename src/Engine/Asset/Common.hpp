@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _GRAPHICS_ASSET_COMMON_HPP_
-#define _GRAPHICS_ASSET_COMMON_HPP_
+#ifndef _ENGINE_ASSET_COMMON_HPP_
+#define _ENGINE_ASSET_COMMON_HPP_
 
 #include <string>
 #include <map>
@@ -8,7 +8,7 @@
 #include <ios> // std::ios::failure
 #include <cstddef> // std::size_t
 
-namespace Graphics { namespace Asset {
+namespace Engine { namespace Asset {
 	
 	
 	
@@ -156,30 +156,30 @@ namespace Graphics { namespace Asset {
 	
 	
 	
-}} // namespace Graphics::Asset
+}} // namespace Engine::Asset
 
 
 
 #include <fstream>
 
 template<class T>
-T* Graphics::Asset::Storage::grab(const std::string &key)
+T* Engine::Asset::Storage::grab(const std::string &key)
 {
 	try {
-		Graphics::Asset::Asset* a = get(key);
+		Engine::Asset::Asset* a = get(key);
 		if (a == nullptr) storage[key] = (a = load<T>(key));
 		a->assetCount++;
 		T* t = dynamic_cast<T*>(a);
 		if (t == nullptr) throw CastException();
 		return t;
-	} catch (Graphics::Asset::Exception &fail) {
+	} catch (Engine::Asset::Exception &fail) {
 		fail.setKey(key);
 		throw;
 	}
 }
 
 template<class T>
-T* Graphics::Asset::Storage::load(const std::string &key)
+T* Engine::Asset::Storage::load(const std::string &key)
 {
 	try {
 		std::ifstream stream;
@@ -191,10 +191,10 @@ T* Graphics::Asset::Storage::load(const std::string &key)
 		stream.close();
 		return a;
 	} catch (std::ios::failure &fail) {
-		throw Graphics::Asset::IOException(fail);
+		throw Engine::Asset::IOException(fail);
 	}
 }
 
 
 
-#endif // _GRAPHICS_ASSET_COMMON_HPP_
+#endif // _ENGINE_ASSET_COMMON_HPP_

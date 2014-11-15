@@ -2,11 +2,11 @@
 #include <sstream>
 #include <fstream>
 
-namespace GL = Graphics::GL;
+namespace GL = Engine::GL;
 
 
 
-/* Graphics::GL::Shader */
+/* Engine::GL::Shader */
 
 GL::Shader::Shader(GLenum type)
 : Object(glCreateShader(type)), type(type)
@@ -70,7 +70,7 @@ const char* GL::Shader::getTypeName() const
 
 
 
-/* Graphics::GL::ShaderFile */
+/* Engine::GL::ShaderFile */
 
 GL::ShaderFile::ShaderFile(const std::string &filename)
 {
@@ -88,7 +88,7 @@ GL::ShaderFile::ShaderFile(const std::string &filename)
 
 
 
-/* Graphics::GL::VertexShader */
+/* Engine::GL::VertexShader */
 
 GL::VertexShader::VertexShader()
 : Shader(GL_VERTEX_SHADER)
@@ -104,7 +104,7 @@ GL::VertexShader::VertexShader(const ShaderFile &file)
 
 
 
-/* Graphics::GL::FragmentShader */
+/* Engine::GL::FragmentShader */
 
 GL::FragmentShader::FragmentShader()
 : Shader(GL_FRAGMENT_SHADER)
@@ -120,7 +120,7 @@ GL::FragmentShader::FragmentShader(const ShaderFile &file)
 
 
 
-/* Graphics::GL::GeometryShader */
+/* Engine::GL::GeometryShader */
 
 GL::GeometryShader::GeometryShader()
 : Shader(GL_GEOMETRY_SHADER)
@@ -136,7 +136,7 @@ GL::GeometryShader::GeometryShader(const ShaderFile &file)
 
 
 
-/* Graphics::GL::ShaderCompileException */
+/* Engine::GL::ShaderCompileException */
 
 template <typename T>
 inline const std::string to_string(const T &value)

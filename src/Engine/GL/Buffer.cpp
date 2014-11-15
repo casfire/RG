@@ -1,10 +1,10 @@
 #include "Buffer.hpp"
 
-namespace GL = Graphics::GL;
+namespace GL = Engine::GL;
 
 
 
-/* Graphics::GL::Buffer */
+/* Engine::GL::Buffer */
 
 inline GLuint createBuffer()
 {
@@ -94,7 +94,7 @@ const char* GL::Buffer::getUsageName() const
 
 
 
-/* Graphics::GL::ElementBuffer */
+/* Engine::GL::ElementBuffer */
 
 GL::ElementBuffer::ElementBuffer(GLenum type, GLenum usage)
 : Buffer(GL_ELEMENT_ARRAY_BUFFER, usage), type(type)
@@ -157,7 +157,7 @@ void GL::ElementBuffer::draw(GLenum mode, GLsizei count, GLsizei start)
 
 
 
-/* Graphics::GL::ElementBuffer8 */
+/* Engine::GL::ElementBuffer8 */
 
 GL::ElementBuffer8::ElementBuffer8(GLenum usage)
 : ElementBuffer(GL_UNSIGNED_BYTE, usage)
@@ -176,7 +176,7 @@ void GL::ElementBuffer8::elements(std::size_t count, const std::uint8_t *element
 
 
 
-/* Graphics::GL::ElementBuffer16 */
+/* Engine::GL::ElementBuffer16 */
 
 GL::ElementBuffer16::ElementBuffer16(GLenum usage)
 : ElementBuffer(GL_UNSIGNED_SHORT, usage)
@@ -195,7 +195,7 @@ void GL::ElementBuffer16::elements(std::size_t count, const std::uint16_t *eleme
 
 
 
-/* Graphics::GL::ElementBuffer32 */
+/* Engine::GL::ElementBuffer32 */
 
 GL::ElementBuffer32::ElementBuffer32(GLenum usage)
 : ElementBuffer(GL_UNSIGNED_INT, usage)
@@ -214,7 +214,7 @@ void GL::ElementBuffer32::elements(std::size_t count, const std::uint32_t *eleme
 
 
 
-/* Graphics::GL::ArrayBuffer */
+/* Engine::GL::ArrayBuffer */
 
 GL::ArrayBuffer::ArrayBuffer(GLenum usage)
 : Buffer(GL_ARRAY_BUFFER, usage)

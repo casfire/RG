@@ -1,12 +1,12 @@
 #pragma once
-#ifndef _GRAPHICS_GL_BUFFER_HPP_
-#define _GRAPHICS_GL_BUFFER_HPP_
+#ifndef _ENGINE_GL_BUFFER_HPP_
+#define _ENGINE_GL_BUFFER_HPP_
 
 #include "Common.hpp"
 #include <cstdint>
 #include <cstddef>
 
-namespace Graphics { namespace GL {
+namespace Engine { namespace GL {
 	
 	
 	
@@ -169,6 +169,6 @@ namespace Graphics { namespace GL {
 	
 	
 	
-}} // namespace Graphics::GL
+}} // namespace Engine::GL
 
-#endif // _GRAPHICS_GL_BUFFER_HPP_
+#endif // _ENGINE_GL_BUFFER_HPP_

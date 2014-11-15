@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _GRAPHICS_HPP_
-#define _GRAPHICS_HPP_
+#ifndef _ENGINE_HPP_
+#define _ENGINE_HPP_
 
 #include "GL/Common.hpp"
 #include "GL/Shader.hpp"
@@ -11,4 +11,4 @@
 #include "Asset/Common.hpp"
 #include "Asset/GLProgram.hpp"
 
-#endif // _GRAPHICS_HPP_
+#endif // _ENGINE_HPP_

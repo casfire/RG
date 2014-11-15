@@ -1,10 +1,10 @@
 #include "Common.hpp"
 
-namespace A = Graphics::Asset;
+namespace A = Engine::Asset;
 
 
 
-/* Graphics::Asset::Storage */
+/* Engine::Asset::Storage */
 
 typedef std::map<std::string, A::Asset*>::iterator AssetMapIterator;
 
@@ -48,7 +48,7 @@ A::Asset* A::Storage::get(const std::string &key)
 
 
 
-/* Graphics::Asset::Asset */
+/* Engine::Asset::Asset */
 
 A::Asset::Asset()
 {}
@@ -68,7 +68,7 @@ std::size_t A::Asset::getAssetCount() const
 
 
 
-/* Graphics::Asset::Exception */
+/* Engine::Asset::Exception */
 
 A::Exception::Exception(const std::string &info)
 : exceptionWhat(info)
@@ -96,7 +96,7 @@ void A::Exception::setKey(const std::string &key)
 
 
 
-/* Graphics::Asset::IOException */
+/* Engine::Asset::IOException */
 
 A::IOException::IOException(const std::ios::failure &fail)
 : Exception(fail.what())
@@ -104,7 +104,7 @@ A::IOException::IOException(const std::ios::failure &fail)
 
 
 
-/* Graphics::Asset::CastException */
+/* Engine::Asset::CastException */
 
 A::CastException::CastException()
 : Exception("")
@@ -112,7 +112,7 @@ A::CastException::CastException()
 
 
 
-/* Graphics::Asset::FormatException */
+/* Engine::Asset::FormatException */
 A::FormatException::FormatException(const std::string &info)
 : Exception(info)
 {}

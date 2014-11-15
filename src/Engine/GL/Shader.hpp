@@ -1,12 +1,12 @@
 #pragma once
-#ifndef _GRAPHICS_GL_SHADER_HPP_
-#define _GRAPHICS_GL_SHADER_HPP_
+#ifndef _ENGINE_GL_SHADER_HPP_
+#define _ENGINE_GL_SHADER_HPP_
 
 #include "Common.hpp"
 #include <string>
 #include <vector>
 
-namespace Graphics { namespace GL {
+namespace Engine { namespace GL {
 	
 	
 	
@@ -126,6 +126,6 @@ namespace Graphics { namespace GL {
 	};
 	
 	
-}} // namespace Graphics::GL
+}} // namespace Engine::GL
 
-#endif // _GRAPHICS_GL_SHADER_HPP_
+#endif // _ENGINE_GL_SHADER_HPP_

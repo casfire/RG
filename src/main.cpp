@@ -1,11 +1,11 @@
-#include "Graphics/Graphics.hpp"
+#include "Engine/Engine.hpp"
 
 #include <SFML/Window.hpp>
 #include <iostream>
 
-namespace G = Graphics;
-namespace GL = Graphics::GL;
-namespace A = Graphics::Asset;
+namespace E = Engine;
+namespace GL = Engine::GL;
+namespace A = Engine::Asset;
 
 int main() {
 	

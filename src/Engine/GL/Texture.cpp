@@ -1,10 +1,10 @@
 #include "Texture.hpp"
 
-namespace GL = Graphics::GL;
+namespace GL = Engine::GL;
 
 
 
-/* Graphics::GL::Texture2D */
+/* Engine::GL::Texture2D */
 
 inline GLuint createTexture() {
 	GLuint ID;

@@ -4,11 +4,11 @@
 #define GLM_FORCE_RADIANS
 #include <glm/gtc/type_ptr.hpp>
 
-namespace GL = Graphics::GL;
+namespace GL = Engine::GL;
 
 
 
-/* Graphics::Program::GL */
+/* Engine::Program::GL */
 
 GL::Program::Program()
 : Object(glCreateProgram())
@@ -95,7 +95,7 @@ GL::ProgramUniform GL::Program::getUniform(const GLchar *name)
 
 
 
-/* Graphics::GL::ProgramUniform */
+/* Engine::GL::ProgramUniform */
 
 GL::ProgramUniform::ProgramUniform(const Program &program, const GLchar *name)
 : location(glGetUniformLocation(program.getObjectID(), name))
@@ -218,7 +218,7 @@ void GL::ProgramUniform::set(const glm::mat4 &mat)
 
 
 
-/* Graphics::GL::ProgramLinkException */
+/* Engine::GL::ProgramLinkException */
 
 template <typename T>
 inline const std::string to_string(const T &value)

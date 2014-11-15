@@ -1,13 +1,13 @@
 #pragma once
-#ifndef _GRAPHICS_ASSET_GLPROGRAM_HPP_
-#define _GRAPHICS_ASSET_GLPROGRAM_HPP_
+#ifndef _ENGINE_ASSET_GLPROGRAM_HPP_
+#define _ENGINE_ASSET_GLPROGRAM_HPP_
 
 #include "Common.hpp"
 #include "../GL/Shader.hpp"
 #include "../GL/Program.hpp"
 #include <istream>
 
-namespace Graphics { namespace Asset {
+namespace Engine { namespace Asset {
 	
 	
 	
@@ -102,6 +102,6 @@ namespace Graphics { namespace Asset {
 	
 	
 	
-}} // namespace Graphics::Asset
+}} // namespace Engine::Asset
 
-#endif // _GRAPHICS_ASSET_GLPROGRAM_HPP_
+#endif // _ENGINE_ASSET_GLPROGRAM_HPP_

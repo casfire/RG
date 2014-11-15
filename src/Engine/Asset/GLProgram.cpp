@@ -3,8 +3,8 @@
 #include <cctype> // std::isgraph, std::iscntrl
 #include <cstddef> // std::size_t
 
-namespace A = Graphics::Asset;
-namespace GL = Graphics::GL;
+namespace A = Engine::Asset;
+namespace GL = Engine::GL;
 
 
 
@@ -21,7 +21,7 @@ void compileFromStream(std::istream& stream, GL::Shader &shader)
 
 
 
-/* Graphics::Asset::GLVertexShader */
+/* Engine::Asset::GLVertexShader */
 
 A::GLVertexShader::GLVertexShader(A::Storage* storage, std::istream& stream)
 {
@@ -39,7 +39,7 @@ const GL::VertexShader& A::GLVertexShader::get()
 
 
 
-/* Graphics::Asset::GLFragmentShader */
+/* Engine::Asset::GLFragmentShader */
 
 A::GLFragmentShader::GLFragmentShader(A::Storage* storage, std::istream& stream)
 {
@@ -57,7 +57,7 @@ const GL::FragmentShader& A::GLFragmentShader::get()
 
 
 
-/* Graphics::Asset::GLGeometryShader */
+/* Engine::Asset::GLGeometryShader */
 
 A::GLGeometryShader::GLGeometryShader(A::Storage* storage, std::istream& stream)
 {
@@ -75,7 +75,7 @@ const GL::GeometryShader& A::GLGeometryShader::get()
 
 
 
-/* Graphics::Asset::GLProgram */
+/* Engine::Asset::GLProgram */
 
 A::GLProgram::GLProgram(Storage* storage, std::istream& stream)
 {
