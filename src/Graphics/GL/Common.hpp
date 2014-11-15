@@ -3,8 +3,8 @@
 #define _GRAPHICS_GL_COMMON_HPP_
 
 #include "gl_core_3_3.h"
-#include <exception> // std::exception
-#include <string> // std::string
+#include <exception>
+#include <string>
 
 namespace Graphics { namespace GL {
 	
@@ -13,6 +13,7 @@ namespace Graphics { namespace GL {
 	class Object;
 	class Exception;
 	class VAO;
+	
 	
 	
 	/* Base class for all OpenGL objects */
@@ -28,6 +29,12 @@ namespace Graphics { namespace GL {
 	protected:
 		
 		const GLuint objectID;
+		
+	private:
+		
+		/* Prevent copying */
+		Object(const Object&) = delete;
+		Object& operator=(const Object&) = delete;
 		
 	};
 	
@@ -45,6 +52,7 @@ namespace Graphics { namespace GL {
 		
 	private:
 		
+		/* Saved information */
 		const std::string exceptionInfo;
 		
 	};

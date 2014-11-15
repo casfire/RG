@@ -8,4 +8,7 @@
 #include "GL/Buffer.hpp"
 #include "GL/Texture.hpp"
 
+#include "Asset/Common.hpp"
+#include "Asset/GLProgram.hpp"
+
 #endif // _GRAPHICS_HPP_

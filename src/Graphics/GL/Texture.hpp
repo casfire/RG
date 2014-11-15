@@ -6,6 +6,8 @@
 
 namespace Graphics { namespace GL {
 	
+	
+	
 	class Texture2D : public Object {
 	public:
 		
@@ -30,6 +32,8 @@ namespace Graphics { namespace GL {
 		void unbind();
 		
 	};
+	
+	
 	
 }}; // namespace Graphics::GL
 

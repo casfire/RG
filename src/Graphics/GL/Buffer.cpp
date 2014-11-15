@@ -124,29 +124,30 @@ int GL::ElementBuffer::getTypeBits() const
 		default: return 0;
 	}
 }
+
 void GL::ElementBuffer::drawPoints(GLsizei count, GLsizei start)
 {
-	draw(GL_POINTS, count, start);
+	glDrawElements(GL_POINTS, count, type, reinterpret_cast<const GLvoid*>(start));
 }
 
 void GL::ElementBuffer::drawLines(GLsizei count, GLsizei start)
 {
-	draw(GL_LINES, count, start);
+	glDrawElements(GL_LINES, count, type, reinterpret_cast<const GLvoid*>(start));
 }
 
 void GL::ElementBuffer::drawTriangles(GLsizei count, GLsizei start)
 {
-	draw(GL_TRIANGLES, count, start);
+	glDrawElements(GL_TRIANGLES, count, type, reinterpret_cast<const GLvoid*>(start));
 }
 
 void GL::ElementBuffer::drawLineStrip(GLsizei count, GLsizei start)
 {
-	draw(GL_LINE_STRIP, count, start);
+	glDrawElements(GL_LINE_STRIP, count, type, reinterpret_cast<const GLvoid*>(start));
 }
 
 void GL::ElementBuffer::drawTriangleStrip(GLsizei count, GLsizei start)
 {
-	draw(GL_TRIANGLE_STRIP, count, start);
+	glDrawElements(GL_TRIANGLE_STRIP, count, type, reinterpret_cast<const GLvoid*>(start));
 }
 
 void GL::ElementBuffer::draw(GLenum mode, GLsizei count, GLsizei start)
