@@ -7,6 +7,7 @@ namespace A = Engine::Asset;
 /* Engine::Asset::Asset */
 
 A::Asset::Asset()
+: grabCount(0)
 {}
 
 A::Asset::~Asset()

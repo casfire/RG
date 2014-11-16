@@ -5,6 +5,7 @@
 #include "Common.hpp"
 #include <string>
 #include <map>
+#include <stack>
 #include <fstream>
 #include <typeinfo> // typeid
 
@@ -34,6 +35,11 @@ namespace Engine { namespace Asset {
 		
 		/* Storage */
 		std::map<std::string, Asset*> storage;
+		
+		/* Basename stack */
+		std::stack<std::string> basename;
+		void pushKey(const std::string &key);
+		void popKey();
 		
 		/* Retrieve already loaded asset or nullptr */
 		Asset* get(const std::string &key);
@@ -73,12 +79,17 @@ T* Engine::Asset::Storage::grab(const std::string &key)
 template<class T>
 T* Engine::Asset::Storage::load(const std::string &key)
 {
+	std::string filename = basename.top() + key;
 	try {
 		std::ifstream stream;
 		stream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-		stream.open(key, std::ios::binary);
+		stream.open(filename, std::ios::binary);
 		T* a = new T();
+		a->key = key;
+		a->grabCount = 0;
+		pushKey(key);
 		a->load(*this, static_cast<std::istream&>(stream));
+		popKey();
 		stream.close();
 		return a;
 	} catch (std::ios::failure &fail) {

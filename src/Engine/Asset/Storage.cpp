@@ -5,7 +5,9 @@ namespace A = Engine::Asset;
 typedef std::map<std::string, A::Asset*>::iterator AssetMapIterator;
 
 A::Storage::Storage()
-{}
+{
+	basename.push("");
+}
 
 A::Storage::~Storage()
 {
@@ -30,6 +32,21 @@ void A::Storage::release(A::Asset* asset)
 			delete asset;
 		}
 	}
+}
+
+void A::Storage::pushKey(const std::string &key)
+{
+	std::string::size_type r = key.rfind('/');
+	if (r == std::string::npos) {
+		basename.push(basename.top() + "");
+	} else {
+		basename.push(key.substr(0, r + 1));
+	}
+}
+
+void A::Storage::popKey()
+{
+	basename.pop();
 }
 
 A::Asset* A::Storage::get(const std::string &key)
