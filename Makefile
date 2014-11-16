@@ -4,7 +4,7 @@ LFLAGS=-static -static-libgcc -static-libstdc++ -lsfml-graphics-s -lsfml-window-
 
 FILES_ENGINE_OBJ=Objects.cpp Reader.cpp NullReader.cpp
 FILES_ENGINE_GL=gl_core_3_3.c Common.cpp Shader.cpp Program.cpp Buffer.cpp Texture.cpp
-FILES_ENGINE_ASSET=Common.cpp GLProgram.cpp
+FILES_ENGINE_ASSET=Common.cpp Storage.cpp GLProgram.cpp
 FILES_MAIN=main.cpp
 
 _FILES_ENGINE_OBJ=$(patsubst %,Engine/Obj/%,$(FILES_ENGINE_OBJ))

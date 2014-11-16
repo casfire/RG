@@ -3,8 +3,8 @@
 #define _ENGINE_ASSET_COMMON_HPP_
 
 #include <string>
-#include <map>
 #include <exception>
+#include <vector>
 #include <ios> // std::ios::failure
 #include <cstddef> // std::size_t
 
@@ -12,66 +12,17 @@ namespace Engine { namespace Asset {
 	
 	
 	
-	class Storage;
 	class Asset;
 	class Exception;
 	class IOException;
 	class CastException;
-	class FormatException;
-	
-	
-	
-	/* Asset storage for pooling */
-	class Storage {
-	public:
-		
-		/* Create a new empty asset storage */
-		Storage();
-		
-		/* Delete all assets */
-		~Storage();
-		void clear();
-		
-		/* Grab asset - throws Exception */
-		template<class T>
-		T* grab(const std::string &key);
-		
-		/* Release asset */
-		void release(Asset* asset);
-		
-	private:
-		
-		/* Storage */
-		std::map<std::string, Asset*> storage;
-		
-		/* Retrieve already loaded asset or nullptr */
-		Asset* get(const std::string &key);
-		
-		/* Load and create asset - throws Exception */
-		template<class T>
-		T* load(const std::string &key);
-		
-		/* Prevent copying */
-		Storage(const Storage&) = delete;
-		Storage& operator=(const Storage&) = delete;
-		
-	};
+	class LoadException;
+	class Storage;
 	
 	
 	
 	/* Base asset class */
 	class Asset {
-	public:
-		
-		/* IMPORTANT!
-		  All assets must have constructor in the form of
-		  ExtendedAsset(Storage*, std::istream&);
-		*/
-		
-		/* Getters */
-		const std::string& getAssetKey() const;
-		std::size_t getAssetCount() const;
-		
 	protected:
 		
 		/* Only derived assets can be constructed */
@@ -80,20 +31,23 @@ namespace Engine { namespace Asset {
 		/* Virtual destructor so derived assets can be deleted */
 		virtual ~Asset();
 		
+		/* Pure virtual method for asset deserialization */
+		virtual void load(Storage& storage, std::istream &in) = 0;
+		
 	private:
 		
 		/* Asset key set by Storage */
-		std::string assetKey;
+		std::string key;
 		
 		/* Grab count set by Storage */
-		std::size_t assetCount;
+		std::size_t grabCount;
+		
+		/* Storage must have access to grab count and asset key */
+		friend class Storage;
 		
 		/* Prevent copying */
 		Asset(const Asset&) = delete;
 		Asset& operator=(const Asset&) = delete;
-		
-		/* Storage must have access to grab count and asset key */
-		friend class Storage;
 		
 	};
 	
@@ -105,7 +59,6 @@ namespace Engine { namespace Asset {
 		
 		/* Return saved information */
 		const char* what() const throw();
-		const std::string& key() const;
 		
 	protected:
 		
@@ -115,12 +68,14 @@ namespace Engine { namespace Asset {
 	private:
 		
 		/* Saved exception information */
-		std::string exceptionWhat;
-		std::string exceptionKey;
+		std::string info;
 		
-		/* Storage sets exception key */
+		/* Asset keys */
+		std::vector<std::string> keys;
+		void pushKey(const std::string &key);
+		
+		/* Storage must be able to push keys */
 		friend class Storage;
-		void setKey(const std::string &key);
 		
 	};
 	
@@ -140,61 +95,22 @@ namespace Engine { namespace Asset {
 	class CastException : public Exception {
 	public:
 		
-		CastException();
+		CastException(const char *from, const char *to);
 		
 	};
 	
 	
 	
-	/* Thrown when data has invalid asset format */
-	class FormatException : public Exception {
+	/* Thrown when asset load fails */
+	class LoadException : public Exception {
 	public:
 		
-		FormatException(const std::string &info);
+		LoadException(const std::string &info);
 		
 	};
 	
 	
 	
 }} // namespace Engine::Asset
-
-
-
-#include <fstream>
-
-template<class T>
-T* Engine::Asset::Storage::grab(const std::string &key)
-{
-	try {
-		Engine::Asset::Asset* a = get(key);
-		if (a == nullptr) storage[key] = (a = load<T>(key));
-		a->assetCount++;
-		T* t = dynamic_cast<T*>(a);
-		if (t == nullptr) throw CastException();
-		return t;
-	} catch (Engine::Asset::Exception &fail) {
-		fail.setKey(key);
-		throw;
-	}
-}
-
-template<class T>
-T* Engine::Asset::Storage::load(const std::string &key)
-{
-	try {
-		std::ifstream stream;
-		stream.exceptions(std::ifstream::failbit|std::ifstream::badbit);
-		stream.open(key, std::ios::binary);
-		T* a = new T(this, static_cast<std::istream&>(stream));
-		a->assetKey = key;
-		a->assetCount = 0;
-		stream.close();
-		return a;
-	} catch (std::ios::failure &fail) {
-		throw Engine::Asset::IOException(fail);
-	}
-}
-
-
 
 #endif // _ENGINE_ASSET_COMMON_HPP_

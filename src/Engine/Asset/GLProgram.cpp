@@ -1,4 +1,5 @@
 #include "GLProgram.hpp"
+#include "Storage.hpp"
 #include <vector>
 #include <cctype> // std::isgraph, std::iscntrl
 #include <cstddef> // std::size_t
@@ -23,14 +24,17 @@ void compileFromStream(std::istream& stream, GL::Shader &shader)
 
 /* Engine::Asset::GLVertexShader */
 
-A::GLVertexShader::GLVertexShader(A::Storage* storage, std::istream& stream)
+A::GLVertexShader::GLVertexShader()
+{}
+
+A::GLVertexShader::~GLVertexShader()
+{}
+
+void A::GLVertexShader::load(A::Storage& storage, std::istream& stream)
 {
 	(void) storage;
 	compileFromStream(stream, shader);
 }
-
-A::GLVertexShader::~GLVertexShader()
-{}
 
 const GL::VertexShader& A::GLVertexShader::get()
 {
@@ -41,14 +45,17 @@ const GL::VertexShader& A::GLVertexShader::get()
 
 /* Engine::Asset::GLFragmentShader */
 
-A::GLFragmentShader::GLFragmentShader(A::Storage* storage, std::istream& stream)
+A::GLFragmentShader::GLFragmentShader()
+{}
+
+A::GLFragmentShader::~GLFragmentShader()
+{}
+
+void A::GLFragmentShader::load(A::Storage& storage, std::istream& stream)
 {
 	(void) storage;
 	compileFromStream(stream, shader);
 }
-
-A::GLFragmentShader::~GLFragmentShader()
-{}
 
 const GL::FragmentShader& A::GLFragmentShader::get()
 {
@@ -59,14 +66,17 @@ const GL::FragmentShader& A::GLFragmentShader::get()
 
 /* Engine::Asset::GLGeometryShader */
 
-A::GLGeometryShader::GLGeometryShader(A::Storage* storage, std::istream& stream)
+A::GLGeometryShader::GLGeometryShader()
+{}
+
+A::GLGeometryShader::~GLGeometryShader()
+{}
+
+void A::GLGeometryShader::load(A::Storage& storage, std::istream& stream)
 {
 	(void) storage;
 	compileFromStream(stream, shader);
 }
-
-A::GLGeometryShader::~GLGeometryShader()
-{}
 
 const GL::GeometryShader& A::GLGeometryShader::get()
 {
@@ -77,17 +87,19 @@ const GL::GeometryShader& A::GLGeometryShader::get()
 
 /* Engine::Asset::GLProgram */
 
-A::GLProgram::GLProgram(Storage* storage, std::istream& stream)
+A::GLProgram::GLProgram()
+{}
+
+A::GLProgram::~GLProgram()
+{}
+
+void A::GLProgram::load(Storage& storage, std::istream& stream)
 {
 	stream.seekg(0, std::ios_base::end);
 	std::streamsize size = stream.tellg();
 	stream.seekg(0, std::ios_base::beg);
 	std::vector<char> contents(static_cast<std::size_t>(size));
 	stream.read(&contents[0], size);
-	
-	std::vector<A::GLVertexShader*>   vShaders;
-	std::vector<A::GLFragmentShader*> fShaders;
-	std::vector<A::GLGeometryShader*> gShaders;
 	
 	char* s = static_cast<char*>(&contents[0]);
 	std::size_t pos = 0;
@@ -102,14 +114,14 @@ A::GLProgram::GLProgram(Storage* storage, std::istream& stream)
 		char type = s[pos];
 		pos++;
 		if (pos >= length) {
-			throw A::FormatException("Unexpected EOF.");
+			throw A::LoadException("Unexpected EOF.");
 		} else if (std::isgraph(s[pos])) {
-			throw A::FormatException("Shader type must be a single character.");
+			throw A::LoadException("Shader type must be a single character.");
 		}
 		
 		/* Skip space and non-printable characters */
 		while (pos < length && !std::isgraph(s[pos])) pos++;
-		if (pos >= length) throw A::FormatException("Unexpected EOF.");
+		if (pos >= length) throw A::LoadException("Unexpected EOF.");
 		
 		/* Read key */
 		std::size_t start = pos;
@@ -117,40 +129,27 @@ A::GLProgram::GLProgram(Storage* storage, std::istream& stream)
 		s[pos] = '\0';
 		const char* key = static_cast<const char*>(&s[start]);
 		
-		switch (type) {
-		case 'v':
-			vShaders.push_back(storage->grab<A::GLVertexShader>(key));
-			break;
-		case 'f':
-			fShaders.push_back(storage->grab<A::GLFragmentShader>(key));
-			break;
-		case 'g':
-			gShaders.push_back(storage->grab<A::GLGeometryShader>(key));
-			break;
-		default:
-			throw A::FormatException("Invalid shader type '" + std::string(1, type) + "'.");
+		/* Attach shader */
+		if (type == 'v') {
+			A::GLVertexShader* s = storage.grab<A::GLVertexShader>(key);
+			program.attach(s->get());
+			storage.release(s);
+		} else if (type == 'f') {
+			A::GLFragmentShader* s = storage.grab<A::GLFragmentShader>(key);
+			program.attach(s->get());
+			storage.release(s);
+		} else if (type == 'g') {
+			A::GLGeometryShader* s = storage.grab<A::GLGeometryShader>(key);
+			program.attach(s->get());
+			storage.release(s);
+		} else {
+			throw A::LoadException("Invalid shader type '" + std::string(1, type) + "'.");
 		}
 		
 	}
 	
-	for (std::vector<A::GLVertexShader*>::iterator it = vShaders.begin(); it != vShaders.end(); ++it) {
-		program.attach((*it)->get());
-		storage->release(*it);
-	}
-	for (std::vector<A::GLFragmentShader*>::iterator it = fShaders.begin(); it != fShaders.end(); ++it) {
-		program.attach((*it)->get());
-		storage->release(*it);
-	}
-	for (std::vector<A::GLGeometryShader*>::iterator it = gShaders.begin(); it != gShaders.end(); ++it) {
-		program.attach((*it)->get());
-		storage->release(*it);
-	}
-	
 	program.link();
 }
-
-A::GLProgram::~GLProgram()
-{}
 
 const GL::Program& A::GLProgram::get()
 {

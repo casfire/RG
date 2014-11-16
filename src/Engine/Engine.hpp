@@ -9,6 +9,7 @@
 #include "GL/Texture.hpp"
 
 #include "Asset/Common.hpp"
+#include "Asset/Storage.hpp"
 #include "Asset/GLProgram.hpp"
 
 #endif // _ENGINE_HPP_

@@ -4,50 +4,6 @@ namespace A = Engine::Asset;
 
 
 
-/* Engine::Asset::Storage */
-
-typedef std::map<std::string, A::Asset*>::iterator AssetMapIterator;
-
-A::Storage::Storage()
-{}
-
-A::Storage::~Storage()
-{
-	clear();
-}
-
-void A::Storage::clear()
-{
-	AssetMapIterator end = storage.end();
-	for (AssetMapIterator it = storage.begin(); it != end; ++it) {
-		delete it->second;
-	}
-	storage.clear();
-}
-
-void A::Storage::release(A::Asset* asset)
-{
-	if (--(asset->assetCount) <= 0) {
-		AssetMapIterator it = storage.find(asset->assetKey);
-		if (it != storage.end()) {
-			storage.erase(it);
-			delete asset;
-		}
-	}
-}
-
-A::Asset* A::Storage::get(const std::string &key)
-{
-	AssetMapIterator it = storage.find(key);
-	if (it != storage.end()) {
-		return it->second;
-	} else {
-		return nullptr;
-	}
-}
-
-
-
 /* Engine::Asset::Asset */
 
 A::Asset::Asset()
@@ -56,42 +12,23 @@ A::Asset::Asset()
 A::Asset::~Asset()
 {}
 
-const std::string& A::Asset::getAssetKey() const
-{
-	return assetKey;
-}
-
-std::size_t A::Asset::getAssetCount() const
-{
-	return assetCount;
-}
-
 
 
 /* Engine::Asset::Exception */
 
 A::Exception::Exception(const std::string &info)
-: exceptionWhat(info)
+: info(info)
 {}
 
 const char* A::Exception::what() const throw()
 {
-	return exceptionWhat.c_str();
+	return info.c_str();
 }
 
-const std::string& A::Exception::key() const
+void A::Exception::pushKey(const std::string &key)
 {
-	return exceptionKey;
-}
-
-void A::Exception::setKey(const std::string &key)
-{
-	exceptionKey = key;
-	if (exceptionWhat.size() > 0) {
-		exceptionWhat = key + ": " + exceptionWhat;
-	} else {
-		exceptionWhat = key;
-	}
+	keys.push_back(key);
+	info = info + "\nFrom asset '" + key + "'";
 }
 
 
@@ -106,13 +43,14 @@ A::IOException::IOException(const std::ios::failure &fail)
 
 /* Engine::Asset::CastException */
 
-A::CastException::CastException()
-: Exception("")
+A::CastException::CastException(const char *from, const char *to)
+: Exception(std::string(from) + " to " + std::string(to) + ".")
 {}
 
 
 
-/* Engine::Asset::FormatException */
-A::FormatException::FormatException(const std::string &info)
+/* Engine::Asset::LoadException */
+
+A::LoadException::LoadException(const std::string &info)
 : Exception(info)
 {}

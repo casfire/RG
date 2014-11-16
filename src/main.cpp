@@ -11,7 +11,6 @@ int main() {
 	/* Create window and OpenGL context */
 	sf::Window window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default);
 	window.setFramerateLimit(60);
-	window.setVerticalSyncEnabled(true);
 	
 	/* Load OpenGL functions */
 	if (ogl_LoadFunctions() == ogl_LOAD_FAILED) {
@@ -25,7 +24,7 @@ int main() {
 	
 	/* Initialization */
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	A::GLProgram* program = storage.grab<A::GLProgram>("assets/program.txt");	
+	A::GLProgram* program = storage.grab<A::GLProgram>("assets/program.txt");
 	
 	/* Main loop */
 	bool running = true;
