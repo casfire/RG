@@ -2,10 +2,17 @@ TARGET=hello
 CFLAGS=-Wall -Wextra -std=c++11 -DSFML_STATIC
 LFLAGS=-static -static-libgcc -static-libstdc++ -lsfml-graphics-s -lsfml-window-s -lsfml-system-s
 
+FILES_ENGINE_OBJ=Objects.cpp Reader.cpp NullReader.cpp
 FILES_ENGINE_GL=gl_core_3_3.c Common.cpp Shader.cpp Program.cpp Buffer.cpp Texture.cpp
 FILES_ENGINE_ASSET=Common.cpp GLProgram.cpp
 FILES_MAIN=main.cpp
-FILES=$(FILES_MAIN) $(patsubst %,Engine/GL/%,$(FILES_ENGINE_GL)) $(patsubst %,Engine/Asset/%,$(FILES_ENGINE_ASSET))
+
+_FILES_ENGINE_OBJ=$(patsubst %,Engine/Obj/%,$(FILES_ENGINE_OBJ))
+_FILES_ENGINE_GL=$(patsubst %,Engine/GL/%,$(FILES_ENGINE_GL))
+_FILES_ENGINE_ASSET=$(patsubst %,Engine/Asset/%,$(FILES_ENGINE_ASSET))
+_FILES_ENGINE=$(_FILES_ENGINE_GL) $(_FILES_ENGINE_ASSET) $(_FILES_ENGINE_OBJ)
+
+FILES=$(FILES_MAIN) $(_FILES_ENGINE)
 
 OBJS=$(patsubst %,build/%.o,$(basename $(FILES)))
 .PHONY: all clean
