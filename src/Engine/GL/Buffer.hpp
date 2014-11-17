@@ -35,6 +35,9 @@ namespace Engine { namespace GL {
 		/* Set buffer data */
 		void data(GLsizeiptr size, const GLvoid *data);
 		
+		/* Update buffer data */
+		void subData(GLintptr offset, GLsizeiptr size, const GLvoid *data);
+		
 		/* Bind this buffer */
 		void bind() const;
 		
@@ -164,6 +167,21 @@ namespace Engine { namespace GL {
 		
 		/* Disable vertex attribute */
 		void disableVertexAttribute(GLuint index);
+		
+	};
+	
+	
+	
+	/* Uniform buffer object */
+	class UniformBuffer : public Buffer {
+	public:
+		
+		/* Create a new uniform buffer */
+		UniformBuffer(GLenum usage = GL_STREAM_DRAW);
+		
+		/* Create a new uniform buffer and set buffer data */
+		UniformBuffer(GLsizeiptr size, const GLvoid *data,
+			GLenum usage = GL_STREAM_DRAW);
 		
 	};
 	

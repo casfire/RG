@@ -35,6 +35,13 @@ void GL::Buffer::data(GLsizeiptr size, const GLvoid *data)
 	unbind();
 }
 
+void GL::Buffer::subData(GLintptr offset, GLsizeiptr size, const GLvoid *data)
+{
+	bind();
+	glBufferSubData(target, offset, size, data);
+	unbind();
+}
+
 void GL::Buffer::bind() const
 {
 	glBindBuffer(target, objectID);
@@ -240,3 +247,15 @@ void GL::ArrayBuffer::disableVertexAttribute(GLuint index)
 	glDisableVertexAttribArray(index);
 	unbind();
 }
+
+
+
+/* Engine::GL::UniformBuffer */
+
+GL::UniformBuffer::UniformBuffer(GLenum usage)
+: Buffer(GL_UNIFORM_BUFFER, usage)
+{}
+
+GL::UniformBuffer::UniformBuffer(GLsizeiptr size, const GLvoid *data, GLenum usage)
+: Buffer(GL_ARRAY_BUFFER, usage, size, data)
+{}
