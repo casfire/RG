@@ -2,7 +2,7 @@ TARGET=hello
 CFLAGS=-Wall -Wextra -std=c++11 -DSFML_STATIC
 LFLAGS=-static -static-libgcc -static-libstdc++ -lsfml-graphics-s -lsfml-window-s -lsfml-system-s
 
-FILES_ENGINE_OBJ=Objects.cpp Reader.cpp NullReader.cpp
+FILES_ENGINE_OBJ=Objects.cpp Reader.cpp NullReader.cpp TriangleReader.cpp
 FILES_ENGINE_GL=gl_core_3_3.c Common.cpp Shader.cpp Program.cpp Buffer.cpp Texture.cpp
 FILES_ENGINE_ASSET=Common.cpp Storage.cpp GLProgram.cpp
 FILES_MAIN=main.cpp

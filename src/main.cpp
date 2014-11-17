@@ -1,5 +1,5 @@
 #include "Engine/Engine.hpp"
-#include "Engine/Obj/NullReader.hpp"
+#include "Engine/Obj/TriangleReader.hpp"
 #include <SFML/Window.hpp>
 #include <iostream>
 
@@ -17,13 +17,11 @@ namespace GL = Engine::GL;
 namespace A = Engine::Asset;
 namespace Obj = Engine::Obj;
 
-class Mesh : public Obj::NullReader {
+class Mesh {
 protected:
 	
 	GL::VAO vao;
 	std::uint32_t triangleCount, vertexCount;
-	std::vector<Obj::Vertex::Geometry> objVertices;
-	std::vector<Obj::Vertex::Normal> objNormals;
 	std::vector<float> vertexBuffer;
 	std::vector<std::uint32_t> elementBuffer;
 	
@@ -40,43 +38,11 @@ protected:
 		return vertexCount++;
 	}
 	
-	std::uint32_t addVertex(Obj::Element::FaceVertex f) {
-		Obj::Vertex::Geometry position = objVertices[f.v - 1];
-		Obj::Vertex::Normal normal = objNormals[f.vn - 1];
-		return addVertex(
-			glm::vec3(position.x, position.y, position.z),
-			glm::vec3(normal.i, normal.j, normal.k),
-			glm::vec3(0.5, 0.8, 0.3)
-		);
-	}
-	
 	void addTriangle(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
 		elementBuffer.push_back(a);
 		elementBuffer.push_back(b);
 		elementBuffer.push_back(c);
 		triangleCount++;
-	}
-	
-	void addFace(Obj::Element::FaceVertex a, Obj::Element::FaceVertex b, Obj::Element::FaceVertex c) {
-		if (a.hasNormal && b.hasNormal && c.hasNormal) {
-			addTriangle(addVertex(a), addVertex(c), addVertex(b));
-		} else {
-			std::cout << "Mesh: A triangle doesn't have all normals.\n";
-		}
-	}
-	
-	void parse(Obj::Vertex::Geometry &v) override {
-		objVertices.push_back(v);
-	}
-	
-	void parse(Obj::Vertex::Normal &v) override {
-		objNormals.push_back(v);
-	}
-	
-	void parse(Obj::Element::Face &e) override {
-		for (std::size_t i = 2; i < e.size(); i++) {
-			addFace(e[0], e[i - 1], e[i]);
-		}
 	}
 	
 public:
@@ -86,7 +52,28 @@ public:
 		triangleCount = 0;
 	}
 	
-	void create() {
+	void create(const std::string& objfile) {
+		
+		Obj::TriangleReader obj;
+		obj.read(objfile, std::cout);
+		for (std::size_t i = 0; i < obj.vertices().size(); i++) {
+			Obj::Vertex::Geometry position = obj.vertices()[i].geometry;
+			Obj::Vertex::Normal normal = obj.vertices()[i].normal;
+			addVertex(
+				glm::vec3(position.x, position.y, position.z),
+				glm::vec3(normal.i, normal.j, normal.k),
+				glm::vec3(0.5, 0.8, 0.3)
+			);
+		}
+		for (std::size_t i = 0; i < obj.triangles().size(); i++) {
+			addTriangle(
+				obj.triangles()[i].a,
+				obj.triangles()[i].c,
+				obj.triangles()[i].b
+			);
+		}
+		obj.clear();
+		
 		GL::ArrayBuffer vertexBufferGL;
 		GL::ElementBuffer32 elementBufferGL;
 		vertexBufferGL.data(sizeof(float) * vertexBuffer.size(), &vertexBuffer[0]);
@@ -152,8 +139,7 @@ int main() {
 	
 	/* Load mesh */
 	Mesh mesh;
-	mesh.read("assets/monkey.obj", std::cout);
-	mesh.create();
+	mesh.create("assets/monkey.obj");
 	
 	/* Initialize OpenGL parameters */
 	initOpenGL();
