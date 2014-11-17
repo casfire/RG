@@ -88,7 +88,7 @@ bool GL::Program::isAttached(const Shader &shader) const
 	return false;
 }
 
-GL::ProgramUniform GL::Program::getUniform(const GLchar *name)
+GL::ProgramUniform GL::Program::getUniform(const GLchar *name) const
 {
 	return GL::ProgramUniform(*this, name);
 }
