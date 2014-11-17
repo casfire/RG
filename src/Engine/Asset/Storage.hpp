@@ -40,6 +40,7 @@ namespace Engine { namespace Asset {
 		std::stack<std::string> basename;
 		void pushKey(const std::string &key);
 		void popKey();
+		std::string getKey(const std::string &key) const;
 		
 		/* Retrieve already loaded asset or nullptr */
 		Asset* get(const std::string &key);
@@ -79,15 +80,15 @@ T* Engine::Asset::Storage::grab(const std::string &key)
 template<class T>
 T* Engine::Asset::Storage::load(const std::string &key)
 {
-	std::string filename = basename.top() + key;
+	std::string filename = getKey(key);
 	try {
 		std::ifstream stream;
 		stream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		stream.open(filename, std::ios::binary);
 		T* a = new T();
-		a->key = key;
+		a->key = filename;
 		a->grabCount = 0;
-		pushKey(key);
+		pushKey(filename);
 		a->load(*this, static_cast<std::istream&>(stream));
 		popKey();
 		stream.close();

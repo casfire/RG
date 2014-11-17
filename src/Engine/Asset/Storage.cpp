@@ -49,6 +49,15 @@ void A::Storage::popKey()
 	basename.pop();
 }
 
+std::string A::Storage::getKey(const std::string &key) const
+{
+	if (!key.empty() && (key[0] == '/')) {
+		return key.substr(1);
+	} else {
+		return basename.top() + key;
+	}
+}
+
 A::Asset* A::Storage::get(const std::string &key)
 {
 	AssetMapIterator it = storage.find(key);
