@@ -131,16 +131,16 @@ void A::GLProgram::load(Storage& storage, std::istream& stream)
 		
 		/* Attach shader */
 		if (type == 'v') {
-			A::GLVertexShader* s = storage.grab<A::GLVertexShader>(key);
-			program.attach(s->get());
+			A::GLVertexShader& s = storage.grab<A::GLVertexShader>(key);
+			program.attach(s.get());
 			storage.release(s);
 		} else if (type == 'f') {
-			A::GLFragmentShader* s = storage.grab<A::GLFragmentShader>(key);
-			program.attach(s->get());
+			A::GLFragmentShader& s = storage.grab<A::GLFragmentShader>(key);
+			program.attach(s.get());
 			storage.release(s);
 		} else if (type == 'g') {
-			A::GLGeometryShader* s = storage.grab<A::GLGeometryShader>(key);
-			program.attach(s->get());
+			A::GLGeometryShader& s = storage.grab<A::GLGeometryShader>(key);
+			program.attach(s.get());
 			storage.release(s);
 		} else {
 			throw A::LoadException("Invalid shader type '" + std::string(1, type) + "'.");

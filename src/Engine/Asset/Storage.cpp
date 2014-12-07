@@ -23,13 +23,13 @@ void A::Storage::clear()
 	storage.clear();
 }
 
-void A::Storage::release(A::Asset* asset)
+void A::Storage::release(A::Asset& asset)
 {
-	if (--(asset->grabCount) <= 0) {
-		AssetMapIterator it = storage.find(asset->key);
+	if (--(asset.grabCount) <= 0) {
+		AssetMapIterator it = storage.find(asset.key);
 		if (it != storage.end()) {
 			storage.erase(it);
-			delete asset;
+			delete &asset;
 		}
 	}
 }

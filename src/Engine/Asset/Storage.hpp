@@ -26,10 +26,10 @@ namespace Engine { namespace Asset {
 		
 		/* Grab asset - throws Exception */
 		template<class T>
-		T* grab(const std::string &key);
+		T& grab(const std::string &key);
 		
 		/* Release asset */
-		void release(Asset* asset);
+		void release(Asset& asset);
 		
 	private:
 		
@@ -60,7 +60,7 @@ namespace Engine { namespace Asset {
 }} // namespace Engine::Asset
 
 template<class T>
-T* Engine::Asset::Storage::grab(const std::string &key)
+T& Engine::Asset::Storage::grab(const std::string &key)
 {
 	try {
 		Engine::Asset::Asset* a = get(key);
@@ -70,7 +70,7 @@ T* Engine::Asset::Storage::grab(const std::string &key)
 		if (t == nullptr) {
 			throw CastException(typeid(*a).name(), typeid(T).name());
 		}
-		return t;
+		return *t;
 	} catch (Engine::Asset::Exception &fail) {
 		fail.pushKey(key);
 		throw;

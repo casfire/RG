@@ -15,7 +15,7 @@ void main() {
 	
 	vec3 position_cameraspace = (uViewMat * uModelMat * vec4(position, 1)).xyz;
 	vec3 normal_cameraspace = (uViewMat * uModelMat * vec4(normal, 0)).xyz;
-	gl_Position =  uProjMat * uViewMat * uModelMat * vec4(position, 1.0f);
+	gl_Position = uProjMat * uViewMat * uModelMat * vec4(position, 1.0f);
 	
 	fColor = color;
 	fNormal = normal_cameraspace;
