@@ -5,7 +5,12 @@
 #include "Common.hpp"
 #include "Shader.hpp"
 #include <vector>
-#include <glm/glm.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/mat3x3.hpp>
+#include <glm/mat2x2.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 namespace Engine { namespace GL {
 	
@@ -100,6 +105,10 @@ namespace Engine { namespace GL {
 		void set(const glm::mat2 &mat);
 		void set(const glm::mat3 &mat);
 		void set(const glm::mat4 &mat);
+		
+		void set(const glm::vec2 &vec);
+		void set(const glm::vec3 &vec);
+		void set(const glm::vec4 &vec);
 		
 	private:
 		

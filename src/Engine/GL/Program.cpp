@@ -216,6 +216,21 @@ void GL::ProgramUniform::set(const glm::mat4 &mat)
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
+void GL::ProgramUniform::set(const glm::vec2 &vec)
+{
+	glUniform2f(location, vec.x, vec.y);
+}
+
+void GL::ProgramUniform::set(const glm::vec3 &vec)
+{
+	glUniform3f(location, vec.x, vec.y, vec.z);
+}
+
+void GL::ProgramUniform::set(const glm::vec4 &vec)
+{
+	glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
+}
+
 
 
 /* Engine::GL::ProgramLinkException */
