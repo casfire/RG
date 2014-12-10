@@ -150,6 +150,7 @@ void A::GLProgram::load(Storage& storage, std::istream& stream)
 		}
 		
 	}
+	
 	program.link();
 }
 

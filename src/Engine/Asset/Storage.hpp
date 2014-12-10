@@ -6,7 +6,6 @@
 #include <string>
 #include <map>
 #include <stack>
-#include <fstream>
 #include <typeinfo> // typeid
 
 namespace Engine { namespace Asset {
@@ -45,8 +44,7 @@ namespace Engine { namespace Asset {
 		Asset* get(const std::string &file);
 		
 		/* Load and create asset - throws Asset::Exception */
-		template<class T>
-		T* load(const std::string &file);
+		Asset* load(const std::string &file, Asset *obj);
 		
 		/* Prevent copying */
 		Storage(const Storage&) = delete;
@@ -64,7 +62,7 @@ T& Engine::Asset::Storage::grab(const std::string &key)
 	std::string file = pushPath(key);
 	try {
 		Engine::Asset::Asset* a = get(file);
-		if (a == nullptr) storage[file] = (a = load<T>(file));
+		if (a == nullptr) storage[file] = (a = load(file, new T));
 		a->grabCount++;
 		T* t = dynamic_cast<T*>(a);
 		if (t == nullptr) {
@@ -76,24 +74,6 @@ T& Engine::Asset::Storage::grab(const std::string &key)
 		fail.pushFile(file);
 		popPath();
 		throw;
-	}
-}
-
-template<class T>
-T* Engine::Asset::Storage::load(const std::string &file)
-{
-	try {
-		std::ifstream stream;
-		stream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-		stream.open(file, std::ios::binary);
-		T* a = new T();
-		a->file = file;
-		a->grabCount = 0;
-		a->load(*this, static_cast<std::istream&>(stream));
-		stream.close();
-		return a;
-	} catch (std::ios::failure &fail) {
-		throw Engine::Asset::IOException(fail);
 	}
 }
 

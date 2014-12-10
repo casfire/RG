@@ -1,4 +1,5 @@
 #include "Storage.hpp"
+#include <fstream>
 
 namespace A = Engine::Asset;
 typedef std::map<std::string, A::Asset*>::iterator AssetMapIterator;
@@ -35,8 +36,11 @@ void A::Storage::release(A::Asset& asset)
 
 std::string A::Storage::pushPath(const std::string &key)
 {
-	if (key.empty()) throw A::LoadException("Asset key was empty.");
 	const std::string& base = path.top();
+	if (key.empty()) {
+		path.push(base);
+		return base + key;
+	}
 	std::string file = (key[0] == '/') ? key.substr(1) : (base + key);
 	std::string::size_type r = file.rfind('/');
 	path.push(r == std::string::npos ? base : file.substr(0, r + 1));
@@ -55,5 +59,21 @@ A::Asset* A::Storage::get(const std::string &key)
 		return it->second;
 	} else {
 		return nullptr;
+	}
+}
+
+A::Asset* A::Storage::load(const std::string &file, Asset *obj)
+{
+	try {
+		std::ifstream stream;
+		stream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+		stream.open(file, std::ios::binary);
+		obj->file = file;
+		obj->grabCount = 0;
+		obj->load(*this, static_cast<std::istream&>(stream));
+		stream.close();
+		return obj;
+	} catch (std::ios::failure &fail) {
+		throw Engine::Asset::IOException(fail);
 	}
 }
