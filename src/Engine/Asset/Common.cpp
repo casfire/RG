@@ -26,10 +26,9 @@ const char* A::Exception::what() const throw()
 	return info.c_str();
 }
 
-void A::Exception::pushKey(const std::string &key)
+void A::Exception::pushFile(const std::string &file)
 {
-	keys.push_back(key);
-	info = info + "\nFrom asset '" + key + "'";
+	info = info + "\nFrom asset '" + file + "'";
 }
 
 

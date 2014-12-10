@@ -98,8 +98,9 @@ void A::GLProgram::load(Storage& storage, std::istream& stream)
 	stream.seekg(0, std::ios_base::end);
 	std::streamsize size = stream.tellg();
 	stream.seekg(0, std::ios_base::beg);
-	std::vector<char> contents(static_cast<std::size_t>(size));
+	std::vector<char> contents(static_cast<std::size_t>(size + 1));
 	stream.read(&contents[0], size);
+	contents[size] = '\0';
 	
 	char* s = static_cast<char*>(&contents[0]);
 	std::size_t pos = 0;
@@ -114,14 +115,16 @@ void A::GLProgram::load(Storage& storage, std::istream& stream)
 		char type = s[pos];
 		pos++;
 		if (pos >= length) {
-			throw A::LoadException("Unexpected EOF.");
+			throw A::LoadException("Unexpected EOF after '" + std::string(1, type) + "'.");
 		} else if (std::isgraph(s[pos])) {
 			throw A::LoadException("Shader type must be a single character.");
 		}
 		
 		/* Skip space and non-printable characters */
 		while (pos < length && !std::isgraph(s[pos])) pos++;
-		if (pos >= length) throw A::LoadException("Unexpected EOF.");
+		if (pos >= length) {
+			throw A::LoadException("Unexpected EOF after '" + std::string(1, type) + "'.");
+		}
 		
 		/* Read key */
 		std::size_t start = pos;
@@ -147,7 +150,6 @@ void A::GLProgram::load(Storage& storage, std::istream& stream)
 		}
 		
 	}
-	
 	program.link();
 }
 

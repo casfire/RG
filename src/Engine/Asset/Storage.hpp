@@ -24,7 +24,7 @@ namespace Engine { namespace Asset {
 		~Storage();
 		void clear();
 		
-		/* Grab asset - throws Exception */
+		/* Grab asset - throws Asset::Exception */
 		template<class T>
 		T& grab(const std::string &key);
 		
@@ -36,18 +36,17 @@ namespace Engine { namespace Asset {
 		/* Storage */
 		std::map<std::string, Asset*> storage;
 		
-		/* Basename stack */
-		std::stack<std::string> basename;
-		void pushKey(const std::string &key);
-		void popKey();
-		std::string getKey(const std::string &key) const;
+		/* Path stack */
+		std::stack<std::string> path;
+		std::string pushPath(const std::string &key);
+		void popPath();
 		
 		/* Retrieve already loaded asset or nullptr */
-		Asset* get(const std::string &key);
+		Asset* get(const std::string &file);
 		
-		/* Load and create asset - throws Exception */
+		/* Load and create asset - throws Asset::Exception */
 		template<class T>
-		T* load(const std::string &key);
+		T* load(const std::string &file);
 		
 		/* Prevent copying */
 		Storage(const Storage&) = delete;
@@ -62,35 +61,35 @@ namespace Engine { namespace Asset {
 template<class T>
 T& Engine::Asset::Storage::grab(const std::string &key)
 {
+	std::string file = pushPath(key);
 	try {
-		Engine::Asset::Asset* a = get(key);
-		if (a == nullptr) storage[key] = (a = load<T>(key));
+		Engine::Asset::Asset* a = get(file);
+		if (a == nullptr) storage[file] = (a = load<T>(file));
 		a->grabCount++;
 		T* t = dynamic_cast<T*>(a);
 		if (t == nullptr) {
 			throw CastException(typeid(*a).name(), typeid(T).name());
 		}
+		popPath();
 		return *t;
 	} catch (Engine::Asset::Exception &fail) {
-		fail.pushKey(key);
+		fail.pushFile(file);
+		popPath();
 		throw;
 	}
 }
 
 template<class T>
-T* Engine::Asset::Storage::load(const std::string &key)
+T* Engine::Asset::Storage::load(const std::string &file)
 {
-	std::string filename = getKey(key);
 	try {
 		std::ifstream stream;
 		stream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-		stream.open(filename, std::ios::binary);
+		stream.open(file, std::ios::binary);
 		T* a = new T();
-		a->key = filename;
+		a->file = file;
 		a->grabCount = 0;
-		pushKey(filename);
 		a->load(*this, static_cast<std::istream&>(stream));
-		popKey();
 		stream.close();
 		return a;
 	} catch (std::ios::failure &fail) {

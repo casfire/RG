@@ -1,12 +1,11 @@
 #include "Storage.hpp"
 
 namespace A = Engine::Asset;
-
 typedef std::map<std::string, A::Asset*>::iterator AssetMapIterator;
 
 A::Storage::Storage()
 {
-	basename.push("");
+	path.push("");
 }
 
 A::Storage::~Storage()
@@ -26,36 +25,27 @@ void A::Storage::clear()
 void A::Storage::release(A::Asset& asset)
 {
 	if (--(asset.grabCount) <= 0) {
-		AssetMapIterator it = storage.find(asset.key);
+		AssetMapIterator it = storage.find(asset.file);
 		if (it != storage.end()) {
+			delete it->second;
 			storage.erase(it);
-			delete &asset;
 		}
 	}
 }
 
-void A::Storage::pushKey(const std::string &key)
+std::string A::Storage::pushPath(const std::string &key)
 {
-	std::string::size_type r = key.rfind('/');
-	if (r == std::string::npos) {
-		basename.push(basename.top() + "");
-	} else {
-		basename.push(key.substr(0, r + 1));
-	}
+	if (key.empty()) throw A::LoadException("Asset key was empty.");
+	const std::string& base = path.top();
+	std::string file = (key[0] == '/') ? key.substr(1) : (base + key);
+	std::string::size_type r = file.rfind('/');
+	path.push(r == std::string::npos ? base : file.substr(0, r + 1));
+	return file;
 }
 
-void A::Storage::popKey()
+void A::Storage::popPath()
 {
-	basename.pop();
-}
-
-std::string A::Storage::getKey(const std::string &key) const
-{
-	if (!key.empty() && (key[0] == '/')) {
-		return key.substr(1);
-	} else {
-		return basename.top() + key;
-	}
+	path.pop();
 }
 
 A::Asset* A::Storage::get(const std::string &key)

@@ -4,7 +4,6 @@
 
 #include <string>
 #include <exception>
-#include <vector>
 #include <ios> // std::ios::failure
 #include <cstddef> // std::size_t
 
@@ -36,13 +35,13 @@ namespace Engine { namespace Asset {
 		
 	private:
 		
-		/* Asset key set by Storage */
-		std::string key;
+		/* File set by Storage */
+		std::string file;
 		
 		/* Grab count set by Storage */
 		std::size_t grabCount;
 		
-		/* Storage must have access to grab count and asset key */
+		/* Storage must have access to grab count and file */
 		friend class Storage;
 		
 		/* Prevent copying */
@@ -70,11 +69,8 @@ namespace Engine { namespace Asset {
 		/* Saved exception information */
 		std::string info;
 		
-		/* Asset keys */
-		std::vector<std::string> keys;
-		void pushKey(const std::string &key);
-		
-		/* Storage must be able to push keys */
+		/* Called by Storage when unwinding the file stack */
+		void pushFile(const std::string &file);
 		friend class Storage;
 		
 	};
