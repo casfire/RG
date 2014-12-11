@@ -10,14 +10,6 @@ namespace Obj = Engine::Obj;
 
 #include "mesh.hpp"
 
-#define GLM_FORCE_RADIANS
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
-
-#define M_PI    3.14159265358979323846
-#define M_PI_2  1.57079632679489661923
-#define M_2_PI  (M_PI * 2)
-
 void initOpenGL();
 
 int main() {
@@ -44,9 +36,10 @@ int main() {
 	GL::ProgramUniform uProjMat = program.getUniform("uProjMat");
 	
 	/* Set up camera */
-	E::Transformation viewMatrix;
+	E::Camera camera;
+	camera.setAspect(window.getSize().x, window.getSize().y);
 	program.bind();
-	uProjMat.set(glm::perspective((float) M_PI_2, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f));
+	uProjMat.set(camera.getProjectionMatrix());
 	uViewMat.set(glm::mat4(1));
 	program.unbind();
 	
@@ -54,8 +47,8 @@ int main() {
 	Mesh mesh;
 	mesh.create("assets/monkey.obj");
 	E::Transformation modelMatrix;
-	modelMatrix.setPosition(glm::vec3(0, 0, -7));
 	modelMatrix.setScale(glm::vec3(4, 4, 4));
+	modelMatrix.setPosition(glm::vec3(0, 0, -7));
 	
 	/* Initialize OpenGL parameters */
 	initOpenGL();
@@ -79,7 +72,8 @@ int main() {
 			case sf::Event::Resized:
 				glViewport(0, 0, event.size.width, event.size.height);
 				program.bind();
-				uProjMat.set(glm::perspective((float) M_PI_2, window.getSize().x / (float) window.getSize().y, 0.1f, 100.0f));
+				camera.setAspect(window.getSize().x, window.getSize().y);
+				uProjMat.set(camera.getProjectionMatrix());
 				program.unbind();
 				break;
 			case sf::Event::KeyReleased:
@@ -108,19 +102,19 @@ int main() {
 			if (mousePos != windowMid) {
 				float moveX = cameraRotateSpeed * (mousePos.x - windowMid.x);
 				float moveY = cameraRotateSpeed * (mousePos.y - windowMid.y);
-				viewMatrix.rotateRelative(glm::quat(glm::vec3(0.f, moveX, 0.f)));
-				viewMatrix.rotate(glm::quat(glm::vec3(moveY, 0, 0)));
+				camera.yaw(-moveX);
+				camera.pitchLocal(-moveY);
 				sf::Mouse::setPosition(windowMid, window);
 			}
 			
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) viewMatrix.translateRelativeInverse(glm::vec3(0, 0, cameraMoveSpeed));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) viewMatrix.translateRelativeInverse(glm::vec3(0, 0, -cameraMoveSpeed));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) viewMatrix.translateRelativeInverse(glm::vec3(cameraMoveSpeed, 0, 0));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) viewMatrix.translateRelativeInverse(glm::vec3(-cameraMoveSpeed, 0, 0));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) viewMatrix.rotate(glm::quat(glm::vec3(0, 0, cameraRollSpeed)));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) viewMatrix.rotate(glm::quat(glm::vec3(0, 0, -cameraRollSpeed)));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) viewMatrix.translate(glm::vec3(0, -cameraMoveSpeed, 0));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) viewMatrix.translate(glm::vec3(0, cameraMoveSpeed, 0));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) camera.translateLocal(glm::vec3(0, 0, -cameraMoveSpeed));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) camera.translateLocal(glm::vec3(0, 0, cameraMoveSpeed));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) camera.translateLocal(glm::vec3(-cameraMoveSpeed, 0, 0));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) camera.translateLocal(glm::vec3(cameraMoveSpeed, 0, 0));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) camera.rollLocal(cameraRollSpeed);
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) camera.rollLocal(-cameraRollSpeed);
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))  camera.translate(glm::vec3(0, cameraMoveSpeed, 0));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) camera.translate(glm::vec3(0, -cameraMoveSpeed, 0));
 		}
 		
 		/* Draw */
@@ -128,7 +122,7 @@ int main() {
 		
 		program.bind();
 		uModelMat.set(modelMatrix.getMatrix());
-		uViewMat.set(viewMatrix.getInverseMatrix());
+		uViewMat.set(camera.getViewMatrix());
 		mesh.draw();
 		program.unbind();
 		

@@ -11,11 +11,45 @@ namespace Engine {
 	
 	
 	
+	/* Base class for all transformationable objects */
 	class Transformation {
 	public:
 		
-		/* Create identity transformation */
+		/* Create transformation */
 		Transformation();
+		Transformation(const Transformation &t);
+		
+		/* Position */
+		glm::vec3 getPosition() const;
+		void resetPosition();
+		void setPosition	 (const glm::vec3 &position);
+		void setPositionLocal(const glm::vec3 &position);
+		void translate	   (const glm::vec3 &offset);
+		void translateLocal  (const glm::vec3 &offset);
+		
+		/* Rotation */
+		glm::quat getRotation() const;
+		void resetRotation();
+		void setRotation(const glm::quat &rotation);
+		void rotate	 (const glm::quat &rotation);
+		void rotate	 (const glm::vec3 &euler);
+		void rotateLocal(const glm::quat &rotation);
+		void rotateLocal(const glm::vec3 &euler);
+		void pitch(float angle);
+		void yaw  (float angle);
+		void roll (float angle);
+		void pitchLocal(float angle);
+		void yawLocal  (float angle);
+		void rollLocal (float angle);
+		float getPitch() const;
+		float getYaw()   const;
+		float getRoll()  const;
+		
+		/* Scale */
+		glm::vec3 getScale() const;
+		void resetScale();
+		void setScale(const glm::vec3 &scale);
+		void scale   (const glm::vec3 &scale);
 		
 		/* Get transformation matrix */
 		glm::mat4 getMatrix() const;
@@ -25,27 +59,7 @@ namespace Engine {
 		void setTransformation(const Transformation &t);
 		void setIdentity();
 		
-		/* Scale */
-		glm::vec3 getScale() const;
-		void setScale(const glm::vec3 &scale);
-		void scale(const glm::vec3 &scale);
-		
-		/* Position */
-		glm::vec3 getPosition() const;
-		void setPosition(const glm::vec3 &position);
-		void setPositionRelative(const glm::vec3 &position);
-		void setPositionRelativeInverse(const glm::vec3 &position);
-		void translate(const glm::vec3 &offset);
-		void translateRelative(const glm::vec3 &offset);
-		void translateRelativeInverse(const glm::vec3 &offset);
-		
-		/* Rotation */
-		glm::quat getRotation() const;
-		void setRotation(const glm::quat &rotation);
-		void rotate(const glm::quat &rotation);
-		void rotateRelative(const glm::quat &rotation);
-		
-	private:
+	protected:
 		
 		glm::vec3 position, scaling;
 		glm::quat rotation;

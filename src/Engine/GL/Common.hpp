@@ -6,6 +6,13 @@
 #include <exception>
 #include <string>
 
+#ifdef near
+	#undef near
+#endif
+#ifdef far
+	#undef far
+#endif
+
 namespace Engine { namespace GL {
 	
 	

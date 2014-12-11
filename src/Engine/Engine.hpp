@@ -13,5 +13,6 @@
 #include "Asset/GLProgram.hpp"
 
 #include "Transformation.hpp"
+#include "Camera.hpp"
 
 #endif // _ENGINE_HPP_
