@@ -6,6 +6,7 @@
 #include "GL/Shader.hpp"
 #include "GL/Program.hpp"
 #include "GL/Buffer.hpp"
+#include "GL/VAO.hpp"
 #include "GL/Texture.hpp"
 
 #include "Asset/Common.hpp"

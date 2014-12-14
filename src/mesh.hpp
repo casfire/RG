@@ -4,11 +4,10 @@ class Mesh {
 protected:
 	
 	GL::VAO vao;
-	std::uint32_t triangleCount, vertexCount;
 	std::vector<float> vertexBuffer;
 	std::vector<std::uint32_t> elementBuffer;
 	
-	std::uint32_t addVertex(glm::vec3 position, glm::vec3 normal, glm::vec3 color) {
+	void addVertex(glm::vec3 position, glm::vec3 normal, glm::vec3 color) {
 		vertexBuffer.push_back(position.x);
 		vertexBuffer.push_back(position.y);
 		vertexBuffer.push_back(position.z);
@@ -18,22 +17,15 @@ protected:
 		vertexBuffer.push_back(color.x);
 		vertexBuffer.push_back(color.y);
 		vertexBuffer.push_back(color.z);
-		return vertexCount++;
 	}
 	
 	void addTriangle(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
 		elementBuffer.push_back(a);
 		elementBuffer.push_back(b);
 		elementBuffer.push_back(c);
-		triangleCount++;
 	}
 	
 public:
-	
-	Mesh() {
-		vertexCount = 0;
-		triangleCount = 0;
-	}
 	
 	void create(const std::string& objfile) {
 		
@@ -57,23 +49,21 @@ public:
 		}
 		obj.clear();
 		
-		GL::ArrayBuffer vertexBufferGL;
-		GL::ElementBuffer32 elementBufferGL;
-		vertexBufferGL.data(sizeof(float) * vertexBuffer.size(), &vertexBuffer[0]);
-		elementBufferGL.elements(elementBuffer.size(), &elementBuffer[0]);
+		GL::ArrayBuffer vertexBufferGL(sizeof(float) * vertexBuffer.size(), &vertexBuffer[0]);
+		vao.set(GL::ElementBuffer32(elementBuffer.size(), &elementBuffer[0]));
+		vao.attribute(0, vertexBufferGL, GL_FLOAT, 3, 9 * sizeof(float), 0);
+		vao.attribute(1, vertexBufferGL, GL_FLOAT, 3, 9 * sizeof(float), 3 * sizeof(float));
+		vao.attribute(2, vertexBufferGL, GL_FLOAT, 3, 9 * sizeof(float), 6 * sizeof(float));
+		vao.enable(0);
+		vao.enable(1);
+		vao.enable(2);
 		
-		vao.bind();
-		elementBufferGL.bind();
-		vertexBufferGL.enableVertexAttribute(0, 3, GL_FLOAT, 9 * sizeof(float), 0);
-		vertexBufferGL.enableVertexAttribute(1, 3, GL_FLOAT, 9 * sizeof(float), 3 * sizeof(float));
-		vertexBufferGL.enableVertexAttribute(2, 3, GL_FLOAT, 9 * sizeof(float), 6 * sizeof(float));
-		vao.unbind();
+		vertexBuffer.clear();
+		elementBuffer.clear();
 	}
 	
 	void draw() {
-		vao.bind();
-		glDrawElements(GL_TRIANGLES, 3 * triangleCount, GL_UNSIGNED_INT, reinterpret_cast<const GLvoid*>(0));
-		vao.unbind();
+		vao.drawTriangles();
 	}
 	
 };

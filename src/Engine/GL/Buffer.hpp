@@ -4,7 +4,6 @@
 
 #include "Common.hpp"
 #include <cstdint>
-#include <cstddef>
 
 namespace Engine { namespace GL {
 	
@@ -16,6 +15,7 @@ namespace Engine { namespace GL {
 	class ElementBuffer16;
 	class ElementBuffer32;
 	class ArrayBuffer;
+	class UniformBuffer;
 	
 	
 	
@@ -47,8 +47,6 @@ namespace Engine { namespace GL {
 		/* Getters */
 		GLenum getTarget() const;
 		GLenum getUsage() const;
-		const char* getTargetName() const;
-		const char* getUsageName() const;
 		
 	private:
 		
@@ -62,32 +60,17 @@ namespace Engine { namespace GL {
 	class ElementBuffer : public Buffer {
 	public:
 		
-		/* Create element buffer */
-		ElementBuffer(GLenum type, GLenum usage);
-		
 		/* Getters */
 		GLenum getType() const;
-		const char* getTypeName() const;
-		int getTypeBits() const;
-		
-		/*  IMPORTANT!
-		   Make sure the VAO is bound with VAO::bind()
-		   before drawing anything
-		*/
-		
-		void drawPoints       (GLsizei count, GLsizei start);
-		void drawLines        (GLsizei count, GLsizei start);
-		void drawTriangles    (GLsizei count, GLsizei start);
-		void drawLineStrip    (GLsizei count, GLsizei start);
-		void drawTriangleStrip(GLsizei count, GLsizei start);
-		void draw(GLenum mode, GLsizei count, GLsizei start);
+		GLsizei getCount() const;
 		
 	protected:
 	
+		ElementBuffer(GLenum type, GLenum usage);
 		const GLenum type;
+		GLsizei count;
 		
 	};
-	
 	
 	
 	/* 8-bit Element buffer */
@@ -98,11 +81,11 @@ namespace Engine { namespace GL {
 		ElementBuffer8(GLenum usage = GL_STATIC_DRAW);
 		
 		/* Create element buffer and set elements */
-		ElementBuffer8(std::size_t count, const std::uint8_t *elements,
+		ElementBuffer8(GLsizei count, const std::uint8_t *elements,
 			GLenum usage = GL_STATIC_DRAW);
 		
 		/* Set elements */
-		void elements(std::size_t count, const std::uint8_t *elements);
+		void elements(GLsizei count, const std::uint8_t *elements);
 		
 	};
 	
@@ -116,11 +99,11 @@ namespace Engine { namespace GL {
 		ElementBuffer16(GLenum usage = GL_STATIC_DRAW);
 		
 		/* Create element buffer and set elements */
-		ElementBuffer16(std::size_t count, const std::uint16_t *elements,
+		ElementBuffer16(GLsizei count, const std::uint16_t *elements,
 			GLenum usage = GL_STATIC_DRAW);
 		
 		/* Set elements */
-		void elements(std::size_t count, const std::uint16_t *elements);
+		void elements(GLsizei count, const std::uint16_t *elements);
 		
 	};
 	
@@ -135,11 +118,11 @@ namespace Engine { namespace GL {
 		ElementBuffer32(GLenum usage = GL_STATIC_DRAW);
 		
 		/* Create element buffer and set elements */
-		ElementBuffer32(std::size_t count, const std::uint32_t *elements,
+		ElementBuffer32(GLsizei count, const std::uint32_t *elements,
 			GLenum usage = GL_STATIC_DRAW);
 		
 		/* Set elements */
-		void elements(std::size_t count, const std::uint32_t *elements);
+		void elements(GLsizei count, const std::uint32_t *elements);
 		
 	};
 	
@@ -155,18 +138,6 @@ namespace Engine { namespace GL {
 		/* Create a new array buffer and set buffer data */
 		ArrayBuffer(GLsizeiptr size, const GLvoid *data,
 			GLenum usage = GL_STATIC_DRAW);
-		
-		/*  IMPORTANT!
-		   Make sure the VAO is bound with VAO::bind()
-		   before enabling vertex attributes
-		*/
-		
-		/* Enable vertex attribute */
-		void enableVertexAttribute(GLuint index, GLint count, GLenum type,
-			GLsizei stride, GLsizei start);
-		
-		/* Disable vertex attribute */
-		void disableVertexAttribute(GLuint index);
 		
 	};
 	

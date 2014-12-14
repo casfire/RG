@@ -19,7 +19,6 @@ namespace Engine { namespace GL {
 	
 	class Object;
 	class Exception;
-	class VAO;
 	
 	
 	
@@ -61,26 +60,6 @@ namespace Engine { namespace GL {
 		
 		/* Saved information */
 		const std::string exceptionInfo;
-		
-	};
-	
-	
-	
-	/* Vertex array object */
-	class VAO : public Object {
-	public:
-		
-		/* Create a new VAO */
-		VAO();
-		
-		/* Delete VAO */
-		~VAO();
-		
-		/* Bind VAO */
-		void bind() const;
-		
-		/* Unbind VAO */
-		void unbind() const;
 		
 	};
 	

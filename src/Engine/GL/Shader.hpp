@@ -110,6 +110,7 @@ namespace Engine { namespace GL {
 	};
 	
 	
+	
 	/* Exception thrown when shader compilation fails */
 	class ShaderCompileException : public Exception {
 	public:
@@ -124,6 +125,7 @@ namespace Engine { namespace GL {
 		ShaderCompileException(const Shader &shader);
 		
 	};
+	
 	
 	
 }} // namespace Engine::GL
