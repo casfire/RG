@@ -23,10 +23,10 @@ namespace Engine { namespace Asset {
 	class GLProgram : public virtual Asset {
 	public:
 		
-		/* Create, delete, load */
-		GLProgram();
-		~GLProgram();
+		/* Load program */
 		void load(Storage& storage, std::istream& stream) override;
+		
+		/* Release all shaders */
 		void unload(Storage& storage) override;
 		
 		/* Get program */
@@ -45,9 +45,7 @@ namespace Engine { namespace Asset {
 	class GLVertexShader : public virtual Asset {
 	public:
 		
-		/* Create, delete, load */
-		GLVertexShader();
-		~GLVertexShader();
+		/* Load shader */
 		void load(Storage& storage, std::istream& stream) override;
 		
 		/* Get shader */
@@ -65,9 +63,7 @@ namespace Engine { namespace Asset {
 	class GLFragmentShader : public virtual Asset {
 	public:
 		
-		/* Create, delete, load */
-		GLFragmentShader();
-		~GLFragmentShader();
+		/* Load shader */
 		void load(Storage& storage, std::istream& stream) override;
 		
 		/* Get shader */
@@ -85,9 +81,7 @@ namespace Engine { namespace Asset {
 	class GLGeometryShader : public virtual Asset {
 	public:
 		
-		/* Create, delete, load */
-		GLGeometryShader();
-		~GLGeometryShader();
+		/* Load shader */
 		void load(Storage& storage, std::istream& stream) override;
 		
 		/* Get shader */

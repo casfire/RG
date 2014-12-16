@@ -25,12 +25,6 @@ void compileFromStream(std::istream& stream, GL::Shader &shader)
 
 /* Engine::Asset::GLVertexShader */
 
-A::GLVertexShader::GLVertexShader()
-{}
-
-A::GLVertexShader::~GLVertexShader()
-{}
-
 void A::GLVertexShader::load(A::Storage& storage, std::istream& stream)
 {
 	(void) storage;
@@ -45,12 +39,6 @@ const GL::VertexShader& A::GLVertexShader::get()
 
 
 /* Engine::Asset::GLFragmentShader */
-
-A::GLFragmentShader::GLFragmentShader()
-{}
-
-A::GLFragmentShader::~GLFragmentShader()
-{}
 
 void A::GLFragmentShader::load(A::Storage& storage, std::istream& stream)
 {
@@ -67,12 +55,6 @@ const GL::FragmentShader& A::GLFragmentShader::get()
 
 /* Engine::Asset::GLGeometryShader */
 
-A::GLGeometryShader::GLGeometryShader()
-{}
-
-A::GLGeometryShader::~GLGeometryShader()
-{}
-
 void A::GLGeometryShader::load(A::Storage& storage, std::istream& stream)
 {
 	(void) storage;
@@ -87,12 +69,6 @@ const GL::GeometryShader& A::GLGeometryShader::get()
 
 
 /* Engine::Asset::GLProgram */
-
-A::GLProgram::GLProgram()
-{}
-
-A::GLProgram::~GLProgram()
-{}
 
 void A::GLProgram::load(Storage& storage, std::istream& stream)
 {
