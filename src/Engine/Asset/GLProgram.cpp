@@ -6,6 +6,7 @@
 
 namespace A = Engine::Asset;
 namespace GL = Engine::GL;
+typedef std::vector<A::Asset*>::iterator AssetIterator;
 
 
 
@@ -136,15 +137,15 @@ void A::GLProgram::load(Storage& storage, std::istream& stream)
 		if (type == 'v') {
 			A::GLVertexShader& s = storage.grab<A::GLVertexShader>(key);
 			program.attach(s.get());
-			storage.release(s);
+			shaders.push_back(&s);
 		} else if (type == 'f') {
 			A::GLFragmentShader& s = storage.grab<A::GLFragmentShader>(key);
 			program.attach(s.get());
-			storage.release(s);
+			shaders.push_back(&s);
 		} else if (type == 'g') {
 			A::GLGeometryShader& s = storage.grab<A::GLGeometryShader>(key);
 			program.attach(s.get());
-			storage.release(s);
+			shaders.push_back(&s);
 		} else {
 			throw A::LoadException("Invalid shader type '" + std::string(1, type) + "'.");
 		}
@@ -152,6 +153,15 @@ void A::GLProgram::load(Storage& storage, std::istream& stream)
 	}
 	
 	program.link();
+}
+
+void A::GLProgram::unload(Storage& storage)
+{
+	AssetIterator end = shaders.end();
+	for (AssetIterator i = shaders.begin(); i != end; i++) {
+		storage.release(**i);
+	}
+	shaders.clear();
 }
 
 const GL::Program& A::GLProgram::get()

@@ -6,15 +6,38 @@
 #include "../GL/Shader.hpp"
 #include "../GL/Program.hpp"
 #include <istream>
+#include <vector>
 
 namespace Engine { namespace Asset {
 	
 	
 	
+	class GLProgram;
 	class GLVertexShader;
 	class GLFragmentShader;
 	class GLGeometryShader;
-	class GLProgram;
+	
+	
+	
+	/* GLSL program */
+	class GLProgram : public virtual Asset {
+	public:
+		
+		/* Create, delete, load */
+		GLProgram();
+		~GLProgram();
+		void load(Storage& storage, std::istream& stream) override;
+		void unload(Storage& storage) override;
+		
+		/* Get program */
+		const GL::Program& get();
+		
+	private:
+		
+		GL::Program program;
+		std::vector<Asset*> shaders;
+		
+	};
 	
 	
 	
@@ -73,26 +96,6 @@ namespace Engine { namespace Asset {
 	private:
 		
 		GL::GeometryShader shader;
-		
-	};
-	
-	
-	
-	/* GLSL program */
-	class GLProgram : public virtual Asset {
-	public:
-		
-		/* Create, delete, load */
-		GLProgram();
-		~GLProgram();
-		void load(Storage& storage, std::istream& stream) override;
-		
-		/* Get program */
-		const GL::Program& get();
-		
-	private:
-		
-		GL::Program program;
 		
 	};
 	
