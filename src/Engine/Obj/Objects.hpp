@@ -101,7 +101,79 @@ namespace Engine { namespace Obj { namespace Render {
 		int level;
 	};
 	
+	struct UseMaterial {
+		std::string name;
+	};
+	
+	struct MaterialLib {
+		std::vector<std::string> files;
+	};
+	
+	struct ShadowObject {
+		std::string file;
+	};
+	
+	struct TraceObject {
+		std::string file;
+	};
+	
 }}} // namespace Engine::Obj::Render
+
+
+
+/* Material objects */
+
+namespace Engine { namespace Obj { namespace Material {
+	
+	struct NewMaterial {
+		std::string name;
+	};
+	
+	struct AmbientColor {
+		float r, g, b;
+	};
+	
+	struct DiffuseColor {
+		float r, g, b;
+	};
+	
+	struct SpecularColor {
+		float r, g, b;
+	};
+	
+	struct Dissolve {
+		float value;
+	};
+	
+	struct IlluminationModel {
+		int model;
+	};
+	
+	struct AmbientMap {
+		std::string file;
+	};
+	
+	struct DiffuseMap {
+		std::string file;
+	};
+	
+	struct SpecularColorMap {
+		std::string file;
+	};
+	
+	struct SpeculaHighlightMap {
+		std::string file;
+	};
+	
+	struct AlphaMap {
+		std::string file;
+	};
+	
+	struct BumpMap {
+		std::string file;
+	};
+	
+}}} // namespace Engine::Obj::Material
 
 
 
@@ -125,6 +197,23 @@ std::istream& operator>>(std::istream& in, Engine::Obj::Render::Bevel& obj);
 std::istream& operator>>(std::istream& in, Engine::Obj::Render::ColorInterpolation& obj);
 std::istream& operator>>(std::istream& in, Engine::Obj::Render::DissolveInterpolation& obj);
 std::istream& operator>>(std::istream& in, Engine::Obj::Render::LevelOfDetail& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Render::UseMaterial& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Render::MaterialLib& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Render::ShadowObject& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Render::TraceObject& obj);
+
+std::istream& operator>>(std::istream& in, Engine::Obj::Material::NewMaterial& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Material::AmbientColor& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Material::DiffuseColor& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Material::SpecularColor& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Material::Dissolve& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Material::IlluminationModel& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Material::AmbientMap& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Material::DiffuseMap& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Material::SpecularColorMap& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Material::SpeculaHighlightMap& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Material::AlphaMap& obj);
+std::istream& operator>>(std::istream& in, Engine::Obj::Material::BumpMap& obj);
 
 
 

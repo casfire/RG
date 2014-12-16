@@ -2,7 +2,7 @@
 #ifndef _ENGINE_OBJ_TRIANGLEREADER_HPP_
 #define _ENGINE_OBJ_TRIANGLEREADER_HPP_
 
-#include "NullReader.hpp"
+#include "Reader.hpp"
 #include <cstddef> // std::size_t
 
 namespace Engine { namespace Obj {
@@ -23,7 +23,7 @@ namespace Engine { namespace Obj {
 	
 	
 	/* Reader that builds vertices and triangles */
-	class TriangleReader : public virtual NullReader {
+	class TriangleReader : public ObjectReader {
 	public:
 		
 		/* Getters */
@@ -36,12 +36,12 @@ namespace Engine { namespace Obj {
 	protected:
 		
 		/* Vertex data */
-		void parse(Vertex::Geometry &v) override;
-		void parse(Vertex::Texture &v) override;
-		void parse(Vertex::Normal &v) override;
+		bool parse(Vertex::Geometry &v) override;
+		bool parse(Vertex::Texture &v) override;
+		bool parse(Vertex::Normal &v) override;
 		
 		/* Elements */
-		void parse(Element::Face &e) override;
+		bool parse(Element::Face &e) override;
 		
 	private:
 		

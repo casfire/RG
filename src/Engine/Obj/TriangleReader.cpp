@@ -22,26 +22,30 @@ void Obj::TriangleReader::clear()
 	eAddedVertices.clear();
 }
 
-void Obj::TriangleReader::parse(Obj::Vertex::Geometry &v)
+bool Obj::TriangleReader::parse(Obj::Vertex::Geometry &v)
 {
 	objGeometry.push_back(v);
+	return true;
 }
 
-void Obj::TriangleReader::parse(Obj::Vertex::Texture &v)
+bool Obj::TriangleReader::parse(Obj::Vertex::Texture &v)
 {
 	objTexture.push_back(v);
+	return true;
 }
 
-void Obj::TriangleReader::parse(Obj::Vertex::Normal &v)
+bool Obj::TriangleReader::parse(Obj::Vertex::Normal &v)
 {
 	objNormal.push_back(v);
+	return true;
 }
 
-void Obj::TriangleReader::parse(Obj::Element::Face &e)
+bool Obj::TriangleReader::parse(Obj::Element::Face &e)
 {
 	for (std::size_t i = 2; i < e.size(); i++) {
 		addTriangle(e[0], e[i - 1], e[i]);
 	}
+	return true;
 }
 
 void Obj::TriangleReader::addTriangle(Obj::Element::FaceVertex a, Obj::Element::FaceVertex b, Obj::Element::FaceVertex c)

@@ -271,3 +271,97 @@ std::istream& operator>>(std::istream& in, Obj::Render::LevelOfDetail& obj)
 {
 	return in >> obj.level;
 }
+
+std::istream& operator>>(std::istream& in, Obj::Render::UseMaterial& obj)
+{
+	return in >> obj.name;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Render::MaterialLib& obj)
+{
+	while (true) {
+		std::string file;
+		in >> file;
+		if (in.rdstate() & std::ios::failbit) {
+			in.clear(in.rdstate() & (~std::ios::failbit));
+			break;
+		}
+		obj.files.push_back(file);
+	}
+	if (obj.files.empty()) in.setstate(std::ios::failbit);
+	return in;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Render::ShadowObject& obj)
+{
+	return in >> obj.file;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Render::TraceObject& obj)
+{
+	return in >> obj.file;
+}
+
+
+
+/* Material objects */
+
+std::istream& operator>>(std::istream& in, Obj::Material::NewMaterial& obj)
+{
+	return in >> obj.name;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Material::AmbientColor& obj)
+{
+	return in >> obj.r >> obj.g >> obj.b;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Material::DiffuseColor& obj)
+{
+	return in >> obj.r >> obj.g >> obj.b;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Material::SpecularColor& obj)
+{
+	return in >> obj.r >> obj.g >> obj.b;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Material::Dissolve& obj)
+{
+	return in >> obj.value;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Material::IlluminationModel& obj)
+{
+	return in >> obj.model;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Material::AmbientMap& obj)
+{
+	return in >> obj.file;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Material::DiffuseMap& obj)
+{
+	return in >> obj.file;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Material::SpecularColorMap& obj)
+{
+	return in >> obj.file;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Material::SpeculaHighlightMap& obj)
+{
+	return in >> obj.file;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Material::AlphaMap& obj)
+{
+	return in >> obj.file;
+}
+
+std::istream& operator>>(std::istream& in, Obj::Material::BumpMap& obj)
+{
+	return in >> obj.file;
+}
