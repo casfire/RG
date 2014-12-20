@@ -26,10 +26,10 @@ namespace Engine { namespace GL {
 		~Texture();
 		
 		/* Bind this texture */
-		void bind();
+		void bind() const;
 		
 		/* Unbind texure */
-		void unbind();
+		void unbind() const;
 		
 	protected:
 		

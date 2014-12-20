@@ -25,6 +25,7 @@ int main() {
 	/* Assets */
 	A::Storage storage;
 	const GL::Program& program = storage.grab<A::GLProgram>("assets/program.txt").get();
+	const GL::Texture2D& texture = storage.grab<A::CFRTexture2D>("assets/texture.cfrt").get();
 	
 	/* Uniforms */
 	GL::ProgramUniform uModelMat = program.getUniform("uModelMat");

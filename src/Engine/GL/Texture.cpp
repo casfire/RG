@@ -41,12 +41,12 @@ GL::Texture::~Texture()
 	glDeleteTextures(1, &objectID);
 }
 
-void GL::Texture::bind()
+void GL::Texture::bind() const
 {
 	glBindTexture(target, objectID);
 }
 
-void GL::Texture::unbind()
+void GL::Texture::unbind() const
 {
 	glBindTexture(target, objectID);
 }
