@@ -1,6 +1,6 @@
 TARGET=hello
 CFLAGS=-Wall -Wextra -std=c++11 -DSFML_STATIC
-LFLAGS=-static -static-libgcc -static-libstdc++ -lsfml-graphics-s -lsfml-window-s -lsfml-system-s
+LFLAGS=-static -static-libgcc -static-libstdc++ -lsfml-window-s -lsfml-system-s -lopengl32 -lwinmm -lgdi32 
 
 FILES=$(wildcard src/*.cpp) $(wildcard src/*.c)
 FILES+=$(wildcard src/*/*.cpp) $(wildcard src/*/*.c)
