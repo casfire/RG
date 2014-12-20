@@ -3,7 +3,8 @@
 
 namespace GL = Engine::GL;
 
-inline GLuint createVAO() {
+inline GLuint createVAO()
+{
 	GLuint ID;
 	glGenVertexArrays(1, &ID);
 	return ID;
@@ -44,38 +45,49 @@ void GL::VAO::set(const GL::ElementBuffer &elements)
 	count = elements.getCount();
 }
 
-void GL::VAO::enable(GLuint index)
+void GL::VAO::enableAttribute(GLuint index)
 {
 	bind();
 	glEnableVertexAttribArray(index);
 	unbind();
 }
 
-void GL::VAO::disable(GLuint index)
+void GL::VAO::disableAttribute(GLuint index)
 {
 	bind();
 	glDisableVertexAttribArray(index);
 	unbind();
 }
 
-void GL::VAO::attribute(GLuint index, const GL::ArrayBuffer &v,
-	GLenum type, GLint count, GLsizei stride, GLsizei start, GLboolean normalized)
+void GL::VAO::attribute(
+	GLuint index,
+	const GL::ArrayBuffer &v,
+	GLenum type, GLint size,
+	GLsizei stride, GLsizei start,
+	GLboolean normalized)
 {
 	bind();
 	v.bind();
-	glVertexAttribPointer(index, count, type, normalized,
-		stride, reinterpret_cast<const GLvoid*>(start));
+	glVertexAttribPointer(
+		index, size, type, normalized,
+		stride, reinterpret_cast<const GLvoid*>(start)
+	);
 	v.unbind();
 	unbind();
 }
 
-void GL::VAO::attributeI(GLuint index, const GL::ArrayBuffer &v,
-	GLenum type, GLint count, GLsizei stride, GLsizei start)
+void GL::VAO::attributeI(
+	GLuint index,
+	const GL::ArrayBuffer &v,
+	GLenum type, GLint size,
+	GLsizei stride, GLsizei start)
 {
 	bind();
 	v.bind();
-	glVertexAttribIPointer(index, count, type,
-		stride, reinterpret_cast<const GLvoid*>(start));
+	glVertexAttribIPointer(
+		index, size, type,
+		stride, reinterpret_cast<const GLvoid*>(start)
+	);
 	v.unbind();
 	unbind();
 }

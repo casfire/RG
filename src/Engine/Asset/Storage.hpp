@@ -25,10 +25,10 @@ namespace Engine { namespace Asset {
 		
 		/* Grab asset - throws Asset::Exception */
 		template<class T>
-		T& grab(const std::string& key);
+		T& grab(const std::string &key);
 		
 		/* Release asset */
-		void release(Asset& asset);
+		void release(Asset &asset);
 		
 	private:
 		
@@ -37,14 +37,14 @@ namespace Engine { namespace Asset {
 		
 		/* Path stack */
 		std::stack<std::string> path;
-		std::string pushPath(const std::string& key);
+		std::string pushPath(const std::string &key);
 		void popPath();
 		
 		/* Retrieve already loaded asset or nullptr */
-		Asset* get(const std::string& file);
+		Asset* get(const std::string &file);
 		
 		/* Load and create asset - throws Asset::Exception */
-		Asset* load(const std::string& file, Asset* obj);
+		Asset* load(const std::string &file, Asset *obj);
 		
 		/* Prevent copying */
 		Storage(const Storage&) = delete;
@@ -57,7 +57,7 @@ namespace Engine { namespace Asset {
 }} // namespace Engine::Asset
 
 template<class T>
-T& Engine::Asset::Storage::grab(const std::string& key)
+T& Engine::Asset::Storage::grab(const std::string &key)
 {
 	std::string file = pushPath(key);
 	try {

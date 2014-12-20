@@ -31,10 +31,10 @@ namespace Engine { namespace Asset {
 		virtual ~Asset();
 		
 		/* Called by Storage to load this asset */
-		virtual void load(Storage& storage, std::istream& in) = 0;
+		virtual void load(Storage &storage, std::istream &in) = 0;
 		
 		/* Called by Storage before deleting this asset */
-		virtual void unload(Storage& storage);
+		virtual void unload(Storage &storage);
 		
 	private:
 		
@@ -73,7 +73,7 @@ namespace Engine { namespace Asset {
 		std::string info;
 		
 		/* Called by Storage when unwinding the file stack */
-		void pushFile(const std::string& file);
+		void pushFile(const std::string &file);
 		friend class Storage;
 		
 	};
@@ -84,7 +84,7 @@ namespace Engine { namespace Asset {
 	class IOException : public Exception {
 	public:
 		
-		IOException(const std::ios::failure& fail);
+		IOException(const std::ios::failure &fail);
 		
 	};
 	
@@ -94,7 +94,7 @@ namespace Engine { namespace Asset {
 	class CastException : public Exception {
 	public:
 		
-		CastException(const char* from, const char* to);
+		CastException(const char *from, const char *to);
 		
 	};
 	
@@ -104,7 +104,7 @@ namespace Engine { namespace Asset {
 	class LoadException : public Exception {
 	public:
 		
-		LoadException(const std::string& info);
+		LoadException(const std::string &info);
 		
 	};
 	

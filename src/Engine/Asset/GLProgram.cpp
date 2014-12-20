@@ -10,7 +10,7 @@ typedef std::vector<A::Asset*>::iterator AssetIterator;
 
 
 
-void compileFromStream(std::istream& stream, GL::Shader &shader)
+void compileFromStream(std::istream &stream, GL::Shader& shader)
 {
 	stream.seekg(0, std::ios_base::end);
 	std::streamsize size = stream.tellg();
@@ -25,7 +25,7 @@ void compileFromStream(std::istream& stream, GL::Shader &shader)
 
 /* Engine::Asset::GLVertexShader */
 
-void A::GLVertexShader::load(A::Storage& storage, std::istream& stream)
+void A::GLVertexShader::load(A::Storage &storage, std::istream &stream)
 {
 	(void) storage;
 	compileFromStream(stream, shader);
@@ -40,7 +40,7 @@ const GL::VertexShader& A::GLVertexShader::get()
 
 /* Engine::Asset::GLFragmentShader */
 
-void A::GLFragmentShader::load(A::Storage& storage, std::istream& stream)
+void A::GLFragmentShader::load(A::Storage &storage, std::istream &stream)
 {
 	(void) storage;
 	compileFromStream(stream, shader);
@@ -55,7 +55,7 @@ const GL::FragmentShader& A::GLFragmentShader::get()
 
 /* Engine::Asset::GLGeometryShader */
 
-void A::GLGeometryShader::load(A::Storage& storage, std::istream& stream)
+void A::GLGeometryShader::load(A::Storage &storage, std::istream &stream)
 {
 	(void) storage;
 	compileFromStream(stream, shader);
@@ -70,7 +70,7 @@ const GL::GeometryShader& A::GLGeometryShader::get()
 
 /* Engine::Asset::GLProgram */
 
-void A::GLProgram::load(Storage& storage, std::istream& stream)
+void A::GLProgram::load(Storage &storage, std::istream &stream)
 {
 	stream.seekg(0, std::ios_base::end);
 	std::streamsize size = stream.tellg();
@@ -131,7 +131,7 @@ void A::GLProgram::load(Storage& storage, std::istream& stream)
 	program.link();
 }
 
-void A::GLProgram::unload(Storage& storage)
+void A::GLProgram::unload(Storage &storage)
 {
 	AssetIterator end = shaders.end();
 	for (AssetIterator i = shaders.begin(); i != end; i++) {

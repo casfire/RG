@@ -19,7 +19,9 @@ GL::Program::~Program()
 	glDeleteProgram(objectID);
 }
 
-GL::Program::Program(const VertexShader &vertex, const FragmentShader &fragment)
+GL::Program::Program(
+	const VertexShader &vertex,
+	const FragmentShader &fragment)
 : Object(glCreateProgram())
 {
 	attach(vertex);
@@ -27,7 +29,9 @@ GL::Program::Program(const VertexShader &vertex, const FragmentShader &fragment)
 	link();
 }
 
-GL::Program::Program(const VertexShader &vertex, const FragmentShader &fragment,
+GL::Program::Program(
+	const VertexShader &vertex,
+	const FragmentShader &fragment,
 	const GeometryShader &geometry)
 : Object(glCreateProgram())
 {

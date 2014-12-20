@@ -33,9 +33,15 @@ namespace Engine { namespace GL {
 		~Program();
 		
 		/* Create and link a new program - throws ProgramLinkException */
-		Program(const VertexShader &vertex, const FragmentShader &fragment);
-		Program(const VertexShader &vertex, const FragmentShader &fragment,
-			const GeometryShader &geometry);
+		Program(
+			const VertexShader   &vertex,
+			const FragmentShader &fragment
+		);
+		Program(
+			const VertexShader   &vertex,
+			const FragmentShader &fragment,
+			const GeometryShader &geometry
+		);
 		
 		/* Attach a shader */
 		void attach(const Shader &shader);

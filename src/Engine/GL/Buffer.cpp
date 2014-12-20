@@ -1,6 +1,9 @@
 #include "Buffer.hpp"
 
 namespace GL = Engine::GL;
+using std::uint8_t;
+using std::uint16_t;
+using std::uint32_t;
 
 
 
@@ -88,15 +91,15 @@ GL::ElementBuffer8::ElementBuffer8(GLenum usage)
 : ElementBuffer(GL_UNSIGNED_BYTE, usage)
 {}
 
-GL::ElementBuffer8::ElementBuffer8(GLsizei count, const std::uint8_t *elements, GLenum usage)
+GL::ElementBuffer8::ElementBuffer8(GLsizei count, const uint8_t *elements, GLenum usage)
 : ElementBuffer(GL_UNSIGNED_BYTE, usage)
 {
 	this->elements(count, elements);
 }
 
-void GL::ElementBuffer8::elements(GLsizei count, const std::uint8_t *elements)
+void GL::ElementBuffer8::elements(GLsizei count, const uint8_t *elements)
 {
-	data(sizeof(std::uint8_t) * count, static_cast<const GLvoid*>(elements));
+	data(sizeof(uint8_t) * count, static_cast<const GLvoid*>(elements));
 	this->count = count;
 }
 
@@ -108,15 +111,15 @@ GL::ElementBuffer16::ElementBuffer16(GLenum usage)
 : ElementBuffer(GL_UNSIGNED_SHORT, usage)
 {}
 
-GL::ElementBuffer16::ElementBuffer16(GLsizei count, const std::uint16_t *elements, GLenum usage)
+GL::ElementBuffer16::ElementBuffer16(GLsizei count, const uint16_t *elements, GLenum usage)
 : ElementBuffer(GL_UNSIGNED_SHORT, usage)
 {
 	this->elements(count, elements);
 }
 
-void GL::ElementBuffer16::elements(GLsizei count, const std::uint16_t *elements)
+void GL::ElementBuffer16::elements(GLsizei count, const uint16_t *elements)
 {
-	data(sizeof(std::uint16_t) * count, static_cast<const GLvoid*>(elements));
+	data(sizeof(uint16_t) * count, static_cast<const GLvoid*>(elements));
 	this->count = count;
 }
 
@@ -128,15 +131,15 @@ GL::ElementBuffer32::ElementBuffer32(GLenum usage)
 : ElementBuffer(GL_UNSIGNED_INT, usage)
 {}
 
-GL::ElementBuffer32::ElementBuffer32(GLsizei count, const std::uint32_t *elements, GLenum usage)
+GL::ElementBuffer32::ElementBuffer32(GLsizei count, const uint32_t *elements, GLenum usage)
 : ElementBuffer(GL_UNSIGNED_INT, usage)
 {
 	this->elements(count, elements);
 }
 
-void GL::ElementBuffer32::elements(GLsizei count, const std::uint32_t *elements)
+void GL::ElementBuffer32::elements(GLsizei count, const uint32_t *elements)
 {
-	data(sizeof(std::uint32_t) * count, static_cast<const GLvoid*>(elements));
+	data(sizeof(uint32_t) * count, static_cast<const GLvoid*>(elements));
 	this->count = count;
 }
 

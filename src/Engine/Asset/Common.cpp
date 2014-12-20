@@ -18,7 +18,7 @@ void A::Asset::unload(Storage&)
 
 /* Engine::Asset::Exception */
 
-A::Exception::Exception(const std::string& info)
+A::Exception::Exception(const std::string &info)
 : info(info)
 {}
 
@@ -27,7 +27,7 @@ const char* A::Exception::what() const throw()
 	return info.c_str();
 }
 
-void A::Exception::pushFile(const std::string& file)
+void A::Exception::pushFile(const std::string &file)
 {
 	info = info + "\nFrom asset '" + file + "'";
 }
@@ -36,7 +36,7 @@ void A::Exception::pushFile(const std::string& file)
 
 /* Engine::Asset::IOException */
 
-A::IOException::IOException(const std::ios::failure& fail)
+A::IOException::IOException(const std::ios::failure &fail)
 : Exception(fail.what())
 {}
 
@@ -44,7 +44,7 @@ A::IOException::IOException(const std::ios::failure& fail)
 
 /* Engine::Asset::CastException */
 
-A::CastException::CastException(const char* from, const char* to)
+A::CastException::CastException(const char *from, const char *to)
 : Exception(std::string(from) + " to " + std::string(to) + ".")
 {}
 
@@ -52,6 +52,6 @@ A::CastException::CastException(const char* from, const char* to)
 
 /* Engine::Asset::LoadException */
 
-A::LoadException::LoadException(const std::string& info)
+A::LoadException::LoadException(const std::string &info)
 : Exception(info)
 {}

@@ -24,10 +24,10 @@ namespace Engine { namespace Asset {
 	public:
 		
 		/* Load program */
-		void load(Storage& storage, std::istream& stream) override;
+		void load(Storage &storage, std::istream &stream) override;
 		
 		/* Release all shaders */
-		void unload(Storage& storage) override;
+		void unload(Storage &storage) override;
 		
 		/* Get program */
 		const GL::Program& get();
@@ -46,7 +46,7 @@ namespace Engine { namespace Asset {
 	public:
 		
 		/* Load shader */
-		void load(Storage& storage, std::istream& stream) override;
+		void load(Storage &storage, std::istream &stream) override;
 		
 		/* Get shader */
 		const GL::VertexShader& get();
@@ -64,7 +64,7 @@ namespace Engine { namespace Asset {
 	public:
 		
 		/* Load shader */
-		void load(Storage& storage, std::istream& stream) override;
+		void load(Storage &storage, std::istream &stream) override;
 		
 		/* Get shader */
 		const GL::FragmentShader& get();
@@ -82,7 +82,7 @@ namespace Engine { namespace Asset {
 	public:
 		
 		/* Load shader */
-		void load(Storage& storage, std::istream& stream) override;
+		void load(Storage &storage, std::istream &stream) override;
 		
 		/* Get shader */
 		const GL::GeometryShader& get();

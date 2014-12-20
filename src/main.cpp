@@ -1,14 +1,10 @@
 #include "Engine/Engine.hpp"
-#include "Engine/Obj/TriangleReader.hpp"
 #include <SFML/Window.hpp>
 #include <iostream>
 
 namespace E = Engine;
 namespace GL = Engine::GL;
 namespace A = Engine::Asset;
-namespace Obj = Engine::Obj;
-
-#include "mesh.hpp"
 
 void initOpenGL();
 
@@ -44,23 +40,14 @@ int main() {
 	program.unbind();
 	
 	/* Load mesh */
-	Mesh mesh;
-	mesh.create("assets/monkey.obj");
 	E::Transformation modelMatrix;
-	modelMatrix.setScale(glm::vec3(4, 4, 4));
-	modelMatrix.setPosition(glm::vec3(0, 0, -7));
 	
 	/* Initialize OpenGL parameters */
 	initOpenGL();
 	
 	/* Main loop */
-	bool running = true, cursorLocked = false, isFocused = true;
-	sf::Clock clock;
-	sf::Time elapsedFrame = sf::Time::Zero, elapsedLast = sf::Time::Zero;
+	bool running = true;
 	while (running) {
-		sf::Time elapsedNow = clock.getElapsedTime();
-		elapsedFrame = elapsedNow - elapsedLast;
-		elapsedLast = elapsedNow;
 		
 		/* Events */
 		sf::Event event;
@@ -76,45 +63,8 @@ int main() {
 				uProjMat.set(camera.getProjectionMatrix());
 				program.unbind();
 				break;
-			case sf::Event::KeyReleased:
-				if (event.key.code == sf::Keyboard::Key::Escape) {
-					if (cursorLocked) cursorLocked = false; else running = false;
-				}
-			case sf::Event::MouseButtonReleased:
-				if (event.mouseButton.button == sf::Mouse::Button::Left && isFocused) {
-					sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
-					cursorLocked = true;
-				}
-				break;
-			case sf::Event::GainedFocus: isFocused = true; break;
-			case sf::Event::LostFocus: isFocused = false; cursorLocked = false; break;
 			default: break;
 			}
-		}
-		
-		if (cursorLocked) {
-			float cameraMoveSpeed = elapsedFrame.asSeconds() * 30;
-			float cameraRotateSpeed = 0.004;
-			float cameraRollSpeed = elapsedFrame.asSeconds();
-			
-			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-			sf::Vector2i windowMid = sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2);
-			if (mousePos != windowMid) {
-				float moveX = cameraRotateSpeed * (mousePos.x - windowMid.x);
-				float moveY = cameraRotateSpeed * (mousePos.y - windowMid.y);
-				camera.yaw(-moveX);
-				camera.pitchLocal(-moveY);
-				sf::Mouse::setPosition(windowMid, window);
-			}
-			
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) camera.translateLocal(glm::vec3(0, 0, -cameraMoveSpeed));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) camera.translateLocal(glm::vec3(0, 0, cameraMoveSpeed));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) camera.translateLocal(glm::vec3(-cameraMoveSpeed, 0, 0));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) camera.translateLocal(glm::vec3(cameraMoveSpeed, 0, 0));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) camera.rollLocal(cameraRollSpeed);
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) camera.rollLocal(-cameraRollSpeed);
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))  camera.translate(glm::vec3(0, cameraMoveSpeed, 0));
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) camera.translate(glm::vec3(0, -cameraMoveSpeed, 0));
 		}
 		
 		/* Draw */
@@ -123,7 +73,6 @@ int main() {
 		program.bind();
 		uModelMat.set(modelMatrix.getMatrix());
 		uViewMat.set(camera.getViewMatrix());
-		mesh.draw();
 		program.unbind();
 		
 		window.display();

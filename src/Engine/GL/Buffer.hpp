@@ -81,8 +81,10 @@ namespace Engine { namespace GL {
 		ElementBuffer8(GLenum usage = GL_STATIC_DRAW);
 		
 		/* Create element buffer and set elements */
-		ElementBuffer8(GLsizei count, const std::uint8_t *elements,
-			GLenum usage = GL_STATIC_DRAW);
+		ElementBuffer8(
+			GLsizei count, const std::uint8_t *elements,
+			GLenum usage = GL_STATIC_DRAW
+		);
 		
 		/* Set elements */
 		void elements(GLsizei count, const std::uint8_t *elements);
@@ -99,8 +101,10 @@ namespace Engine { namespace GL {
 		ElementBuffer16(GLenum usage = GL_STATIC_DRAW);
 		
 		/* Create element buffer and set elements */
-		ElementBuffer16(GLsizei count, const std::uint16_t *elements,
-			GLenum usage = GL_STATIC_DRAW);
+		ElementBuffer16(
+			GLsizei count, const std::uint16_t *elements,
+			GLenum usage = GL_STATIC_DRAW
+		);
 		
 		/* Set elements */
 		void elements(GLsizei count, const std::uint16_t *elements);
@@ -118,8 +122,10 @@ namespace Engine { namespace GL {
 		ElementBuffer32(GLenum usage = GL_STATIC_DRAW);
 		
 		/* Create element buffer and set elements */
-		ElementBuffer32(GLsizei count, const std::uint32_t *elements,
-			GLenum usage = GL_STATIC_DRAW);
+		ElementBuffer32(
+			GLsizei count, const std::uint32_t *elements,
+			GLenum usage = GL_STATIC_DRAW
+		);
 		
 		/* Set elements */
 		void elements(GLsizei count, const std::uint32_t *elements);
@@ -136,8 +142,10 @@ namespace Engine { namespace GL {
 		ArrayBuffer(GLenum usage = GL_STATIC_DRAW);
 		
 		/* Create a new array buffer and set buffer data */
-		ArrayBuffer(GLsizeiptr size, const GLvoid *data,
-			GLenum usage = GL_STATIC_DRAW);
+		ArrayBuffer(
+			GLsizeiptr size, const GLvoid *data,
+			GLenum usage = GL_STATIC_DRAW
+		);
 		
 	};
 	
@@ -151,8 +159,10 @@ namespace Engine { namespace GL {
 		UniformBuffer(GLenum usage = GL_STREAM_DRAW);
 		
 		/* Create a new uniform buffer and set buffer data */
-		UniformBuffer(GLsizeiptr size, const GLvoid *data,
-			GLenum usage = GL_STREAM_DRAW);
+		UniformBuffer(
+			GLsizeiptr size, const GLvoid *data,
+			GLenum usage = GL_STREAM_DRAW
+		);
 		
 	};
 	

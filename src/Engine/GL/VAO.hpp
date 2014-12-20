@@ -35,12 +35,21 @@ namespace Engine { namespace GL {
 		void set(const ElementBuffer &elements);
 		
 		/* Set vertex atributes */
-		void enable    (GLuint index);
-		void disable   (GLuint index);
-		void attribute (GLuint index, const ArrayBuffer &v, GLenum type, GLint count,
-			GLsizei stride, GLsizei start, GLboolean normalized = GL_FALSE);
-		void attributeI(GLuint index, const ArrayBuffer &v, GLenum type, GLint count,
-			GLsizei stride, GLsizei start);
+		void enableAttribute (GLuint index);
+		void disableAttribute(GLuint index);
+		void attribute(
+			GLuint index,
+			const ArrayBuffer &v,
+			GLenum type, GLint size,
+			GLsizei stride, GLsizei start,
+			GLboolean normalized = GL_FALSE
+		);
+		void attributeI(
+			GLuint index,
+			const ArrayBuffer &v,
+			GLenum type, GLint size,
+			GLsizei stride, GLsizei start
+		);
 		
 		/* Draw */
 		void drawPoints() const;

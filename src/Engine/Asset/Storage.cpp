@@ -23,7 +23,7 @@ void A::Storage::clear()
 	storage.clear();
 }
 
-void A::Storage::release(A::Asset& asset)
+void A::Storage::release(A::Asset &asset)
 {
 	if (--(asset.grabCount) <= 0) {
 		AssetMapIterator it = storage.find(asset.file);
@@ -35,7 +35,7 @@ void A::Storage::release(A::Asset& asset)
 	}
 }
 
-std::string A::Storage::pushPath(const std::string& key)
+std::string A::Storage::pushPath(const std::string &key)
 {
 	const std::string& base = path.top();
 	if (key.empty()) {
@@ -53,7 +53,7 @@ void A::Storage::popPath()
 	path.pop();
 }
 
-A::Asset* A::Storage::get(const std::string& key)
+A::Asset* A::Storage::get(const std::string &key)
 {
 	AssetMapIterator it = storage.find(key);
 	if (it != storage.end()) {
@@ -63,7 +63,7 @@ A::Asset* A::Storage::get(const std::string& key)
 	}
 }
 
-A::Asset* A::Storage::load(const std::string& file, Asset* obj)
+A::Asset* A::Storage::load(const std::string &file, Asset *obj)
 {
 	try {
 		std::ifstream stream;
