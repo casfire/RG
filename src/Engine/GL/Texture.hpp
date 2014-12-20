@@ -8,28 +8,104 @@ namespace Engine { namespace GL {
 	
 	
 	
-	class Texture2D : public Object {
+	class Texture;
+	class Texture1D;
+	class Texture2D;
+	class Texture3D;
+	
+	
+	
+	/* Base texture class */
+	class Texture : public Object {
 	public:
 		
-		/* Create a new 2D texture */
-		Texture2D();
-		
-		/* Create a new 2D texture and set data */
-		Texture2D(GLint level, GLsizei width, GLsizei height,
-			GLenum format, GLenum type, const GLvoid *data);
+		/* Create a new texture */
+		Texture(GLenum target);
 		
 		/* Delete texture */
-		~Texture2D();
-		
-		/* Set texture data */
-		void image(GLint level, GLsizei width, GLsizei height,
-			GLenum format, GLenum type, const GLvoid *data);
+		~Texture();
 		
 		/* Bind this texture */
 		void bind();
 		
 		/* Unbind texure */
 		void unbind();
+		
+	protected:
+		
+		const GLenum target;
+		
+	};
+	
+	
+	
+	class Texture1D : public Texture {
+	public:
+		
+		/* Create a new 1D texture */
+		Texture1D();
+		
+		/* Create a new 1D texture and set image data */
+		Texture1D(
+			GLsizei width,
+			GLenum format, GLenum type, const GLvoid *data,
+			bool compress = true
+		);
+		
+		/* Set image data */
+		void image(
+			GLsizei width,
+			GLenum format, GLenum type, const GLvoid *data,
+			bool compress = true
+		);
+		
+	};
+	
+	
+	
+	class Texture2D : public Texture {
+	public:
+		
+		/* Create a new 2D texture */
+		Texture2D();
+		
+		/* Create a new 2D texture and set image data */
+		Texture2D(
+			GLsizei width, GLsizei height,
+			GLenum format, GLenum type, const GLvoid *data,
+			bool compress = true
+		);
+		
+		/* Set image data */
+		void image(
+			GLsizei width, GLsizei height,
+			GLenum format, GLenum type, const GLvoid *data,
+			bool compress = true
+		);
+		
+	};
+	
+	
+	
+	class Texture3D : public Texture {
+	public:
+		
+		/* Create a new 2D texture */
+		Texture3D();
+		
+		/* Create a new 2D texture and set image data */
+		Texture3D(
+			GLsizei width, GLsizei height, GLsizei depth,
+			GLenum format, GLenum type, const GLvoid *data,
+			bool compress = true
+		);
+		
+		/* Set image data */
+		void image(
+			GLsizei width, GLsizei height, GLsizei depth,
+			GLenum format, GLenum type, const GLvoid *data,
+			bool compress = true
+		);
 		
 	};
 	
