@@ -1,6 +1,6 @@
 TARGET=hello
 CFLAGS=-Wall -Wextra -std=c++11 -DSFML_STATIC
-LFLAGS=-static -static-libgcc -static-libstdc++ -lsfml-window-s -lsfml-system-s -lopengl32 -lwinmm -lgdi32 
+LFLAGS=-static -lsfml-window-s -lsfml-system-s -lgdi32 -lopengl32 -lwinmm 
 
 FILES=$(wildcard src/*.cpp) $(wildcard src/*.c)
 FILES+=$(wildcard src/*/*.cpp) $(wildcard src/*/*.c)
@@ -13,7 +13,7 @@ all: $(TARGET)
 $(TARGET): $(OBJS)
 	@echo "Linking..."
 	@mkdir -p $(@D)
-	@g++ $(OBJS) $(LFLAGS) -o $(TARGET)
+	@g++ $(OBJS) $(LFLAGS) -o $@
 	@echo "Done."
 build/%.o: src/%.cpp
 	@echo "Compiling $<"
