@@ -16,9 +16,9 @@ void compileFromStream(std::istream &stream, GL::Shader& shader)
 	std::streamsize size = stream.tellg();
 	stream.seekg(0, std::ios_base::beg);
 	std::vector<char> contents(static_cast<std::size_t>(size + 1));
-	stream.read(&contents[0], size);
+	stream.read(contents.data(), size);
 	contents[size] = '\0';
-	shader.compile(static_cast<const GLchar*>(&contents[0]));
+	shader.compile(static_cast<const GLchar*>(contents.data()));
 }
 
 
@@ -76,10 +76,10 @@ void A::GLProgram::load(Storage &storage, std::istream &stream)
 	std::streamsize size = stream.tellg();
 	stream.seekg(0, std::ios_base::beg);
 	std::vector<char> contents(static_cast<std::size_t>(size + 1));
-	stream.read(&contents[0], size);
+	stream.read(contents.data(), size);
 	contents[size] = '\0';
 	
-	char* s = static_cast<char*>(&contents[0]);
+	char* s = static_cast<char*>(contents.data());
 	std::size_t pos = 0;
 	std::size_t length = static_cast<std::size_t>(size);
 	while (pos < length) {

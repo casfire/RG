@@ -253,10 +253,10 @@ inline const char* fillProgramInfoLog(GLuint ID, std::vector<char> &log)
 	glGetProgramiv(ID, GL_INFO_LOG_LENGTH, &size);
 	log.resize(static_cast<std::size_t>(size + 1));
 	if (size > 0) {
-		glGetProgramInfoLog(ID, size, NULL, static_cast<GLchar*>(&log[0]));
+		glGetProgramInfoLog(ID, size, NULL, static_cast<GLchar*>(log.data()));
 	}
 	log[static_cast<std::size_t>(size)] = '\0';
-	return static_cast<const char*>(&log[0]);
+	return static_cast<const char*>(log.data());
 }
 
 GL::ProgramLinkException::ProgramLinkException(const Program &program)
@@ -268,5 +268,5 @@ GL::ProgramLinkException::ProgramLinkException(const Program &program)
 
 const char* GL::ProgramLinkException::log() const
 {
-	return static_cast<const char*>(&linkLog[0]);
+	return static_cast<const char*>(linkLog.data());
 }

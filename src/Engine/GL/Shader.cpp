@@ -40,7 +40,7 @@ void GL::Shader::compile(const GLchar *source)
 
 void GL::Shader::compile(const ShaderFile &file)
 {
-	compile(static_cast<const GLchar*>(&file.contents[0]));
+	compile(static_cast<const GLchar*>(file.contents.data()));
 }
 
 bool GL::Shader::isCompiled() const
@@ -81,7 +81,7 @@ GL::ShaderFile::ShaderFile(const std::string &filename)
 	std::streamsize size = stream.tellg();
 	stream.seekg(0, std::ios_base::beg);
 	contents.resize(static_cast<std::size_t>(size + 1));
-	stream.read(&contents[0], size);
+	stream.read(contents.data(), size);
 	contents[size] = '\0';
 	stream.close();
 }
@@ -152,10 +152,10 @@ inline const char* fillShaderInfoLog(GLuint ID, std::vector<char> &log)
 	glGetShaderiv(ID, GL_INFO_LOG_LENGTH, &size);
 	log.resize(static_cast<std::size_t>(size + 1));
 	if (size > 0) {
-		glGetShaderInfoLog(ID, size, NULL, static_cast<GLchar*>(&log[0]));
+		glGetShaderInfoLog(ID, size, NULL, static_cast<GLchar*>(log.data()));
 	}
 	log[static_cast<std::size_t>(size)] = '\0';
-	return static_cast<const char*>(&log[0]);
+	return static_cast<const char*>(log.data());
 }
 
 GL::ShaderCompileException::ShaderCompileException(const Shader &shader)
@@ -167,5 +167,5 @@ GL::ShaderCompileException::ShaderCompileException(const Shader &shader)
 
 const char* GL::ShaderCompileException::log() const
 {
-	return static_cast<const char*>(&compileLog[0]);
+	return static_cast<const char*>(compileLog.data());
 }

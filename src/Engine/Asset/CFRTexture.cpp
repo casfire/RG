@@ -93,11 +93,11 @@ void A::CFRTexture1D::load(Storage&, std::istream &stream)
 		throw A::LoadException("Height is not 1.");
 	}
 	std::vector<char> pixels(h.size);
-	stream.read(&pixels[0], h.size);
+	stream.read(pixels.data(), h.size);
 	if (!stream.good()) throw A::LoadException("Failed to read pixels.");
 	texture.image(
 		h.width,
-		getFormat(h.channels), getType(h.bytes), &pixels[0]
+		getFormat(h.channels), getType(h.bytes), pixels.data()
 	);
 }
 
@@ -117,11 +117,11 @@ void A::CFRTexture2D::load(Storage&, std::istream &stream)
 		throw A::LoadException("Depth is not 1.");
 	}
 	std::vector<char> pixels(h.size);
-	stream.read(&pixels[0], h.size);
+	stream.read(pixels.data(), h.size);
 	if (!stream.good()) throw A::LoadException("Failed to read pixels.");
 	texture.image(
 		h.width, h.height,
-		getFormat(h.channels), getType(h.bytes), &pixels[0]
+		getFormat(h.channels), getType(h.bytes), pixels.data()
 	);
 }
 
@@ -138,11 +138,11 @@ void A::CFRTexture3D::load(Storage&, std::istream &stream)
 {
 	Header h = readHeader(stream);
 	std::vector<char> pixels(h.size);
-	stream.read(&pixels[0], h.size);
+	stream.read(pixels.data(), h.size);
 	if (!stream.good()) throw A::LoadException("Failed to read pixels.");
 	texture.image(
 		h.width, h.height, h.depth,
-		getFormat(h.channels), getType(h.bytes), &pixels[0]
+		getFormat(h.channels), getType(h.bytes), pixels.data()
 	);
 }
 
