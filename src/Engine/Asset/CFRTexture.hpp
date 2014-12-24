@@ -66,7 +66,7 @@ namespace Engine { namespace Asset {
 	
 	/*
 		CFR texture file format
-		Byte order: big endian
+		Byte order: little endian
 		
 		uint32_t  magic   = 0x43465254; (CFRT)
 		uint8_t   version = 1;

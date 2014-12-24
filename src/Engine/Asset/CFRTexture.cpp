@@ -10,26 +10,23 @@ using std::uint16_t;
 using std::uint32_t;
 using std::size_t;
 
-inline uint8_t read8(std::istream &in)
-{
+inline uint8_t read8(std::istream &in) {
 	return static_cast<uint8_t>(in.get());
 }
 
-inline uint16_t read16(std::istream &in)
-{
+inline uint16_t read16(std::istream &in) {
 	uint16_t t = 0;
+	t |= static_cast<uint16_t>(in.get()) << 0;
 	t |= static_cast<uint16_t>(in.get()) << 8;
-	t |= static_cast<uint16_t>(in.get());
 	return t;
 }
 
-inline uint32_t read32(std::istream &in)
-{
+inline uint32_t read32(std::istream &in) {
 	uint32_t t = 0;
-	t |= static_cast<uint32_t>(in.get()) << 24;
-	t |= static_cast<uint32_t>(in.get()) << 16;
+	t |= static_cast<uint32_t>(in.get()) << 0;
 	t |= static_cast<uint32_t>(in.get()) << 8;
-	t |= static_cast<uint32_t>(in.get());
+	t |= static_cast<uint32_t>(in.get()) << 16;
+	t |= static_cast<uint32_t>(in.get()) << 24;
 	return t;
 }
 
