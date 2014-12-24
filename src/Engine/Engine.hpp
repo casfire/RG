@@ -13,6 +13,7 @@
 #include "Asset/Storage.hpp"
 #include "Asset/GLProgram.hpp"
 #include "Asset/CFRTexture.hpp"
+#include "Asset/CFRGeometry.hpp"
 
 #include "Transformation.hpp"
 #include "Camera.hpp"

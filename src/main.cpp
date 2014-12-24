@@ -25,12 +25,22 @@ int main() {
 	/* Assets */
 	A::Storage storage;
 	const GL::Program& program = storage.grab<A::GLProgram>("assets/program.txt").get();
+	const GL::VAO& vao = storage.grab<A::CFRGeometry>("assets/cube.cfrg").get();
+	
+	/* Texture */
 	const GL::Texture2D& texture = storage.grab<A::CFRTexture2D>("assets/texture.cfrt").get();
+	texture.bind();
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	texture.unbind();
 	
 	/* Uniforms */
 	GL::ProgramUniform uModelMat = program.getUniform("uModelMat");
-	GL::ProgramUniform uViewMat = program.getUniform("uViewMat");
-	GL::ProgramUniform uProjMat = program.getUniform("uProjMat");
+	GL::ProgramUniform uViewMat  = program.getUniform("uViewMat");
+	GL::ProgramUniform uProjMat  = program.getUniform("uProjMat");
+	GL::ProgramUniform uTexture  = program.getUniform("uTexture");
 	
 	/* Set up camera */
 	E::Camera camera;
@@ -42,6 +52,7 @@ int main() {
 	
 	/* Load mesh */
 	E::Transformation modelMatrix;
+	modelMatrix.setPosition(glm::vec3(0, 0, -2));
 	
 	/* Initialize OpenGL parameters */
 	initOpenGL();
@@ -68,12 +79,21 @@ int main() {
 			}
 		}
 		
-		/* Draw */
+		modelMatrix.yaw(0.01);
+		modelMatrix.pitch(0.03);
+		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		program.bind();
+		glActiveTexture(GL_TEXTURE0);
+		texture.bind();
+		uTexture.set1i(GL_TEXTURE0);
+		
 		uModelMat.set(modelMatrix.getMatrix());
 		uViewMat.set(camera.getViewMatrix());
+		vao.drawTriangles();
+		
+		texture.unbind();
 		program.unbind();
 		
 		window.display();
