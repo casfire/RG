@@ -26,7 +26,7 @@ inline uint32_t read32(std::istream &in) {
 
 void A::CFRGeometry::load(Storage&, std::istream &stream)
 {
-	if (read32(stream) != 0x43465247) {
+	if (read32(stream) != 0x47524643) {
 		throw A::LoadException("Invalid magic number.");
 	} else if (read8(stream) != 1) {
 		throw A::LoadException("Invalid version.");

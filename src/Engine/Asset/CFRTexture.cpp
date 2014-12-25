@@ -41,7 +41,7 @@ struct Header {
 
 inline Header readHeader(std::istream &stream) {
 	Header h;
-	if (read32(stream) != 0x43465254) {
+	if (read32(stream) != 0x54524643) {
 		throw A::LoadException("Invalid magic number.");
 	} else if (read8(stream) != 1) {
 		throw A::LoadException("Invalid version.");
