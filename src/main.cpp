@@ -52,14 +52,21 @@ int main() {
 	
 	/* Load mesh */
 	E::Transformation modelMatrix;
-	modelMatrix.setPosition(glm::vec3(0, 0, -2));
+	modelMatrix.setPosition(glm::vec3(0, 0, -20));
+	modelMatrix.setScale(glm::vec3(10, 10, 10));
 	
 	/* Initialize OpenGL parameters */
 	initOpenGL();
 	
 	/* Main loop */
-	bool running = true;
+	bool running = true, cursorLocked = false;
+	sf::Clock clock;
+	sf::Time elapsedLast = sf::Time::Zero;
 	while (running) {
+		
+		sf::Time elapsedNow = clock.getElapsedTime();
+		sf::Time elapsedFrame = elapsedNow - elapsedLast;
+		elapsedLast = elapsedNow;
 		
 		/* Events */
 		sf::Event event;
@@ -75,12 +82,45 @@ int main() {
 				uProjMat.set(camera.getProjectionMatrix());
 				program.unbind();
 				break;
+			case sf::Event::KeyReleased:
+				if (event.key.code == sf::Keyboard::Key::Escape) {
+					if (cursorLocked) cursorLocked = false; else running = false;
+				}
+			case sf::Event::MouseButtonReleased:
+				if (event.mouseButton.button == sf::Mouse::Button::Left && window.hasFocus()) {
+					sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
+					cursorLocked = true;
+				}
+				break;
+			case sf::Event::LostFocus: cursorLocked = false; break;
 			default: break;
 			}
 		}
 		
-		modelMatrix.yaw(0.01);
-		modelMatrix.pitch(0.03);
+		if (cursorLocked) {
+			float cameraMoveSpeed = elapsedFrame.asSeconds() * 30;
+			float cameraRotateSpeed = 0.004;
+			float cameraRollSpeed = elapsedFrame.asSeconds();
+			
+			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+			sf::Vector2i windowMid = sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2);
+			if (mousePos != windowMid) {
+				float moveX = cameraRotateSpeed * (mousePos.x - windowMid.x);
+				float moveY = cameraRotateSpeed * (mousePos.y - windowMid.y);
+				camera.yaw(-moveX);
+				camera.pitchLocal(-moveY);
+				sf::Mouse::setPosition(windowMid, window);
+			}
+			
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) camera.translateLocal(glm::vec3(0, 0, -cameraMoveSpeed));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) camera.translateLocal(glm::vec3(0, 0,  cameraMoveSpeed));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) camera.translateLocal(glm::vec3(-cameraMoveSpeed, 0, 0));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) camera.translateLocal(glm::vec3( cameraMoveSpeed, 0, 0));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) camera.rollLocal( cameraRollSpeed);
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) camera.rollLocal(-cameraRollSpeed);
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))  camera.translate(glm::vec3(0,  cameraMoveSpeed, 0));
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) camera.translate(glm::vec3(0, -cameraMoveSpeed, 0));
+		}
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
