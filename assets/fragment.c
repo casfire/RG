@@ -1,8 +1,8 @@
 #version 330
 
 smooth in vec3 fPosition;
-smooth in vec3 fNormal;
 smooth in vec2 fUV;
+smooth in vec3 fNormal;
 
 uniform sampler2D uTexture;
 

@@ -29,42 +29,43 @@ namespace Engine { namespace Asset {
 	
 	
 	/*
-		CFR geometry file format
+		CFR Geometry file format
 		Byte order: little endian
 		
-		uint32_t  magic = 0x47524643; // CFRG
-		uint8_t   version = 1;
-		uint32_t  elementCount; // Number of elements
-		uint8_t   elementBytes; // Number of bytes per element (1, 2 or 4)
-		uint8_t   elementType;  // Type of elements
-		uint32_t  vertexCount;  // Number of vertices
-		uint8_t   vertexBytes;  // Number of bytes per vertex
-		uint8_t   vertexType;   // Type of vertices
-		float     vertices[vertexCount  * vertexBytes / 4];
-		uint8_t   elements[elementCount * elementBytes];
+		Uint32 magic = 0x47524643; // CFRG
+		Uint32 version = 1;
+		Uint32 countElements;     // Number of elements
+		Uint32 countVertices;     // Number of vertices
+		Uint8  bytesPerVertex;    // Bytes per vertex
+		Uint8  bytesPerElement;   // Bytes per element (1, 2 or 4)
+		Uint8  attribPosition[2]; // Vertex position (3 dimensions)
+		Uint8  attribTexCoord[2]; // Vertex UV       (2 dimensions)
+		Uint8  attribNormal  [2]; // Vertex normal   (3 dimensions)
+		Uint8  attribTangent [2]; // Vertex tangent  (3 dimensions)
+		Uint8  attribBinormal[2]; // Vertex binormal (3 dimensions)
+		Uint8  unused[4];
+		Uint8  vertices[countVertices * bytesPerVertex ];
+		Uint8  elements[countElements * bytesPerElement];
 		
-		Vertex type:
-			(vertexType & 0b00000011) >> 0 = Number of floats for position
-			(vertexType & 0b00001100) >> 2 = Number of floats for normal
-			(vertexType & 0b00110000) >> 4 = Number of floats for texture
-			(vertexType & 0b11000000) >> 6 = Unused
+		Attributes:
+			attribute[0] = Byte offset within a vertex
+			attribute[1] = Attribute type
+			If offset or type is 0xFF, the attribute isn't used
 			
-			Common types:
-			47 - 0b00101111 - position[3] + normal [3] + texture[2]
-			15 - 0b00001111 - position[3] + normal [3]
-			35 - 0b00100011 - position[3] + texture[2]
-			3  - 0b00000011 - position[3]
-			
-			vertexBytes can be calculated from vertexType, but not vice versa
+		Attribute type:
+			Normalize     = type & 0b10000000
+			Variable type = type & 0b01111111
 		
-		Element type:
-			0 - points         (GL_POINTS)
-			1 - lines          (GL_LINES)
-			2 - line loop      (GL_LINE_LOOP)
-			3 - line strip     (GL_LINE_STRIP)
-			4 - triangles      (GL_TRIANGLES)
-			5 - triangle strip (GL_TRIANGLE_STRIP)
-			6 - triangle fan   (GL_TRIANGLE_FAN)
+		Attribute variable types:
+			0  - Signed   byte  (GL_BYTE)
+			1  - Unsigned byte  (GL_UNSIGNED_BYTE)
+			2  - Signed   short (GL_SHORT)
+			3  - Unsigned short (GL_UNSIGNED_SHORT)
+			4  - Signed   int   (GL_INT)
+			5  - Unsigned int   (GL_UNSIGNED_INT)
+			6  - Float          (GL_FLOAT)
+			10 - Double         (GL_DOUBLE)
+			11 - Half float     (GL_HALF_FLOAT)
 		
 	*/
 	
