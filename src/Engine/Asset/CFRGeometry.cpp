@@ -35,12 +35,12 @@ inline GLenum getGLType(uint8_t type) {
 	case 6:  return GL_FLOAT;
 	case 10: return GL_DOUBLE;
 	case 11: return GL_HALF_FLOAT;
-	default: return 0;
+	default: return GL_INVALID_ENUM;
 	}
 }
 
 inline GLboolean getGLNormalize(uint8_t type) {
-	return type & 0b10000000 ? true : false;
+	return type & 0b10000000 ? GL_TRUE : GL_FALSE;
 }
 
 void A::CFRGeometry::load(Storage&, std::istream &stream)
@@ -66,7 +66,7 @@ void A::CFRGeometry::load(Storage&, std::istream &stream)
 	uint8_t offsetBinormal = read8(stream);
 	uint8_t   typeBinormal = read8(stream);
 	stream.ignore(4);
-	
+		
 	if (!stream.good()) {
 		throw A::LoadException("Failed to read header.");
 	} else if (bytesPerElement == 0 || bytesPerElement == 3 || bytesPerElement > 4) {
@@ -77,6 +77,12 @@ void A::CFRGeometry::load(Storage&, std::istream &stream)
 		throw A::LoadException("No vertices.");
 	}
 	
+	GLenum glTypePositon  = getGLType(typePosition);
+	GLenum glTypeTexcoord = getGLType(typeTexcoord);
+	GLenum glTypeNormal   = getGLType(typeNormal);
+	GLenum glTypeTangent  = getGLType(typeTangent);
+	GLenum glTypeBinormal = getGLType(typeBinormal);
+	
 	std::vector<char> data;
 	
 	data.resize(static_cast<size_t>(countVertices) * static_cast<size_t>(bytesPerVertex));
@@ -84,51 +90,51 @@ void A::CFRGeometry::load(Storage&, std::istream &stream)
 	if (!stream.good()) throw A::LoadException("Failed to read vertices.");
 	GL::ArrayBuffer array(data.size(), data.data());
 	
-	if (offsetPosition != 0xFF && typePosition != 0xFF) {
+	if (offsetPosition != 0xFF && glTypePositon != GL_INVALID_ENUM) {
 		vao.enableAttribute(0);
 		vao.attribute(
 			0, array,
-			getGLType(typePosition), 3,
+			glTypePositon, 3,
 			bytesPerVertex, offsetPosition,
 			getGLNormalize(typePosition)
 		);
 	}
 	
-	if (offsetTexcoord != 0xFF && typeTexcoord != 0xFF) {
+	if (offsetTexcoord != 0xFF && glTypeTexcoord != GL_INVALID_ENUM) {
 		vao.enableAttribute(1);
 		vao.attribute(
 			1, array,
-			getGLType(typeTexcoord), 3,
+			glTypeTexcoord, 3,
 			bytesPerVertex, offsetTexcoord,
 			getGLNormalize(typeTexcoord)
 		);
 	}
 	
-	if (offsetNormal != 0xFF && typeNormal != 0xFF) {
+	if (offsetNormal != 0xFF && glTypeNormal != GL_INVALID_ENUM) {
 		vao.enableAttribute(2);
 		vao.attribute(
 			2, array,
-			getGLType(typeNormal), 3,
+			glTypeNormal, 3,
 			bytesPerVertex, offsetNormal,
 			getGLNormalize(typeNormal)
 		);
 	}
 	
-	if (offsetTangent != 0xFF && typeTangent != 0xFF) {
+	if (offsetTangent != 0xFF && glTypeTangent != GL_INVALID_ENUM) {
 		vao.enableAttribute(3);
 		vao.attribute(
 			3, array,
-			getGLType(typeTangent), 3,
+			glTypeTangent, 3,
 			bytesPerVertex, offsetTangent,
 			getGLNormalize(typeTangent)
 		);
 	}
 	
-	if (offsetBinormal != 0xFF && typeBinormal != 0xFF) {
+	if (offsetBinormal != 0xFF && glTypeBinormal != GL_INVALID_ENUM) {
 		vao.enableAttribute(4);
 		vao.attribute(
 			4, array,
-			getGLType(typeBinormal), 3,
+			glTypeBinormal, 3,
 			bytesPerVertex, offsetBinormal,
 			getGLNormalize(typeBinormal)
 		);
