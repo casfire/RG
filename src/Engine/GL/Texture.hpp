@@ -45,18 +45,16 @@ namespace Engine { namespace GL {
 		/* Create a new 1D texture */
 		Texture1D();
 		
-		/* Create a new 1D texture and set image data */
+		/* Create a new 1D texture and set pixel data */
 		Texture1D(
 			GLsizei width,
-			GLenum format, GLenum type, const GLvoid *data,
-			bool compress = true
+			GLenum format, GLenum type, const GLvoid *data, bool compress = true
 		);
 		
-		/* Set image data */
-		void image(
+		/* Set pixel data */
+		void setPixels(
 			GLsizei width,
-			GLenum format, GLenum type, const GLvoid *data,
-			bool compress = true
+			GLenum format, GLenum type, const GLvoid *data, bool compress = true
 		);
 		
 	};
@@ -69,18 +67,16 @@ namespace Engine { namespace GL {
 		/* Create a new 2D texture */
 		Texture2D();
 		
-		/* Create a new 2D texture and set image data */
+		/* Create a new 2D texture and set pixel data */
 		Texture2D(
 			GLsizei width, GLsizei height,
-			GLenum format, GLenum type, const GLvoid *data,
-			bool compress = true
+			GLenum format, GLenum type, const GLvoid *data, bool compress = true
 		);
 		
-		/* Set image data */
-		void image(
+		/* Set pixel data */
+		void setPixels(
 			GLsizei width, GLsizei height,
-			GLenum format, GLenum type, const GLvoid *data,
-			bool compress = true
+			GLenum format, GLenum type, const GLvoid *data, bool compress = true
 		);
 		
 	};
@@ -93,18 +89,16 @@ namespace Engine { namespace GL {
 		/* Create a new 2D texture */
 		Texture3D();
 		
-		/* Create a new 2D texture and set image data */
+		/* Create a new 2D texture and set pixel data */
 		Texture3D(
 			GLsizei width, GLsizei height, GLsizei depth,
-			GLenum format, GLenum type, const GLvoid *data,
-			bool compress = true
+			GLenum format, GLenum type, const GLvoid *data, bool compress = true
 		);
 		
-		/* Set image data */
-		void image(
+		/* Set pixel data */
+		void setPixels(
 			GLsizei width, GLsizei height, GLsizei depth,
-			GLenum format, GLenum type, const GLvoid *data,
-			bool compress = true
+			GLenum format, GLenum type, const GLvoid *data, bool compress = true
 		);
 		
 	};

@@ -61,17 +61,15 @@ GL::Texture1D::Texture1D()
 
 GL::Texture1D::Texture1D(
 	GLsizei width,
-	GLenum format, GLenum type, const GLvoid *data,
-	bool compress)
+	GLenum format, GLenum type, const GLvoid *data, bool compress)
 : Texture(GL_TEXTURE_1D)
 {
-	image(width, format, type, data, compress);
+	setPixels(width, format, type, data, compress);
 }
 
-void GL::Texture1D::image(
+void GL::Texture1D::setPixels(
 	GLsizei width,
-	GLenum format, GLenum type, const GLvoid *data,
-	bool compress)
+	GLenum format, GLenum type, const GLvoid *data, bool compress)
 {
 	bind();
 	glTexImage1D(
@@ -91,17 +89,15 @@ GL::Texture2D::Texture2D()
 
 GL::Texture2D::Texture2D(
 	GLsizei width, GLsizei height,
-	GLenum format, GLenum type, const GLvoid *data,
-	bool compress)
+	GLenum format, GLenum type, const GLvoid *data, bool compress)
 : Texture(GL_TEXTURE_2D)
 {
-	image(width, height, format, type, data, compress);
+	setPixels(width, height, format, type, data, compress);
 }
 
-void GL::Texture2D::image(
+void GL::Texture2D::setPixels(
 	GLsizei width, GLsizei height,
-	GLenum format, GLenum type, const GLvoid *data,
-	bool compress)
+	GLenum format, GLenum type, const GLvoid *data, bool compress)
 {
 	bind();
 	glTexImage2D(
@@ -121,17 +117,15 @@ GL::Texture3D::Texture3D()
 
 GL::Texture3D::Texture3D(
 	GLsizei width, GLsizei height, GLsizei depth,
-	GLenum format, GLenum type, const GLvoid *data,
-	bool compress)
+	GLenum format, GLenum type, const GLvoid *data, bool compress)
 : Texture(GL_TEXTURE_3D)
 {
-	image(width, height, depth, format, type, data, compress);
+	setPixels(width, height, depth, format, type, data, compress);
 }
 
-void GL::Texture3D::image(
+void GL::Texture3D::setPixels(
 	GLsizei width, GLsizei height, GLsizei depth,
-	GLenum format, GLenum type, const GLvoid *data,
-	bool compress)
+	GLenum format, GLenum type, const GLvoid *data, bool compress)
 {
 	bind();
 	glTexImage3D(

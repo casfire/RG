@@ -10,59 +10,48 @@ using std::uint16_t;
 using std::uint32_t;
 using std::size_t;
 
-inline uint8_t read8(std::istream &in) {
-	return static_cast<uint8_t>(in.get());
-}
 
-inline uint16_t read16(std::istream &in) {
-	uint16_t t = 0;
-	t |= static_cast<uint16_t>(in.get()) << 0;
-	t |= static_cast<uint16_t>(in.get()) << 8;
-	return t;
-}
 
-inline uint32_t read32(std::istream &in) {
-	uint32_t t = 0;
-	t |= static_cast<uint32_t>(in.get()) << 0;
-	t |= static_cast<uint32_t>(in.get()) << 8;
-	t |= static_cast<uint32_t>(in.get()) << 16;
-	t |= static_cast<uint32_t>(in.get()) << 24;
-	return t;
-}
+/* CFRT Header */
 
-struct Header {
-	size_t width;
-	size_t height;
-	size_t depth;
-	size_t channels;
-	size_t bytes;
-	size_t size;
+struct CFRTHeader {
+	uint32_t magic;
+	uint32_t version;
+	uint16_t width;
+	uint16_t height;
+	uint16_t depth;
+	uint8_t  channels;
+	uint8_t  bytes;
+	inline void read(std::istream &stream);
+	inline void readPixels(std::istream &stream, std::vector<char> &data);
+	inline GLenum getFormat();
+	inline GLenum getType();
+	inline size_t getSize();
 };
 
-inline Header readHeader(std::istream &stream) {
-	Header h;
-	if (read32(stream) != 0x54524643) {
-		throw A::LoadException("Invalid magic number.");
-	} else if (read32(stream) != 1) {
-		throw A::LoadException("Invalid version.");
-	}
-	h.width    = static_cast<size_t>(read16(stream));
-	h.height   = static_cast<size_t>(read16(stream));
-	h.depth    = static_cast<size_t>(read16(stream));
-	h.channels = static_cast<size_t>(read8 (stream));
-	h.bytes    = static_cast<size_t>(read8 (stream));
+void CFRTHeader::read(std::istream &stream) {
+	stream.read(reinterpret_cast<char*>(this), 16);
 	if (!stream.good()) {
 		throw A::LoadException("Failed to read header.");
-	} else if (h.channels == 0 || h.channels > 4) {
+	} else if (magic != 0x54524643) {
+		throw A::LoadException("Invalid magic number.");
+	} else if (version != 1) {
+		throw A::LoadException("Invalid version.");
+	} else if (channels == 0 || channels > 4) {
 		throw A::LoadException("Invalid number of channels.");
-	} else if (h.bytes == 0 || h.bytes == 3 || h.bytes > 4) {
+	} else if (bytes == 0 || bytes == 3 || bytes > 4) {
 		throw A::LoadException("Invalid number of bytes per color.");
 	}
-	h.size = h.width * h.height * h.depth * h.channels * h.bytes;
-	return h;
 }
 
-inline GLenum getFormat(size_t channels) {
+void CFRTHeader::readPixels(std::istream &stream, std::vector<char> &pixels)
+{
+	pixels.resize(getSize());
+	stream.read(pixels.data(), pixels.size());
+	if (!stream.good()) throw A::LoadException("Failed to read pixels.");
+}
+
+GLenum CFRTHeader::getFormat() {
 	switch (channels) {
 	default:
 	case 4: return GL_RGBA;
@@ -72,7 +61,7 @@ inline GLenum getFormat(size_t channels) {
 	}
 }
 
-inline GLenum getType(size_t bytes) {
+GLenum CFRTHeader::getType() {
 	switch (bytes) {
 	default:
 	case 1: return GL_UNSIGNED_BYTE;
@@ -81,23 +70,31 @@ inline GLenum getType(size_t bytes) {
 	}
 }
 
+size_t CFRTHeader::getSize()
+{
+	return
+		  static_cast<size_t>(width)
+		* static_cast<size_t>(height)
+		* static_cast<size_t>(depth)
+		* static_cast<size_t>(channels)
+		* static_cast<size_t>(bytes);
+}
+
+
 
 /* Engine::Asset::CFRTexture1D */
 
 void A::CFRTexture1D::load(Storage&, std::istream &stream)
 {
-	Header h = readHeader(stream);
-	if (h.depth != 1) {
-		throw A::LoadException("Depth is not 1.");
-	} else if (h.height != 1) {
-		throw A::LoadException("Height is not 1.");
-	}
-	std::vector<char> pixels(h.size);
-	stream.read(pixels.data(), h.size);
-	if (!stream.good()) throw A::LoadException("Failed to read pixels.");
-	texture.image(
-		h.width,
-		getFormat(h.channels), getType(h.bytes), pixels.data()
+	CFRTHeader header;
+	header.read(stream);
+	if (header.depth  != 1) throw A::LoadException("Depth is not 1.");
+	if (header.height != 1) throw A::LoadException("Height is not 1.");
+	std::vector<char> pixels;
+	header.readPixels(stream, pixels);
+	texture.setPixels(
+		header.width,
+		header.getFormat(), header.getType(), pixels.data()
 	);
 }
 
@@ -112,16 +109,14 @@ const GL::Texture1D& A::CFRTexture1D::get()
 
 void A::CFRTexture2D::load(Storage&, std::istream &stream)
 {
-	Header h = readHeader(stream);
-	if (h.depth != 1) {
-		throw A::LoadException("Depth is not 1.");
-	}
-	std::vector<char> pixels(h.size);
-	stream.read(pixels.data(), h.size);
-	if (!stream.good()) throw A::LoadException("Failed to read pixels.");
-	texture.image(
-		h.width, h.height,
-		getFormat(h.channels), getType(h.bytes), pixels.data()
+	CFRTHeader header;
+	header.read(stream);
+	if (header.depth != 1) throw A::LoadException("Depth is not 1.");
+	std::vector<char> pixels;
+	header.readPixels(stream, pixels);
+	texture.setPixels(
+		header.width, header.height,
+		header.getFormat(), header.getType(), pixels.data()
 	);
 }
 
@@ -136,13 +131,13 @@ const GL::Texture2D& A::CFRTexture2D::get()
 
 void A::CFRTexture3D::load(Storage&, std::istream &stream)
 {
-	Header h = readHeader(stream);
-	std::vector<char> pixels(h.size);
-	stream.read(pixels.data(), h.size);
-	if (!stream.good()) throw A::LoadException("Failed to read pixels.");
-	texture.image(
-		h.width, h.height, h.depth,
-		getFormat(h.channels), getType(h.bytes), pixels.data()
+	CFRTHeader header;
+	header.read(stream);
+	std::vector<char> pixels;
+	header.readPixels(stream, pixels);
+	texture.setPixels(
+		header.width, header.height, header.depth,
+		header.getFormat(), header.getType(), pixels.data()
 	);
 }
 
