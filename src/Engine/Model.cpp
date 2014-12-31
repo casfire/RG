@@ -11,7 +11,7 @@ using Engine::Model;
 Model::Model(MainEngine &engine, const std::string &file)
 : engine(engine)
 {
-	geometry = &engine.storage.grab<Asset::CFRGeometry>(file);	
+	geometry = &engine.storage.grab<Asset::CFRGeometry>(file);
 }
 
 Model::~Model()

@@ -5,7 +5,6 @@
 #include <cstddef> // std::size_t
 
 namespace GL = Engine::GL;
-using Engine::Asset::BaseAsset;
 using Engine::Asset::LoadException;
 using Engine::Asset::CFRGeometry;
 using std::uint8_t;
@@ -13,17 +12,54 @@ using std::uint16_t;
 using std::uint32_t;
 using std::size_t;
 
-inline uint8_t read8(std::istream &in) {
-	return static_cast<uint8_t>(in.get());
+struct CFRGHeader {
+	uint32_t magic;
+	uint32_t version;
+	uint32_t countElements;
+	uint32_t countVertices;
+	uint8_t  bytesPerVertex;
+	uint8_t  bytesPerElement;
+	uint8_t  offsetPosition;
+	uint8_t    typePosition;
+	uint8_t  offsetTexcoord;
+	uint8_t    typeTexcoord;
+	uint8_t  offsetNormal;
+	uint8_t    typeNormal;
+	uint8_t  offsetTangent;
+	uint8_t    typeTangent;
+	uint8_t  offsetBinormal;
+	uint8_t    typeBinormal;
+	uint8_t  unused1, unused2, unused3, unused4;
+	inline void read(std::istream &stream);
+	inline void readVertices(std::istream &stream, std::vector<char> &data);
+	inline void readElements(std::istream &stream, std::vector<char> &data);
+};
+
+void CFRGHeader::read(std::istream &stream) {
+	stream.read(reinterpret_cast<char*>(this), 32);
+	if (!stream.good()) {
+		throw LoadException("Failed to read header.");
+	} else if (magic != 0x47524643) {
+		throw LoadException("Invalid magic number.");
+	} else if (version != 1) {
+		throw LoadException("Invalid version.");
+	} else if (countElements == 0) {
+		throw LoadException("No elements.");
+	} else if (countVertices == 0 || bytesPerVertex == 0) {
+		throw LoadException("No vertices.");
+	}
 }
 
-inline uint32_t read32(std::istream &in) {
-	uint32_t t = 0;
-	t |= static_cast<uint32_t>(in.get()) << 0;
-	t |= static_cast<uint32_t>(in.get()) << 8;
-	t |= static_cast<uint32_t>(in.get()) << 16;
-	t |= static_cast<uint32_t>(in.get()) << 24;
-	return t;
+void CFRGHeader::readVertices(std::istream &stream, std::vector<char> &data) {
+	data.resize(static_cast<size_t>(countVertices) * static_cast<size_t>(bytesPerVertex));
+	stream.read(data.data(), data.size());
+	if (!stream.good()) throw LoadException("Failed to read vertices.");
+}
+
+void CFRGHeader::readElements(std::istream &stream, std::vector<char> &data) {
+	data.resize(static_cast<size_t>(countElements) * static_cast<size_t>(bytesPerElement));
+	stream.read(data.data(), data.size());
+	if (!stream.good()) throw LoadException("Failed to read elements.");
 }
 
 inline GLenum getGLType(uint8_t type) {
@@ -47,119 +83,84 @@ inline GLboolean getGLNormalize(uint8_t type) {
 
 void CFRGeometry::load(Storage&, std::istream &stream)
 {
-	if (read32(stream) != 0x47524643) {
-		throw LoadException("Invalid magic number.");
-	} else if (read32(stream) != 1) {
-		throw LoadException("Invalid version.");
-	}
-	uint32_t countElements   = read32(stream);
-	uint32_t countVertices   = read32(stream);
-	uint8_t  bytesPerVertex  = read8(stream);
-	uint8_t  bytesPerElement = read8(stream);
+	CFRGHeader header;
+	header.read(stream);
 	
-	uint8_t offsetPosition = read8(stream);
-	uint8_t   typePosition = read8(stream);
-	uint8_t offsetTexcoord = read8(stream);
-	uint8_t   typeTexcoord = read8(stream);
-	uint8_t offsetNormal   = read8(stream);
-	uint8_t   typeNormal   = read8(stream);
-	uint8_t offsetTangent  = read8(stream);
-	uint8_t   typeTangent  = read8(stream);
-	uint8_t offsetBinormal = read8(stream);
-	uint8_t   typeBinormal = read8(stream);
-	stream.ignore(4);
-		
-	if (!stream.good()) {
-		throw LoadException("Failed to read header.");
-	} else if (bytesPerElement == 0 || bytesPerElement == 3 || bytesPerElement > 4) {
-		throw LoadException("Invalid number of bytes per element.");
-	} else if (countElements == 0) {
-		throw LoadException("No elements.");
-	} else if (countVertices == 0 || bytesPerVertex == 0) {
-		throw LoadException("No vertices.");
-	}
-	
-	GLenum glTypePositon  = getGLType(typePosition);
-	GLenum glTypeTexcoord = getGLType(typeTexcoord);
-	GLenum glTypeNormal   = getGLType(typeNormal);
-	GLenum glTypeTangent  = getGLType(typeTangent);
-	GLenum glTypeBinormal = getGLType(typeBinormal);
+	GLenum glTypePositon  = getGLType(header.typePosition);
+	GLenum glTypeTexcoord = getGLType(header.typeTexcoord);
+	GLenum glTypeNormal   = getGLType(header.typeNormal);
+	GLenum glTypeTangent  = getGLType(header.typeTangent);
+	GLenum glTypeBinormal = getGLType(header.typeBinormal);
 	
 	std::vector<char> data;
-	
-	data.resize(static_cast<size_t>(countVertices) * static_cast<size_t>(bytesPerVertex));
-	stream.read(data.data(), data.size());
-	if (!stream.good()) throw LoadException("Failed to read vertices.");
+	header.readVertices(stream, data);
 	GL::ArrayBuffer array(data.size(), data.data());
 	
-	if (offsetPosition != 0xFF && glTypePositon != GL_INVALID_ENUM) {
+	if (header.offsetPosition != 0xFF && glTypePositon != GL_INVALID_ENUM) {
 		vao.enableAttribute(0);
 		vao.attribute(
 			0, array,
 			glTypePositon, 3,
-			bytesPerVertex, offsetPosition,
-			getGLNormalize(typePosition)
+			header.bytesPerVertex, header.offsetPosition,
+			getGLNormalize(header.typePosition)
 		);
 	}
 	
-	if (offsetTexcoord != 0xFF && glTypeTexcoord != GL_INVALID_ENUM) {
+	if (header.offsetTexcoord != 0xFF && glTypeTexcoord != GL_INVALID_ENUM) {
 		vao.enableAttribute(1);
 		vao.attribute(
 			1, array,
 			glTypeTexcoord, 3,
-			bytesPerVertex, offsetTexcoord,
-			getGLNormalize(typeTexcoord)
+			header.bytesPerVertex, header.offsetTexcoord,
+			getGLNormalize(header.typeTexcoord)
 		);
 	}
 	
-	if (offsetNormal != 0xFF && glTypeNormal != GL_INVALID_ENUM) {
+	if (header.offsetNormal != 0xFF && glTypeNormal != GL_INVALID_ENUM) {
 		vao.enableAttribute(2);
 		vao.attribute(
 			2, array,
 			glTypeNormal, 3,
-			bytesPerVertex, offsetNormal,
-			getGLNormalize(typeNormal)
+			header.bytesPerVertex, header.offsetNormal,
+			getGLNormalize(header.typeNormal)
 		);
 	}
 	
-	if (offsetTangent != 0xFF && glTypeTangent != GL_INVALID_ENUM) {
+	if (header.offsetTangent != 0xFF && glTypeTangent != GL_INVALID_ENUM) {
 		vao.enableAttribute(3);
 		vao.attribute(
 			3, array,
 			glTypeTangent, 3,
-			bytesPerVertex, offsetTangent,
-			getGLNormalize(typeTangent)
+			header.bytesPerVertex, header.offsetTangent,
+			getGLNormalize(header.typeTangent)
 		);
 	}
 	
-	if (offsetBinormal != 0xFF && glTypeBinormal != GL_INVALID_ENUM) {
+	if (header.offsetBinormal != 0xFF && glTypeBinormal != GL_INVALID_ENUM) {
 		vao.enableAttribute(4);
 		vao.attribute(
 			4, array,
 			glTypeBinormal, 3,
-			bytesPerVertex, offsetBinormal,
-			getGLNormalize(typeBinormal)
+			header.bytesPerVertex, header.offsetBinormal,
+			getGLNormalize(header.typeBinormal)
 		);
 	}
 	
-	data.resize(static_cast<size_t>(countElements) * static_cast<size_t>(bytesPerElement));
-	stream.read(data.data(), data.size());
-	if (!stream.good()) throw LoadException("Failed to read elements.");
-	
-	switch (bytesPerElement) {
+	header.readElements(stream, data);
+	switch (header.bytesPerElement) {
 	case 1:
 		vao.set(GL::ElementBuffer8(
-			countElements, reinterpret_cast<uint8_t*>(data.data())
+			header.countElements, reinterpret_cast<uint8_t*>(data.data())
 		));
 		break;
 	case 2:
 		vao.set(GL::ElementBuffer16(
-			countElements, reinterpret_cast<uint16_t*>(data.data())
+			header.countElements, reinterpret_cast<uint16_t*>(data.data())
 		));
 		break;
 	case 4:
 		vao.set(GL::ElementBuffer32(
-			countElements, reinterpret_cast<uint32_t*>(data.data())
+			header.countElements, reinterpret_cast<uint32_t*>(data.data())
 		));
 		break;
 	}

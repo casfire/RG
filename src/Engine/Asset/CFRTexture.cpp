@@ -26,7 +26,7 @@ struct CFRTHeader {
 	uint8_t  channels;
 	uint8_t  bytes;
 	inline void read(std::istream &stream);
-	inline void readPixels(std::istream &stream, std::vector<char> &data);
+	inline void readPixels(std::istream &stream, std::vector<char> &pixels);
 	inline GLenum getFormat();
 	inline GLenum getType();
 	inline size_t getSize();
