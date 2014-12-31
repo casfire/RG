@@ -2,34 +2,39 @@
 #include <sstream>
 #include <fstream>
 
-namespace GL = Engine::GL;
+using Engine::GL::Shader;
+using Engine::GL::ShaderFile;
+using Engine::GL::VertexShader;
+using Engine::GL::FragmentShader;
+using Engine::GL::GeometryShader;
+using Engine::GL::ShaderCompileException;
 
 
 
-/* Engine::GL::Shader */
+/* Shader */
 
-GL::Shader::Shader(GLenum type)
+Shader::Shader(GLenum type)
 : Object(glCreateShader(type)), type(type)
 {}
 
-GL::Shader::~Shader()
+Shader::~Shader()
 {
 	glDeleteShader(objectID);
 }
 
-GL::Shader::Shader(GLenum type, const GLchar *source)
+Shader::Shader(GLenum type, const GLchar *source)
 : Object(glCreateShader(type)), type(type)
 {
 	compile(source);
 }
 
-GL::Shader::Shader(GLenum type, const ShaderFile &file)
+Shader::Shader(GLenum type, const ShaderFile &file)
 : Object(glCreateShader(type)), type(type)
 {
 	compile(file);
 }
 
-void GL::Shader::compile(const GLchar *source)
+void Shader::compile(const GLchar *source)
 {
 	glShaderSource(objectID, 1, &source, NULL);
 	glCompileShader(objectID);
@@ -38,24 +43,24 @@ void GL::Shader::compile(const GLchar *source)
 	}
 }
 
-void GL::Shader::compile(const ShaderFile &file)
+void Shader::compile(const ShaderFile &file)
 {
 	compile(static_cast<const GLchar*>(file.contents.data()));
 }
 
-bool GL::Shader::isCompiled() const
+bool Shader::isCompiled() const
 {
 	GLint status = GL_FALSE;
 	glGetShaderiv(objectID, GL_COMPILE_STATUS, &status);
 	return status != GL_FALSE;
 }
 
-GLenum GL::Shader::getType() const
+GLenum Shader::getType() const
 {
 	return type;
 }
 
-const char* GL::Shader::getTypeName() const
+const char* Shader::getTypeName() const
 {
 	switch (type) {
 		//case GL_COMPUTE_SHADER: return "GL_COMPUTE_SHADER";
@@ -70,9 +75,9 @@ const char* GL::Shader::getTypeName() const
 
 
 
-/* Engine::GL::ShaderFile */
+/* ShaderFile */
 
-GL::ShaderFile::ShaderFile(const std::string &filename)
+ShaderFile::ShaderFile(const std::string &filename)
 {
 	std::ifstream stream;
 	stream.exceptions(std::ifstream::failbit);
@@ -88,55 +93,55 @@ GL::ShaderFile::ShaderFile(const std::string &filename)
 
 
 
-/* Engine::GL::VertexShader */
+/* VertexShader */
 
-GL::VertexShader::VertexShader()
+VertexShader::VertexShader()
 : Shader(GL_VERTEX_SHADER)
 {}
 
-GL::VertexShader::VertexShader(const GLchar *source)
+VertexShader::VertexShader(const GLchar *source)
 : Shader(GL_VERTEX_SHADER, source)
 {}
 
-GL::VertexShader::VertexShader(const ShaderFile &file)
+VertexShader::VertexShader(const ShaderFile &file)
 : Shader(GL_VERTEX_SHADER, file)
 {}
 
 
 
-/* Engine::GL::FragmentShader */
+/* FragmentShader */
 
-GL::FragmentShader::FragmentShader()
+FragmentShader::FragmentShader()
 : Shader(GL_FRAGMENT_SHADER)
 {}
 
-GL::FragmentShader::FragmentShader(const GLchar *source)
+FragmentShader::FragmentShader(const GLchar *source)
 : Shader(GL_FRAGMENT_SHADER, source)
 {}
 
-GL::FragmentShader::FragmentShader(const ShaderFile &file)
+FragmentShader::FragmentShader(const ShaderFile &file)
 : Shader(GL_FRAGMENT_SHADER, file)
 {}
 
 
 
-/* Engine::GL::GeometryShader */
+/* GeometryShader */
 
-GL::GeometryShader::GeometryShader()
+GeometryShader::GeometryShader()
 : Shader(GL_GEOMETRY_SHADER)
 {}
 
-GL::GeometryShader::GeometryShader(const GLchar *source)
+GeometryShader::GeometryShader(const GLchar *source)
 : Shader(GL_GEOMETRY_SHADER, source)
 {}
 
-GL::GeometryShader::GeometryShader(const ShaderFile &file)
+GeometryShader::GeometryShader(const ShaderFile &file)
 : Shader(GL_GEOMETRY_SHADER, file)
 {}
 
 
 
-/* Engine::GL::ShaderCompileException */
+/* ShaderCompileException */
 
 template <typename T>
 inline const std::string to_string(const T &value)
@@ -158,14 +163,14 @@ inline const char* fillShaderInfoLog(GLuint ID, std::vector<char> &log)
 	return static_cast<const char*>(log.data());
 }
 
-GL::ShaderCompileException::ShaderCompileException(const Shader &shader)
+ShaderCompileException::ShaderCompileException(const Shader &shader)
 : Exception(
 	"Failed to compile " + std::string(shader.getTypeName())
 	+ " with ID " + to_string(shader.getObjectID()) + ".\n"
 	+ std::string(fillShaderInfoLog(shader.getObjectID(), compileLog)))
 {}
 
-const char* GL::ShaderCompileException::log() const
+const char* ShaderCompileException::log() const
 {
 	return static_cast<const char*>(compileLog.data());
 }

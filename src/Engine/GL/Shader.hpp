@@ -2,20 +2,12 @@
 #ifndef _ENGINE_GL_SHADER_HPP_
 #define _ENGINE_GL_SHADER_HPP_
 
-#include "Common.hpp"
+#include "Forward.hpp"
+#include "Core.hpp"
 #include <string>
 #include <vector>
 
 namespace Engine { namespace GL {
-	
-	
-	
-	class Shader;
-	class ShaderFile;
-	class VertexShader;
-	class FragmentShader;
-	class GeometryShader;
-	class ShaderCompileException;
 	
 	
 	

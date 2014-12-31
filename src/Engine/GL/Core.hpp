@@ -1,24 +1,19 @@
 #pragma once
-#ifndef _ENGINE_GL_COMMON_HPP_
-#define _ENGINE_GL_COMMON_HPP_
+#ifndef _ENGINE_GL_CORE_HPP_
+#define _ENGINE_GL_CORE_HPP_
 
+#include "Forward.hpp"
 #include "gl_core_3_3.h"
-#include <exception>
-#include <string>
-
 #ifdef near
 	#undef near
 #endif
 #ifdef far
 	#undef far
 #endif
+#include <exception>
+#include <string>
 
 namespace Engine { namespace GL {
-	
-	
-	
-	class Object;
-	class Exception;
 	
 	
 	
@@ -67,4 +62,4 @@ namespace Engine { namespace GL {
 	
 }} // namespace Engine::GL
 
-#endif // _ENGINE_GL_COMMON_HPP_
+#endif // _ENGINE_GL_BASE_HPP_

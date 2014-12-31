@@ -1,13 +1,19 @@
 #include "Buffer.hpp"
 
-namespace GL = Engine::GL;
+using Engine::GL::Buffer;
+using Engine::GL::ElementBuffer;
+using Engine::GL::ElementBuffer8;
+using Engine::GL::ElementBuffer16;
+using Engine::GL::ElementBuffer32;
+using Engine::GL::ArrayBuffer;
+using Engine::GL::UniformBuffer;
 using std::uint8_t;
 using std::uint16_t;
 using std::uint32_t;
 
 
 
-/* Engine::GL::Buffer */
+/* Buffer */
 
 inline GLuint createBuffer()
 {
@@ -16,88 +22,88 @@ inline GLuint createBuffer()
 	return ID;
 }
 
-GL::Buffer::Buffer(GLenum target, GLenum usage)
+Buffer::Buffer(GLenum target, GLenum usage)
 : Object(createBuffer()), target(target), usage(usage)
 {}
 
-GL::Buffer::Buffer(GLenum target, GLenum usage, GLsizeiptr size, const GLvoid *data)
+Buffer::Buffer(GLenum target, GLenum usage, GLsizeiptr size, const GLvoid *data)
 : Object(createBuffer()), target(target), usage(usage)
 {
 	this->data(size, data);
 }
 
-GL::Buffer::~Buffer()
+Buffer::~Buffer()
 {
 	glDeleteBuffers(1, &objectID);
 }
 
-void GL::Buffer::data(GLsizeiptr size, const GLvoid *data)
+void Buffer::data(GLsizeiptr size, const GLvoid *data)
 {
 	bind();
 	glBufferData(target, size, data, usage);
 	unbind();
 }
 
-void GL::Buffer::subData(GLintptr offset, GLsizeiptr size, const GLvoid *data)
+void Buffer::subData(GLintptr offset, GLsizeiptr size, const GLvoid *data)
 {
 	bind();
 	glBufferSubData(target, offset, size, data);
 	unbind();
 }
 
-void GL::Buffer::bind() const
+void Buffer::bind() const
 {
 	glBindBuffer(target, objectID);
 }
 
-void GL::Buffer::unbind() const
+void Buffer::unbind() const
 {
 	glBindBuffer(target, 0);
 }
 
-GLenum GL::Buffer::getTarget() const
+GLenum Buffer::getTarget() const
 {
 	return target;
 }
 
-GLenum GL::Buffer::getUsage() const
+GLenum Buffer::getUsage() const
 {
 	return usage;
 }
 
 
 
-/* Engine::GL::ElementBuffer */
+/* ElementBuffer */
 
-GL::ElementBuffer::ElementBuffer(GLenum type, GLenum usage)
+ElementBuffer::ElementBuffer(GLenum type, GLenum usage)
 : Buffer(GL_ELEMENT_ARRAY_BUFFER, usage), type(type), count(0)
 {}
 
-GLenum GL::ElementBuffer::getType() const
+GLenum ElementBuffer::getType() const
 {
 	return type;
 }
 
-GLsizei GL::ElementBuffer::getCount() const
+GLsizei ElementBuffer::getCount() const
 {
 	return count;
 }
 
 
 
-/* Engine::GL::ElementBuffer8 */
+/* ElementBuffer8 */
 
-GL::ElementBuffer8::ElementBuffer8(GLenum usage)
+ElementBuffer8::ElementBuffer8(GLenum usage)
 : ElementBuffer(GL_UNSIGNED_BYTE, usage)
 {}
 
-GL::ElementBuffer8::ElementBuffer8(GLsizei count, const uint8_t *elements, GLenum usage)
+ElementBuffer8::ElementBuffer8(GLsizei count, const uint8_t *elements, GLenum usage)
 : ElementBuffer(GL_UNSIGNED_BYTE, usage)
 {
 	this->elements(count, elements);
 }
 
-void GL::ElementBuffer8::elements(GLsizei count, const uint8_t *elements)
+void ElementBuffer8::elements(GLsizei count, const uint8_t *elements)
 {
 	data(sizeof(uint8_t) * count, static_cast<const GLvoid*>(elements));
 	this->count = count;
@@ -105,19 +111,19 @@ void GL::ElementBuffer8::elements(GLsizei count, const uint8_t *elements)
 
 
 
-/* Engine::GL::ElementBuffer16 */
+/* ElementBuffer16 */
 
-GL::ElementBuffer16::ElementBuffer16(GLenum usage)
+ElementBuffer16::ElementBuffer16(GLenum usage)
 : ElementBuffer(GL_UNSIGNED_SHORT, usage)
 {}
 
-GL::ElementBuffer16::ElementBuffer16(GLsizei count, const uint16_t *elements, GLenum usage)
+ElementBuffer16::ElementBuffer16(GLsizei count, const uint16_t *elements, GLenum usage)
 : ElementBuffer(GL_UNSIGNED_SHORT, usage)
 {
 	this->elements(count, elements);
 }
 
-void GL::ElementBuffer16::elements(GLsizei count, const uint16_t *elements)
+void ElementBuffer16::elements(GLsizei count, const uint16_t *elements)
 {
 	data(sizeof(uint16_t) * count, static_cast<const GLvoid*>(elements));
 	this->count = count;
@@ -125,19 +131,19 @@ void GL::ElementBuffer16::elements(GLsizei count, const uint16_t *elements)
 
 
 
-/* Engine::GL::ElementBuffer32 */
+/* ElementBuffer32 */
 
-GL::ElementBuffer32::ElementBuffer32(GLenum usage)
+ElementBuffer32::ElementBuffer32(GLenum usage)
 : ElementBuffer(GL_UNSIGNED_INT, usage)
 {}
 
-GL::ElementBuffer32::ElementBuffer32(GLsizei count, const uint32_t *elements, GLenum usage)
+ElementBuffer32::ElementBuffer32(GLsizei count, const uint32_t *elements, GLenum usage)
 : ElementBuffer(GL_UNSIGNED_INT, usage)
 {
 	this->elements(count, elements);
 }
 
-void GL::ElementBuffer32::elements(GLsizei count, const uint32_t *elements)
+void ElementBuffer32::elements(GLsizei count, const uint32_t *elements)
 {
 	data(sizeof(uint32_t) * count, static_cast<const GLvoid*>(elements));
 	this->count = count;
@@ -145,24 +151,24 @@ void GL::ElementBuffer32::elements(GLsizei count, const uint32_t *elements)
 
 
 
-/* Engine::GL::ArrayBuffer */
+/* ArrayBuffer */
 
-GL::ArrayBuffer::ArrayBuffer(GLenum usage)
+ArrayBuffer::ArrayBuffer(GLenum usage)
 : Buffer(GL_ARRAY_BUFFER, usage)
 {}
 
-GL::ArrayBuffer::ArrayBuffer(GLsizeiptr size, const GLvoid *data, GLenum usage)
+ArrayBuffer::ArrayBuffer(GLsizeiptr size, const GLvoid *data, GLenum usage)
 : Buffer(GL_ARRAY_BUFFER, usage, size, data)
 {}
 
 
 
-/* Engine::GL::UniformBuffer */
+/* UniformBuffer */
 
-GL::UniformBuffer::UniformBuffer(GLenum usage)
+UniformBuffer::UniformBuffer(GLenum usage)
 : Buffer(GL_UNIFORM_BUFFER, usage)
 {}
 
-GL::UniformBuffer::UniformBuffer(GLsizeiptr size, const GLvoid *data, GLenum usage)
+UniformBuffer::UniformBuffer(GLsizeiptr size, const GLvoid *data, GLenum usage)
 : Buffer(GL_ARRAY_BUFFER, usage, size, data)
 {}

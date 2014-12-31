@@ -2,15 +2,10 @@
 #ifndef _ENGINE_GL_VAO_HPP_
 #define _ENGINE_GL_VAO_HPP_
 
-#include "Common.hpp"
+#include "Forward.hpp"
+#include "Core.hpp"
 
 namespace Engine { namespace GL {
-	
-	
-	
-	class Buffer;
-	class ElementBuffer;
-	class ArrayBuffer;
 	
 	
 	

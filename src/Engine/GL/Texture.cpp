@@ -1,8 +1,9 @@
 #include "Texture.hpp"
 
-namespace GL = Engine::GL;
-
-
+using Engine::GL::Texture;
+using Engine::GL::Texture1D;
+using Engine::GL::Texture2D;
+using Engine::GL::Texture3D;
 
 inline GLint getInternalFormat(GLenum format, bool compress)
 {
@@ -23,7 +24,9 @@ inline GLint getInternalFormat(GLenum format, bool compress)
 	}
 }
 
-/* Engine::GL::Texture */
+
+
+/* Texture */
 
 inline GLuint createTexture()
 {
@@ -32,34 +35,34 @@ inline GLuint createTexture()
 	return ID;
 }
 
-GL::Texture::Texture(GLenum target)
+Texture::Texture(GLenum target)
 : Object(createTexture()), target(target)
 {}
 
-GL::Texture::~Texture()
+Texture::~Texture()
 {
 	glDeleteTextures(1, &objectID);
 }
 
-void GL::Texture::bind() const
+void Texture::bind() const
 {
 	glBindTexture(target, objectID);
 }
 
-void GL::Texture::unbind() const
+void Texture::unbind() const
 {
 	glBindTexture(target, objectID);
 }
 
 
 
-/* Engine::GL::Texture1D */
+/* Texture1D */
 
-GL::Texture1D::Texture1D()
+Texture1D::Texture1D()
 : Texture(GL_TEXTURE_1D)
 {}
 
-GL::Texture1D::Texture1D(
+Texture1D::Texture1D(
 	GLsizei width,
 	GLenum format, GLenum type, const GLvoid *data, bool compress)
 : Texture(GL_TEXTURE_1D)
@@ -67,7 +70,7 @@ GL::Texture1D::Texture1D(
 	setPixels(width, format, type, data, compress);
 }
 
-void GL::Texture1D::setPixels(
+void Texture1D::setPixels(
 	GLsizei width,
 	GLenum format, GLenum type, const GLvoid *data, bool compress)
 {
@@ -81,13 +84,13 @@ void GL::Texture1D::setPixels(
 
 
 
-/* Engine::GL::Texture2D */
+/* Texture2D */
 
-GL::Texture2D::Texture2D()
+Texture2D::Texture2D()
 : Texture(GL_TEXTURE_2D)
 {}
 
-GL::Texture2D::Texture2D(
+Texture2D::Texture2D(
 	GLsizei width, GLsizei height,
 	GLenum format, GLenum type, const GLvoid *data, bool compress)
 : Texture(GL_TEXTURE_2D)
@@ -95,7 +98,7 @@ GL::Texture2D::Texture2D(
 	setPixels(width, height, format, type, data, compress);
 }
 
-void GL::Texture2D::setPixels(
+void Texture2D::setPixels(
 	GLsizei width, GLsizei height,
 	GLenum format, GLenum type, const GLvoid *data, bool compress)
 {
@@ -109,13 +112,13 @@ void GL::Texture2D::setPixels(
 
 
 
-/* Engine::GL::Texture3D */
+/* Texture3D */
 
-GL::Texture3D::Texture3D()
+Texture3D::Texture3D()
 : Texture(GL_TEXTURE_3D)
 {}
 
-GL::Texture3D::Texture3D(
+Texture3D::Texture3D(
 	GLsizei width, GLsizei height, GLsizei depth,
 	GLenum format, GLenum type, const GLvoid *data, bool compress)
 : Texture(GL_TEXTURE_3D)
@@ -123,7 +126,7 @@ GL::Texture3D::Texture3D(
 	setPixels(width, height, depth, format, type, data, compress);
 }
 
-void GL::Texture3D::setPixels(
+void Texture3D::setPixels(
 	GLsizei width, GLsizei height, GLsizei depth,
 	GLenum format, GLenum type, const GLvoid *data, bool compress)
 {

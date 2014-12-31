@@ -1,7 +1,7 @@
 #include "VAO.hpp"
 #include "Buffer.hpp"
 
-namespace GL = Engine::GL;
+using Engine::GL::VAO;
 
 inline GLuint createVAO()
 {
@@ -10,32 +10,32 @@ inline GLuint createVAO()
 	return ID;
 }
 
-GL::VAO::VAO()
+VAO::VAO()
 : Object(createVAO()), type(GL_UNSIGNED_SHORT), count(0)
 {}
 
-GL::VAO::VAO(const GL::ElementBuffer &elements)
+VAO::VAO(const ElementBuffer &elements)
 : Object(createVAO())
 {
 	set(elements);
 }
 
-GL::VAO::~VAO()
+VAO::~VAO()
 {
 	glDeleteVertexArrays(1, &objectID);
 }
 
-void GL::VAO::bind() const
+void VAO::bind() const
 {
 	glBindVertexArray(objectID);
 }
 
-void GL::VAO::unbind() const
+void VAO::unbind() const
 {
 	glBindVertexArray(0);
 }
 
-void GL::VAO::set(const GL::ElementBuffer &elements)
+void VAO::set(const ElementBuffer &elements)
 {
 	bind();
 	elements.bind();
@@ -45,23 +45,23 @@ void GL::VAO::set(const GL::ElementBuffer &elements)
 	count = elements.getCount();
 }
 
-void GL::VAO::enableAttribute(GLuint index)
+void VAO::enableAttribute(GLuint index)
 {
 	bind();
 	glEnableVertexAttribArray(index);
 	unbind();
 }
 
-void GL::VAO::disableAttribute(GLuint index)
+void VAO::disableAttribute(GLuint index)
 {
 	bind();
 	glDisableVertexAttribArray(index);
 	unbind();
 }
 
-void GL::VAO::attribute(
+void VAO::attribute(
 	GLuint index,
-	const GL::ArrayBuffer &v,
+	const ArrayBuffer &v,
 	GLenum type, GLint size,
 	GLsizei stride, GLsizei start,
 	GLboolean normalized)
@@ -76,9 +76,9 @@ void GL::VAO::attribute(
 	unbind();
 }
 
-void GL::VAO::attributeI(
+void VAO::attributeI(
 	GLuint index,
-	const GL::ArrayBuffer &v,
+	const ArrayBuffer &v,
 	GLenum type, GLint size,
 	GLsizei stride, GLsizei start)
 {
@@ -92,49 +92,49 @@ void GL::VAO::attributeI(
 	unbind();
 }
 
-void GL::VAO::drawPoints() const
+void VAO::drawPoints() const
 {
 	draw(GL_POINTS);
 }
 
-void GL::VAO::drawLines() const
+void VAO::drawLines() const
 {
 	draw(GL_LINES);
 }
 
-void GL::VAO::drawTriangles() const
+void VAO::drawTriangles() const
 {
 	draw(GL_TRIANGLES);
 }
 
-void GL::VAO::drawLineStrip() const
+void VAO::drawLineStrip() const
 {
 	draw(GL_LINE_STRIP);
 }
 
-void GL::VAO::drawLineLoop() const
+void VAO::drawLineLoop() const
 {
 	draw(GL_LINE_LOOP);
 }
 
-void GL::VAO::drawTriangleStrip() const
+void VAO::drawTriangleStrip() const
 {
 	draw(GL_TRIANGLE_STRIP);
 }
 
-void GL::VAO::drawTriangleFan() const
+void VAO::drawTriangleFan() const
 {
 	draw(GL_TRIANGLE_FAN);
 }
 
-void GL::VAO::draw(GLenum mode) const
+void VAO::draw(GLenum mode) const
 {
 	bind();
 	glDrawElements(mode, count, type, nullptr);
 	unbind();
 }
 
-void GL::VAO::draw(GLenum mode, GLsizei count, GLsizei offset) const
+void VAO::draw(GLenum mode, GLsizei count, GLsizei offset) const
 {
 	bind();
 	glDrawElements(mode, count, type, reinterpret_cast<const GLvoid*>(offset));

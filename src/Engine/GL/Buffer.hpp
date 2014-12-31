@@ -2,20 +2,11 @@
 #ifndef _ENGINE_GL_BUFFER_HPP_
 #define _ENGINE_GL_BUFFER_HPP_
 
-#include "Common.hpp"
+#include "Forward.hpp"
+#include "Core.hpp"
 #include <cstdint>
 
 namespace Engine { namespace GL {
-	
-	
-	
-	class Buffer;
-	class ElementBuffer;
-	class ElementBuffer8;
-	class ElementBuffer16;
-	class ElementBuffer32;
-	class ArrayBuffer;
-	class UniformBuffer;
 	
 	
 	

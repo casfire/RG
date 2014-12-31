@@ -2,20 +2,13 @@
 #ifndef _ENGINE_GL_TEXTURE_HPP_
 #define _ENGINE_GL_TEXTURE_HPP_
 
-#include "Common.hpp"
+#include "Forward.hpp"
+#include "Core.hpp"
 
 namespace Engine { namespace GL {
 	
 	
 	
-	class Texture;
-	class Texture1D;
-	class Texture2D;
-	class Texture3D;
-	
-	
-	
-	/* Base texture class */
 	class Texture : public Object {
 	public:
 		
