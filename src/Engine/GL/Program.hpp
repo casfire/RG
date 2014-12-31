@@ -58,7 +58,7 @@ namespace Engine { namespace GL {
 	
 	
 	/* Exception thrown when program link fails */
-	class ProgramLinkException : public Exception {
+	class ProgramLinkException : public BaseException {
 	public:
 		
 		/* Return entire link log */

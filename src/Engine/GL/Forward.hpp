@@ -10,7 +10,7 @@ namespace Engine { namespace GL {
 	
 	/* Core.hpp */
 	class Object;
-	class Exception;
+	class BaseException;
 	
 	/* Shader.hpp */
 	class Shader;

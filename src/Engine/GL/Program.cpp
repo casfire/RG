@@ -124,7 +124,7 @@ inline const char* fillProgramInfoLog(GLuint ID, std::vector<char> &log)
 }
 
 ProgramLinkException::ProgramLinkException(const Program &program)
-: Exception(
+: BaseException(
 	"Failed to link program with ID "
 	+ to_string(program.getObjectID()) + ".\n"
 	+ std::string(fillProgramInfoLog(program.getObjectID(), linkLog)))

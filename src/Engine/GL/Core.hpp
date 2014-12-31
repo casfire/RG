@@ -42,11 +42,11 @@ namespace Engine { namespace GL {
 	
 	
 	/* Base class for all catchable OpenGL related exceptions */
-	class Exception : public std::exception {
+	class BaseException : public std::exception {
 	public:
 		
 		/* Create exception and save information */
-		Exception(const std::string &info);
+		BaseException(const std::string &info);
 		
 		/* Return saved information */
 		const char* what() const throw();
@@ -57,6 +57,16 @@ namespace Engine { namespace GL {
 		const std::string exceptionInfo;
 		
 	};
+	
+	
+	
+	/* Get OpenGL information */
+	extern std::string getString(GLenum name);
+	extern std::string getVendor();
+	extern std::string getRenderer();
+	extern std::string getVersion();
+	extern std::string getGLSLVersion();
+	extern std::string getExtensions();
 	
 	
 	

@@ -164,7 +164,7 @@ inline const char* fillShaderInfoLog(GLuint ID, std::vector<char> &log)
 }
 
 ShaderCompileException::ShaderCompileException(const Shader &shader)
-: Exception(
+: BaseException(
 	"Failed to compile " + std::string(shader.getTypeName())
 	+ " with ID " + to_string(shader.getObjectID()) + ".\n"
 	+ std::string(fillShaderInfoLog(shader.getObjectID(), compileLog)))

@@ -103,8 +103,8 @@ namespace Engine { namespace GL {
 	
 	
 	
-	/* Exception thrown when shader compilation fails */
-	class ShaderCompileException : public Exception {
+	/* Thrown when shader compilation fails */
+	class ShaderCompileException : public BaseException {
 	public:
 		
 		/* Return entire compile log */
