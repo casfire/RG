@@ -2,43 +2,48 @@
 #ifndef _ENGINE_CAMERA_HPP_
 #define _ENGINE_CAMERA_HPP_
 
-#include "Transformation.hpp"
-#include <glm/mat4x4.hpp>
+#include "Forward.hpp"
+#include "Node.hpp"
 
 namespace Engine {
 	
 	
 	
-	/* 3D Camera */
-	class Camera : public Transformation {
+	class Camera : public Node {
 	public:
-		
-		/* Create a new camera */
-		Camera(float fov = 1.570796f, float aspect = 1.f,
-			float near = 0.1f, float far = 10000.f);
-		Camera(const Camera &cam);
 		
 		/* Build matrices */
 		glm::mat4 getViewMatrix() const;
 		glm::mat4 getProjectionMatrix() const;
 		
-		/* Projection */
-		void setProjection(float fov, float aspect, float near, float far);
-		void setFov(float fov);
-		void setAspect(float aspect);
-		void setAspect(int windowX, int windowY);
-		void setClip(float near, float far);
+		/* Get projection parameters */
 		float getFov() const;
 		float getAspect() const;
 		float getNear() const;
 		float getFar() const;
 		
+		/* Set projection parameters */
+		void setProjection(float fov, float aspect, float near, float far);
+		void setFov(float fov);
+		void setAspect(float aspect);
+		void setAspect(int windowX, int windowY);
+		void setClip(float near, float far);
+		
 	private:
 		
-		float fov;
-		float aspect;
-		float near;
-		float far;
+		friend class MainEngine;
+		friend class Node;
+		friend class Scene;
+		friend class Model;
+		
+		Camera(Scene &scene);
+		~Camera();
+		
+		Scene &scene;
+		float fov     = 1.570796f;
+		float aspect  = 1.f;
+		float near    = 0.1f;
+		float far     = 10000.f;
 		
 	};
 	

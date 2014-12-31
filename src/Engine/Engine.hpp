@@ -5,7 +5,12 @@
 #include "GL/GL.hpp"
 #include "Asset/Asset.hpp"
 
-#include "Transformation.hpp"
+#include "MainEngine.hpp"
+#include "Scene.hpp"
 #include "Camera.hpp"
+#include "Model.hpp"
+#include "Node.hpp"
+#include "Transform.hpp"
+#include "Exception.hpp"
 
 #endif // _ENGINE_HPP_

@@ -1,2 +1,0 @@
-v /assets/vertex.c
-f fragment.c

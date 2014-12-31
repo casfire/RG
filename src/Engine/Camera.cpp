@@ -1,71 +1,75 @@
 #include "Camera.hpp"
+#include "Scene.hpp"
 #include <glm/gtx/transform.hpp>
 
-namespace E = Engine;
+using Engine::MainEngine;
+using Engine::Node;
+using Engine::Camera;
+using Engine::Scene;
+using Engine::Model;
 
-E::Camera::Camera(float fov, float aspect, float near, float far)
-: fov(fov), aspect(aspect), near(near), far(far)
+Camera::Camera(Scene &scene)
+: scene(scene)
 {}
 
-E::Camera::Camera(const Camera &cam)
-: Transformation(cam), fov(cam.fov), aspect(cam.aspect), near(cam.near), far(cam.far)
+Camera::~Camera()
 {}
 
-glm::mat4 E::Camera::getViewMatrix() const
+glm::mat4 Camera::getViewMatrix() const
 {
 	return glm::mat4_cast(glm::inverse(rotation)) * glm::translate(-position);
 }
 
-glm::mat4 E::Camera::getProjectionMatrix() const
+glm::mat4 Camera::getProjectionMatrix() const
 {
 	return glm::perspective(fov, aspect, near, far);
 }
 
-void E::Camera::setProjection(float fov, float aspect, float near, float far)
+void Camera::setProjection(float fov, float aspect, float near, float far)
 {
 	this->fov = fov;
 	this->aspect = aspect;
 	this->near = near;
 	this->far = far;
+	scene.updateProjection();
 }
 
-void E::Camera::setFov(float fov)
+void Camera::setFov(float fov)
 {
-	this->fov = fov;
+	setProjection(fov, aspect, near, far);
 }
 
-void E::Camera::setAspect(float aspect)
+void Camera::setAspect(float aspect)
 {
-	this->aspect = aspect;
+	setProjection(fov, aspect, near, far);
 }
 
-void E::Camera::setAspect(int windowX, int windowY)
+void Camera::setAspect(int windowX, int windowY)
 {
-	this->aspect = static_cast<float>(windowX) / static_cast<float>(windowY);
+	setAspect(static_cast<float>(windowX) / static_cast<float>(windowY));
 }
 
-void E::Camera::setClip(float near, float far)
+void Camera::setClip(float near, float far)
 {
-	this->near = near;
-	this->far = far;
+	setProjection(fov, aspect, near, far);
 }
 
-float E::Camera::getFov() const
+float Camera::getFov() const
 {
 	return fov;
 }
 
-float E::Camera::getAspect() const
+float Camera::getAspect() const
 {
 	return aspect;
 }
 
-float E::Camera::getNear() const
+float Camera::getNear() const
 {
 	return near;
 }
 
-float E::Camera::getFar() const
+float Camera::getFar() const
 {
 	return far;
 }
