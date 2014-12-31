@@ -3,12 +3,7 @@
 #define _ENGINE_HPP_
 
 #include "GL/GL.hpp"
-
-#include "Asset/Common.hpp"
-#include "Asset/Storage.hpp"
-#include "Asset/GLProgram.hpp"
-#include "Asset/CFRTexture.hpp"
-#include "Asset/CFRGeometry.hpp"
+#include "Asset/Asset.hpp"
 
 #include "Transformation.hpp"
 #include "Camera.hpp"

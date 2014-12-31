@@ -4,9 +4,14 @@
 #include <cctype> // std::isgraph, std::iscntrl
 #include <cstddef> // std::size_t
 
-namespace A = Engine::Asset;
 namespace GL = Engine::GL;
-typedef std::vector<A::Asset*>::iterator AssetIterator;
+using Engine::Asset::BaseAsset;
+using Engine::Asset::LoadException;
+using Engine::Asset::GLProgram;
+using Engine::Asset::GLVertexShader;
+using Engine::Asset::GLFragmentShader;
+using Engine::Asset::GLGeometryShader;
+typedef std::vector<BaseAsset*>::iterator AssetIterator;
 
 
 
@@ -23,54 +28,51 @@ void compileFromStream(std::istream &stream, GL::Shader& shader)
 
 
 
-/* Engine::Asset::GLVertexShader */
+/* GLVertexShader */
 
-void A::GLVertexShader::load(A::Storage &storage, std::istream &stream)
+void GLVertexShader::load(Storage&, std::istream &stream)
 {
-	(void) storage;
 	compileFromStream(stream, shader);
 }
 
-const GL::VertexShader& A::GLVertexShader::get()
+const GL::VertexShader& GLVertexShader::get()
 {
 	return shader;
 }
 
 
 
-/* Engine::Asset::GLFragmentShader */
+/* GLFragmentShader */
 
-void A::GLFragmentShader::load(A::Storage &storage, std::istream &stream)
+void GLFragmentShader::load(Storage&, std::istream &stream)
 {
-	(void) storage;
 	compileFromStream(stream, shader);
 }
 
-const GL::FragmentShader& A::GLFragmentShader::get()
+const GL::FragmentShader& GLFragmentShader::get()
 {
 	return shader;
 }
 
 
 
-/* Engine::Asset::GLGeometryShader */
+/* GLGeometryShader */
 
-void A::GLGeometryShader::load(A::Storage &storage, std::istream &stream)
+void GLGeometryShader::load(Storage&, std::istream &stream)
 {
-	(void) storage;
 	compileFromStream(stream, shader);
 }
 
-const GL::GeometryShader& A::GLGeometryShader::get()
+const GL::GeometryShader& GLGeometryShader::get()
 {
 	return shader;
 }
 
 
 
-/* Engine::Asset::GLProgram */
+/* GLProgram */
 
-void A::GLProgram::load(Storage &storage, std::istream &stream)
+void GLProgram::load(Storage &storage, std::istream &stream)
 {
 	stream.seekg(0, std::ios_base::end);
 	std::streamsize size = stream.tellg();
@@ -92,15 +94,15 @@ void A::GLProgram::load(Storage &storage, std::istream &stream)
 		char type = s[pos];
 		pos++;
 		if (pos >= length) {
-			throw A::LoadException("Unexpected EOF after '" + std::string(1, type) + "'.");
+			throw LoadException("Unexpected EOF after '" + std::string(1, type) + "'.");
 		} else if (std::isgraph(s[pos])) {
-			throw A::LoadException("Shader type must be a single character.");
+			throw LoadException("Shader type must be a single character.");
 		}
 		
 		/* Skip space and non-printable characters */
 		while (pos < length && !std::isgraph(s[pos])) pos++;
 		if (pos >= length) {
-			throw A::LoadException("Unexpected EOF after '" + std::string(1, type) + "'.");
+			throw LoadException("Unexpected EOF after '" + std::string(1, type) + "'.");
 		}
 		
 		/* Read key */
@@ -111,19 +113,19 @@ void A::GLProgram::load(Storage &storage, std::istream &stream)
 		
 		/* Attach shader */
 		if (type == 'v') {
-			A::GLVertexShader& s = storage.grab<A::GLVertexShader>(key);
+			GLVertexShader& s = storage.grab<GLVertexShader>(key);
 			program.attach(s.get());
 			shaders.push_back(&s);
 		} else if (type == 'f') {
-			A::GLFragmentShader& s = storage.grab<A::GLFragmentShader>(key);
+			GLFragmentShader& s = storage.grab<GLFragmentShader>(key);
 			program.attach(s.get());
 			shaders.push_back(&s);
 		} else if (type == 'g') {
-			A::GLGeometryShader& s = storage.grab<A::GLGeometryShader>(key);
+			GLGeometryShader& s = storage.grab<GLGeometryShader>(key);
 			program.attach(s.get());
 			shaders.push_back(&s);
 		} else {
-			throw A::LoadException("Invalid shader type '" + std::string(1, type) + "'.");
+			throw LoadException("Invalid shader type '" + std::string(1, type) + "'.");
 		}
 		
 	}
@@ -131,7 +133,7 @@ void A::GLProgram::load(Storage &storage, std::istream &stream)
 	program.link();
 }
 
-void A::GLProgram::unload(Storage &storage)
+void GLProgram::unload(Storage &storage)
 {
 	AssetIterator end = shaders.end();
 	for (AssetIterator i = shaders.begin(); i != end; i++) {
@@ -140,7 +142,7 @@ void A::GLProgram::unload(Storage &storage)
 	shaders.clear();
 }
 
-const GL::Program& A::GLProgram::get()
+const GL::Program& GLProgram::get()
 {
 	return program;
 }

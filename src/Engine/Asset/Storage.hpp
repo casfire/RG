@@ -2,7 +2,8 @@
 #ifndef _ENGINE_ASSET_STORAGE_HPP_
 #define _ENGINE_ASSET_STORAGE_HPP_
 
-#include "Common.hpp"
+#include "Forward.hpp"
+#include "Base.hpp"
 #include <string>
 #include <map>
 #include <stack>
@@ -23,17 +24,17 @@ namespace Engine { namespace Asset {
 		~Storage();
 		void clear();
 		
-		/* Grab asset - throws Asset::Exception */
+		/* Grab asset - throws Asset::BaseException */
 		template<class T>
 		T& grab(const std::string &key);
 		
 		/* Release asset */
-		void release(Asset &asset);
+		void release(BaseAsset &asset);
 		
 	private:
 		
 		/* Storage */
-		std::map<std::string, Asset*> storage;
+		std::map<std::string, BaseAsset*> storage;
 		
 		/* Path stack */
 		std::stack<std::string> path;
@@ -41,10 +42,10 @@ namespace Engine { namespace Asset {
 		void popPath();
 		
 		/* Retrieve already loaded asset or nullptr */
-		Asset* get(const std::string &file);
+		BaseAsset* get(const std::string &file);
 		
-		/* Load and create asset - throws Asset::Exception */
-		Asset* load(const std::string &file, Asset *obj);
+		/* Load asset - throws Asset::BaseException */
+		BaseAsset* load(const std::string &file, BaseAsset *obj);
 		
 		/* Prevent copying */
 		Storage(const Storage&) = delete;
@@ -61,7 +62,7 @@ T& Engine::Asset::Storage::grab(const std::string &key)
 {
 	std::string file = pushPath(key);
 	try {
-		Engine::Asset::Asset* a = get(file);
+		Engine::Asset::BaseAsset* a = get(file);
 		if (a == nullptr) storage[file] = (a = load(file, new T));
 		a->grabCount++;
 		T* t = dynamic_cast<T*>(a);
@@ -70,7 +71,7 @@ T& Engine::Asset::Storage::grab(const std::string &key)
 		}
 		popPath();
 		return *t;
-	} catch (Engine::Asset::Exception &fail) {
+	} catch (Engine::Asset::BaseException &fail) {
 		fail.pushFile(file);
 		popPath();
 		throw;

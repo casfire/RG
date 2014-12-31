@@ -1,7 +1,8 @@
 #pragma once
-#ifndef _ENGINE_ASSET_COMMON_HPP_
-#define _ENGINE_ASSET_COMMON_HPP_
+#ifndef _ENGINE_ASSET_BASE_HPP_
+#define _ENGINE_ASSET_BASE_HPP_
 
+#include "Forward.hpp"
 #include <string>
 #include <exception>
 #include <ios> // std::ios::failure
@@ -11,24 +12,15 @@ namespace Engine { namespace Asset {
 	
 	
 	
-	class Asset;
-	class Exception;
-	class IOException;
-	class CastException;
-	class LoadException;
-	class Storage;
-	
-	
-	
 	/* Base asset class */
-	class Asset {
+	class BaseAsset {
 	protected:
 		
 		/* Only derived assets can be constructed */
-		Asset();
+		BaseAsset();
 		
 		/* Virtual destructor so derived assets can be deleted */
-		virtual ~Asset();
+		virtual ~BaseAsset();
 		
 		/* Called by Storage to load this asset */
 		virtual void load(Storage &storage, std::istream &in) = 0;
@@ -48,15 +40,15 @@ namespace Engine { namespace Asset {
 		friend class Storage;
 		
 		/* Prevent copying */
-		Asset(const Asset&) = delete;
-		Asset& operator=(const Asset&) = delete;
+		BaseAsset(const BaseAsset&) = delete;
+		BaseAsset& operator=(const BaseAsset&) = delete;
 		
 	};
 	
 	
 	
 	/* Base asset exception */
-	class Exception : public std::exception {
+	class BaseException : public std::exception {
 	public:
 		
 		/* Return saved information */
@@ -65,7 +57,7 @@ namespace Engine { namespace Asset {
 	protected:
 		
 		/* Create exception and save information */
-		Exception(const std::string& info);
+		BaseException(const std::string& info);
 		
 	private:
 		
@@ -81,7 +73,7 @@ namespace Engine { namespace Asset {
 	
 	
 	/* Thrown when IO exception occurs */
-	class IOException : public Exception {
+	class IOException : public BaseException {
 	public:
 		
 		IOException(const std::ios::failure &fail);
@@ -91,7 +83,7 @@ namespace Engine { namespace Asset {
 	
 	
 	/* Thrown when asset type casting fails */
-	class CastException : public Exception {
+	class CastException : public BaseException {
 	public:
 		
 		CastException(const char *from, const char *to);
@@ -101,7 +93,7 @@ namespace Engine { namespace Asset {
 	
 	
 	/* Thrown when asset load fails */
-	class LoadException : public Exception {
+	class LoadException : public BaseException {
 	public:
 		
 		LoadException(const std::string &info);
@@ -112,4 +104,4 @@ namespace Engine { namespace Asset {
 	
 }} // namespace Engine::Asset
 
-#endif // _ENGINE_ASSET_COMMON_HPP_
+#endif // _ENGINE_ASSET_BASE_HPP_

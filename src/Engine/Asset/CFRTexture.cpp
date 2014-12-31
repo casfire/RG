@@ -3,8 +3,11 @@
 #include <cstdint> // std::uintX_t
 #include <cstddef> // std::size_t
 
-namespace A  = Engine::Asset;
 namespace GL = Engine::GL;
+using Engine::Asset::LoadException;
+using Engine::Asset::CFRTexture1D;
+using Engine::Asset::CFRTexture2D;
+using Engine::Asset::CFRTexture3D;
 using std::uint8_t;
 using std::uint16_t;
 using std::uint32_t;
@@ -32,15 +35,15 @@ struct CFRTHeader {
 void CFRTHeader::read(std::istream &stream) {
 	stream.read(reinterpret_cast<char*>(this), 16);
 	if (!stream.good()) {
-		throw A::LoadException("Failed to read header.");
+		throw LoadException("Failed to read header.");
 	} else if (magic != 0x54524643) {
-		throw A::LoadException("Invalid magic number.");
+		throw LoadException("Invalid magic number.");
 	} else if (version != 1) {
-		throw A::LoadException("Invalid version.");
+		throw LoadException("Invalid version.");
 	} else if (channels == 0 || channels > 4) {
-		throw A::LoadException("Invalid number of channels.");
+		throw LoadException("Invalid number of channels.");
 	} else if (bytes == 0 || bytes == 3 || bytes > 4) {
-		throw A::LoadException("Invalid number of bytes per color.");
+		throw LoadException("Invalid number of bytes per color.");
 	}
 }
 
@@ -48,7 +51,7 @@ void CFRTHeader::readPixels(std::istream &stream, std::vector<char> &pixels)
 {
 	pixels.resize(getSize());
 	stream.read(pixels.data(), pixels.size());
-	if (!stream.good()) throw A::LoadException("Failed to read pixels.");
+	if (!stream.good()) throw LoadException("Failed to read pixels.");
 }
 
 GLenum CFRTHeader::getFormat() {
@@ -82,14 +85,14 @@ size_t CFRTHeader::getSize()
 
 
 
-/* Engine::Asset::CFRTexture1D */
+/* CFRTexture1D */
 
-void A::CFRTexture1D::load(Storage&, std::istream &stream)
+void CFRTexture1D::load(Storage&, std::istream &stream)
 {
 	CFRTHeader header;
 	header.read(stream);
-	if (header.depth  != 1) throw A::LoadException("Depth is not 1.");
-	if (header.height != 1) throw A::LoadException("Height is not 1.");
+	if (header.depth  != 1) throw LoadException("Depth is not 1.");
+	if (header.height != 1) throw LoadException("Height is not 1.");
 	std::vector<char> pixels;
 	header.readPixels(stream, pixels);
 	texture.setPixels(
@@ -98,20 +101,20 @@ void A::CFRTexture1D::load(Storage&, std::istream &stream)
 	);
 }
 
-const GL::Texture1D& A::CFRTexture1D::get()
+const GL::Texture1D& CFRTexture1D::get()
 {
 	return texture;
 }
 
 
 
-/* Engine::Asset::CFRTexture2D */
+/* CFRTexture2D */
 
-void A::CFRTexture2D::load(Storage&, std::istream &stream)
+void CFRTexture2D::load(Storage&, std::istream &stream)
 {
 	CFRTHeader header;
 	header.read(stream);
-	if (header.depth != 1) throw A::LoadException("Depth is not 1.");
+	if (header.depth != 1) throw LoadException("Depth is not 1.");
 	std::vector<char> pixels;
 	header.readPixels(stream, pixels);
 	texture.setPixels(
@@ -120,16 +123,16 @@ void A::CFRTexture2D::load(Storage&, std::istream &stream)
 	);
 }
 
-const GL::Texture2D& A::CFRTexture2D::get()
+const GL::Texture2D& CFRTexture2D::get()
 {
 	return texture;
 }
 
 
 
-/* Engine::Asset::CFRTexture2D */
+/* CFRTexture2D */
 
-void A::CFRTexture3D::load(Storage&, std::istream &stream)
+void CFRTexture3D::load(Storage&, std::istream &stream)
 {
 	CFRTHeader header;
 	header.read(stream);
@@ -141,7 +144,7 @@ void A::CFRTexture3D::load(Storage&, std::istream &stream)
 	);
 }
 
-const GL::Texture3D& A::CFRTexture3D::get()
+const GL::Texture3D& CFRTexture3D::get()
 {
 	return texture;
 }

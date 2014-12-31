@@ -1,20 +1,21 @@
 #include "Storage.hpp"
 #include <fstream>
 
-namespace A = Engine::Asset;
-typedef std::map<std::string, A::Asset*>::iterator AssetMapIterator;
+using Engine::Asset::BaseAsset;
+using Engine::Asset::Storage;
+typedef std::map<std::string, BaseAsset*>::iterator AssetMapIterator;
 
-A::Storage::Storage()
+Storage::Storage()
 {
 	path.push("");
 }
 
-A::Storage::~Storage()
+Storage::~Storage()
 {
 	clear();
 }
 
-void A::Storage::clear()
+void Storage::clear()
 {
 	AssetMapIterator end = storage.end();
 	for (AssetMapIterator it = storage.begin(); it != end; ++it) {
@@ -23,7 +24,7 @@ void A::Storage::clear()
 	storage.clear();
 }
 
-void A::Storage::release(A::Asset &asset)
+void Storage::release(BaseAsset &asset)
 {
 	if (--(asset.grabCount) <= 0) {
 		AssetMapIterator it = storage.find(asset.file);
@@ -35,7 +36,7 @@ void A::Storage::release(A::Asset &asset)
 	}
 }
 
-std::string A::Storage::pushPath(const std::string &key)
+std::string Storage::pushPath(const std::string &key)
 {
 	const std::string& base = path.top();
 	if (key.empty()) {
@@ -48,12 +49,12 @@ std::string A::Storage::pushPath(const std::string &key)
 	return file;
 }
 
-void A::Storage::popPath()
+void Storage::popPath()
 {
 	path.pop();
 }
 
-A::Asset* A::Storage::get(const std::string &key)
+BaseAsset* Storage::get(const std::string &key)
 {
 	AssetMapIterator it = storage.find(key);
 	if (it != storage.end()) {
@@ -63,7 +64,7 @@ A::Asset* A::Storage::get(const std::string &key)
 	}
 }
 
-A::Asset* A::Storage::load(const std::string &file, Asset *obj)
+BaseAsset* Storage::load(const std::string &file, BaseAsset *obj)
 {
 	try {
 		std::ifstream stream;
@@ -75,6 +76,7 @@ A::Asset* A::Storage::load(const std::string &file, Asset *obj)
 		stream.close();
 		return obj;
 	} catch (std::ios::failure &fail) {
+		delete obj;
 		throw Engine::Asset::IOException(fail);
 	}
 }

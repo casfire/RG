@@ -2,7 +2,8 @@
 #ifndef _ENGINE_ASSET_CFRGEOMETRY_HPP_
 #define _ENGINE_ASSET_CFRGEOMETRY_HPP_
 
-#include "Common.hpp"
+#include "Forward.hpp"
+#include "Base.hpp"
 #include "../GL/VAO.hpp"
 #include <istream>
 
@@ -11,7 +12,7 @@ namespace Engine { namespace Asset {
 	
 	
 	/* CFR Geometry asset */
-	class CFRGeometry : public virtual Asset {
+	class CFRGeometry : public BaseAsset {
 	public:
 		
 		/* Load geometry */

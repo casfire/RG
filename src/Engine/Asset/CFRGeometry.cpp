@@ -4,8 +4,10 @@
 #include <cstdint> // std::uintX_t
 #include <cstddef> // std::size_t
 
-namespace A  = Engine::Asset;
 namespace GL = Engine::GL;
+using Engine::Asset::BaseAsset;
+using Engine::Asset::LoadException;
+using Engine::Asset::CFRGeometry;
 using std::uint8_t;
 using std::uint16_t;
 using std::uint32_t;
@@ -43,12 +45,12 @@ inline GLboolean getGLNormalize(uint8_t type) {
 	return type & 0b10000000 ? GL_TRUE : GL_FALSE;
 }
 
-void A::CFRGeometry::load(Storage&, std::istream &stream)
+void CFRGeometry::load(Storage&, std::istream &stream)
 {
 	if (read32(stream) != 0x47524643) {
-		throw A::LoadException("Invalid magic number.");
+		throw LoadException("Invalid magic number.");
 	} else if (read32(stream) != 1) {
-		throw A::LoadException("Invalid version.");
+		throw LoadException("Invalid version.");
 	}
 	uint32_t countElements   = read32(stream);
 	uint32_t countVertices   = read32(stream);
@@ -68,13 +70,13 @@ void A::CFRGeometry::load(Storage&, std::istream &stream)
 	stream.ignore(4);
 		
 	if (!stream.good()) {
-		throw A::LoadException("Failed to read header.");
+		throw LoadException("Failed to read header.");
 	} else if (bytesPerElement == 0 || bytesPerElement == 3 || bytesPerElement > 4) {
-		throw A::LoadException("Invalid number of bytes per element.");
+		throw LoadException("Invalid number of bytes per element.");
 	} else if (countElements == 0) {
-		throw A::LoadException("No elements.");
+		throw LoadException("No elements.");
 	} else if (countVertices == 0 || bytesPerVertex == 0) {
-		throw A::LoadException("No vertices.");
+		throw LoadException("No vertices.");
 	}
 	
 	GLenum glTypePositon  = getGLType(typePosition);
@@ -87,7 +89,7 @@ void A::CFRGeometry::load(Storage&, std::istream &stream)
 	
 	data.resize(static_cast<size_t>(countVertices) * static_cast<size_t>(bytesPerVertex));
 	stream.read(data.data(), data.size());
-	if (!stream.good()) throw A::LoadException("Failed to read vertices.");
+	if (!stream.good()) throw LoadException("Failed to read vertices.");
 	GL::ArrayBuffer array(data.size(), data.data());
 	
 	if (offsetPosition != 0xFF && glTypePositon != GL_INVALID_ENUM) {
@@ -142,7 +144,7 @@ void A::CFRGeometry::load(Storage&, std::istream &stream)
 	
 	data.resize(static_cast<size_t>(countElements) * static_cast<size_t>(bytesPerElement));
 	stream.read(data.data(), data.size());
-	if (!stream.good()) throw A::LoadException("Failed to read elements.");
+	if (!stream.good()) throw LoadException("Failed to read elements.");
 	
 	switch (bytesPerElement) {
 	case 1:
@@ -163,7 +165,7 @@ void A::CFRGeometry::load(Storage&, std::istream &stream)
 	}
 }
 
-const GL::VAO& A::CFRGeometry::get()
+const GL::VAO& CFRGeometry::get()
 {
 	return vao;
 }

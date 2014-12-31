@@ -2,7 +2,8 @@
 #ifndef _ENGINE_ASSET_GLPROGRAM_HPP_
 #define _ENGINE_ASSET_GLPROGRAM_HPP_
 
-#include "Common.hpp"
+#include "Forward.hpp"
+#include "Base.hpp"
 #include "../GL/Shader.hpp"
 #include "../GL/Program.hpp"
 #include <istream>
@@ -12,15 +13,8 @@ namespace Engine { namespace Asset {
 	
 	
 	
-	class GLProgram;
-	class GLVertexShader;
-	class GLFragmentShader;
-	class GLGeometryShader;
-	
-	
-	
 	/* GLSL program */
-	class GLProgram : public virtual Asset {
+	class GLProgram : public BaseAsset {
 	public:
 		
 		/* Load program */
@@ -35,14 +29,14 @@ namespace Engine { namespace Asset {
 	private:
 		
 		GL::Program program;
-		std::vector<Asset*> shaders;
+		std::vector<BaseAsset*> shaders;
 		
 	};
 	
 	
 	
 	/* Vertex shader */
-	class GLVertexShader : public virtual Asset {
+	class GLVertexShader : public BaseAsset {
 	public:
 		
 		/* Load shader */
@@ -60,7 +54,7 @@ namespace Engine { namespace Asset {
 	
 	
 	/* Fragment shader */
-	class GLFragmentShader : public virtual Asset {
+	class GLFragmentShader : public BaseAsset {
 	public:
 		
 		/* Load shader */
@@ -78,7 +72,7 @@ namespace Engine { namespace Asset {
 	
 	
 	/* Geometry shader */
-	class GLGeometryShader : public virtual Asset {
+	class GLGeometryShader : public BaseAsset {
 	public:
 		
 		/* Load shader */

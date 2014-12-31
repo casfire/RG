@@ -2,7 +2,8 @@
 #ifndef _ENGINE_ASSET_CFRTEXTURE_HPP_
 #define _ENGINE_ASSET_CFRTEXTURE_HPP_
 
-#include "Common.hpp"
+#include "Forward.hpp"
+#include "Base.hpp"
 #include "../GL/Texture.hpp"
 #include <istream>
 
@@ -11,7 +12,7 @@ namespace Engine { namespace Asset {
 	
 	
 	/* CFR 1D Texture asset */
-	class CFRTexture1D : public virtual Asset {
+	class CFRTexture1D : public BaseAsset {
 	public:
 		
 		/* Load texture */
@@ -29,7 +30,7 @@ namespace Engine { namespace Asset {
 	
 	
 	/* CFR 2D Texture asset */
-	class CFRTexture2D : public virtual Asset {
+	class CFRTexture2D : public BaseAsset {
 	public:
 		
 		/* Load texture */
@@ -47,7 +48,7 @@ namespace Engine { namespace Asset {
 	
 	
 	/* CFR 3D Texture asset */
-	class CFRTexture3D : public virtual Asset {
+	class CFRTexture3D : public BaseAsset {
 	public:
 		
 		/* Load texture */
