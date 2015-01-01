@@ -4,7 +4,7 @@ smooth in vec3 fPosition;
 smooth in vec2 fUV;
 smooth in vec3 fNormal;
 
-//uniform sampler2D uTexture;
+uniform sampler2D uDiffuseSampler;
 
 out vec3 color;
 
@@ -16,8 +16,7 @@ void main() {
 	float ambientAmount = 0.3;
 	int   specularSpread = 60;
 	float specularPower = 0.2;
-	//vec3  diffuseColor = texture(uTexture, fUV).rgb;
-	vec3  diffuseColor = vec3(0.2, 0.8, 0.4);
+	vec3  diffuseColor = texture(uDiffuseSampler, fUV).rgb;
 	
 	float distance = pow(length(lightPosition - fPosition), 2);
 	vec3 l = normalize(lightPosition - fPosition);

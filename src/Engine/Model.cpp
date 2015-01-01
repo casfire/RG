@@ -1,5 +1,7 @@
 #include "Model.hpp"
 #include "MainEngine.hpp"
+#include "Scene.hpp"
+#include "GL/GL.hpp"
 #include "Asset/CFRModel.hpp"
 #include "Asset/CFRGeometry.hpp"
 #include "Asset/CFRTexture.hpp"
@@ -19,7 +21,24 @@ Model::Model(MainEngine &engine, const std::string &file)
 		const Asset::CFRModelObject& obj = model->get(i);
 		ModelObject object;
 		object.geometry = &engine.storage.grab<Asset::CFRGeometry>(obj.geometry);
-		object.diffuse = obj.diffuse;
+		object.start = obj.start;
+		object.end = obj.end;
+		if (!obj.diffuse_map.empty()) {
+			object.diffuseCFRT = &engine.storage.grab<Asset::CFRTexture2D>(obj.diffuse_map);
+			object.diffuse = &object.diffuseCFRT->get();
+		} else {
+			std::vector<float> pixels(3);
+			pixels[0] = obj.diffuse.x;
+			pixels[1] = obj.diffuse.y;
+			pixels[2] = obj.diffuse.z;
+			object.diffuse = new GL::Texture2D(1, 1, GL_RGB, GL_FLOAT, pixels.data(), false);
+		}
+		object.diffuse->bind();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		object.diffuse->unbind();
 		objects.push_back(object);
 	}
 }
@@ -27,11 +46,22 @@ Model::Model(MainEngine &engine, const std::string &file)
 Model::~Model()
 {
 	engine.storage.release(*model);
+	for (std::size_t i = 0; i < objects.size(); i++) {
+		if (objects[i].diffuseCFRT == nullptr) {
+			delete objects[i].diffuse;
+		} else {
+			engine.storage.release(*objects[i].diffuseCFRT);
+		}
+	}
 }
 
-void Model::draw()
+void Model::draw(Scene &scene)
 {
 	for (std::size_t i = 0; i < objects.size(); i++) {
+		glActiveTexture(GL_TEXTURE0);
+		objects[i].diffuse->bind();
+		scene.uDiffuseSampler->set1i(GL_TEXTURE0);
 		objects[i].geometry->get().drawTriangles();
+		objects[i].diffuse->unbind();
 	}
 }

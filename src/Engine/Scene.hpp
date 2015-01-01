@@ -14,7 +14,7 @@ namespace Engine {
 	public:
 		
 		/* Draw scene */
-		void draw() override;
+		void draw();
 		
 		/* Resize viewport */
 		void resize(int width, int height);
@@ -39,6 +39,7 @@ namespace Engine {
 		GL::ProgramUniform *uModelMat;
 		GL::ProgramUniform *uViewMat;
 		GL::ProgramUniform *uProjMat;
+		GL::ProgramUniform *uDiffuseSampler;
 		
 	};
 	

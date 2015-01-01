@@ -32,7 +32,7 @@ namespace Engine {
 		Node(const Node&) = delete;
 		Node& operator=(const Node&) = delete;
 		
-		virtual void draw();
+		virtual void draw(Scene &scene);
 		bool pushChildren(std::stack<Node*> &stack);
 		
 		Node* parent;

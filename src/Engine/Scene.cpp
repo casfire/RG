@@ -17,6 +17,7 @@ Scene::Scene(MainEngine &engine)
 	uModelMat = new GL::ProgramUniform(program->get(), "uModelMat");
 	uViewMat  = new GL::ProgramUniform(program->get(), "uViewMat");
 	uProjMat  = new GL::ProgramUniform(program->get(), "uProjMat");
+	uDiffuseSampler = new GL::ProgramUniform(program->get(), "uDiffuseSampler");
 }
 
 Scene::~Scene()
@@ -25,6 +26,7 @@ Scene::~Scene()
 	delete uModelMat;
 	delete uViewMat;
 	delete uProjMat;
+	delete uDiffuseSampler;
 }
 
 void Scene::draw()
@@ -52,7 +54,7 @@ void Scene::draw()
 		matrices.push(matrices.top() * top->getMatrix());
 		uModelMat->set(matrices.top());
 		nodes.pop();
-		top->draw();
+		top->draw(*this);
 		if (!top->pushChildren(nodes)) {
 			matrices.pop();
 		}

@@ -41,5 +41,5 @@ bool Node::pushChildren(std::stack<Node*> &stack)
 	return true;
 }
 
-void Node::draw()
+void Node::draw(Scene&)
 {}

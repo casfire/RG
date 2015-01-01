@@ -12,9 +12,10 @@ namespace Engine {
 	
 	
 	struct ModelObject {
-		Asset::CFRGeometry *geometry;
+		Asset::CFRGeometry *geometry = nullptr;
 		std::size_t start, end;
-		glm::vec3 diffuse;
+		Asset::CFRTexture2D *diffuseCFRT = nullptr;
+		const GL::Texture2D *diffuse = nullptr;
 	};
 	
 	
@@ -30,7 +31,7 @@ namespace Engine {
 		Model(MainEngine &engine, const std::string &file);
 		~Model();
 		
-		void draw() override;
+		void draw(Scene &scene) override;
 		
 		MainEngine &engine;
 		Asset::CFRModel *model;
