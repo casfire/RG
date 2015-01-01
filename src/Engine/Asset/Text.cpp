@@ -55,6 +55,9 @@ void TextTokenizer::load(Storage &storage, std::istream &stream)
 		/* Left trim */
 		line = inl_ltrim(line);
 		
+		/* Nothing to parse */
+		if (key.empty()) continue;
+		
 		/* Call virtual token method */
 		loadToken(storage, key, line);
 		

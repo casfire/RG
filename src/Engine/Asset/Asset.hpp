@@ -8,5 +8,6 @@
 #include "GLProgram.hpp"
 #include "CFRTexture.hpp"
 #include "CFRGeometry.hpp"
+#include "CFRModel.hpp"
 
 #endif // _ENGINE_ASSET_HPP_

@@ -36,6 +36,10 @@ namespace Engine { namespace Asset {
 	/* CFRGeometry.hpp */
 	class CFRGeometry;
 	
+	/* CFRModel.hpp */
+	class CFRModel;
+	class CFRModelObject;
+	
 	
 	
 }} // namespace Engine::Asset
