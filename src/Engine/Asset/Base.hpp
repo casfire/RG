@@ -72,6 +72,16 @@ namespace Engine { namespace Asset {
 	
 	
 	
+	/* Thrown when asset is not found */
+	class NotFoundException : public BaseException {
+	public:
+		
+		NotFoundException(const std::string &file);
+		
+	};
+	
+	
+	
 	/* Thrown when IO exception occurs */
 	class IOException : public BaseException {
 	public:

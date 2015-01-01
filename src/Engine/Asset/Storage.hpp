@@ -24,7 +24,7 @@ namespace Engine { namespace Asset {
 		~Storage();
 		void clear();
 		
-		/* Grab asset - throws Asset::BaseException */
+		/* Grab asset - throws BaseException */
 		template<class T>
 		T& grab(const std::string &key);
 		
@@ -44,7 +44,7 @@ namespace Engine { namespace Asset {
 		/* Retrieve already loaded asset or nullptr */
 		BaseAsset* get(const std::string &file);
 		
-		/* Load asset - throws Asset::BaseException */
+		/* Load asset - throws BaseException */
 		BaseAsset* load(const std::string &file, BaseAsset *obj);
 		
 		/* Prevent copying */

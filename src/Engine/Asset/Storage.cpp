@@ -3,6 +3,8 @@
 
 using Engine::Asset::BaseAsset;
 using Engine::Asset::Storage;
+using Engine::Asset::NotFoundException;
+using Engine::Asset::IOException;
 typedef std::map<std::string, BaseAsset*>::iterator AssetMapIterator;
 
 Storage::Storage()
@@ -66,17 +68,22 @@ BaseAsset* Storage::get(const std::string &key)
 
 BaseAsset* Storage::load(const std::string &file, BaseAsset *obj)
 {
+	std::ifstream stream;
+	stream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	try {
-		std::ifstream stream;
-		stream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		stream.open(file, std::ios::binary);
-		obj->file = file;
-		obj->grabCount = 0;
+	} catch (std::ios::failure &fail) {
+		delete obj;
+		throw NotFoundException(file);
+	}
+	obj->file = file;
+	obj->grabCount = 0;
+	stream.exceptions(std::ifstream::badbit);
+	try {
 		obj->load(*this, static_cast<std::istream&>(stream));
-		stream.close();
 		return obj;
 	} catch (std::ios::failure &fail) {
 		delete obj;
-		throw Engine::Asset::IOException(fail);
+		throw IOException(fail);
 	}
 }

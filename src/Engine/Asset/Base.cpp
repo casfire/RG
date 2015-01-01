@@ -3,6 +3,7 @@
 using Engine::Asset::BaseAsset;
 using Engine::Asset::Storage;
 using Engine::Asset::BaseException;
+using Engine::Asset::NotFoundException;
 using Engine::Asset::IOException;
 using Engine::Asset::CastException;
 using Engine::Asset::LoadException;
@@ -37,6 +38,14 @@ void BaseException::pushFile(const std::string &file)
 {
 	info = info + "\nFrom asset '" + file + "'";
 }
+
+
+
+/* NotFoundException */
+
+NotFoundException::NotFoundException(const std::string &file)
+: BaseException("Asset '" + file + "' not found.")
+{}
 
 
 
