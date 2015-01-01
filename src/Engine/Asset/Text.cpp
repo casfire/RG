@@ -17,43 +17,46 @@ void TextRaw::load(Storage &storage, std::istream &stream)
 	load(storage, contents);
 }
 
+inline std::string& inl_ltrim(std::string &s) {
+	std::size_t pos = 0;
+	while (pos < s.size() && !std::isgraph(s[pos])) pos++;
+	return s.erase(0, pos);
+}
+
+inline std::string& inl_rtrim(std::string &s) {
+	std::size_t pos = s.size();
+	while (pos > 0 && !std::isgraph(s[pos - 1])) pos--;
+	return s.erase(pos);
+}
+
+inline std::string inl_ltoken(const std::string &s) {
+	std::size_t pos = 0;
+	while (pos < s.size() && std::isgraph(s[pos])) pos++;
+	return s.substr(0, pos);
+}
+
 void TextTokenizer::load(Storage &storage, std::istream &stream)
 {
 	loadBegin(storage);
 	stream.exceptions(stream.exceptions() & ~std::istream::failbit);
 	for (std::string line; std::getline(stream, line); ) {
 		
-		std::size_t length = static_cast<std::size_t>(line.size());
-		std::size_t pos = 0;
-		
-		/* Copy line */
-		std::vector<char> copy(line.size() + 1);
-		for (std::size_t i = 0; i < length; i++) copy[i] = line[i];
-		copy[length] = '\0';
-		char* s = copy.data();
-		
 		/* Remove comment */
-		for (std::size_t i = 0; i < length; i++) {
-			if (s[i] == '#') {
-				length = i;
-				s[i] = '\0';
-			}
-		}
-	
-		/* Skip spaces and non-printable characters */
-		while (pos < length && !std::isgraph(s[pos])) pos++;
+		std::string::size_type n = line.find('#');
+		if (n != std::string::npos) line.erase(n);
 		
-		/* Retreive first token */
-		std::size_t start = pos;
-		while (pos < length && std::isgraph(s[pos])) pos++;
-		if (pos <= start) continue;
-		std::string t(static_cast<const char*>(s + start), pos - start);
+		/* Left and right trim */
+		line = inl_ltrim(inl_rtrim(line));
 		
-		/* Skip spaces and non-printable characters */
-		while (pos < length && !std::isgraph(s[pos])) pos++;
+		/* Retreive key */
+		std::string key = inl_ltoken(line);
+		line.erase(0, key.size());
+		
+		/* Left trim */
+		line = inl_ltrim(line);
 		
 		/* Call virtual token method */
-		loadToken(storage, t, std::string(static_cast<const char*>(s + pos)));
+		loadToken(storage, key, line);
 		
 	}
 	loadEnd(storage);

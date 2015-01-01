@@ -3,7 +3,7 @@
 #define _ENGINE_ASSET_GLPROGRAM_HPP_
 
 #include "Forward.hpp"
-#include "Base.hpp"
+#include "Text.hpp"
 #include "../GL/Shader.hpp"
 #include "../GL/Program.hpp"
 #include <istream>
@@ -14,11 +14,17 @@ namespace Engine { namespace Asset {
 	
 	
 	/* GLSL program */
-	class GLProgram : public BaseAsset {
+	class GLProgram : public TextTokenizer {
 	public:
 		
 		/* Load program */
-		void load(Storage &storage, std::istream &stream) override;
+		void loadBegin(Storage &storage) override;
+		void loadEnd(Storage &storage) override;
+		void loadToken(
+			Storage &storage,
+			const std::string &key,
+			const std::string &value
+		) override;
 		
 		/* Release all shaders */
 		void unload(Storage &storage) override;
@@ -36,11 +42,11 @@ namespace Engine { namespace Asset {
 	
 	
 	/* Vertex shader */
-	class GLVertexShader : public BaseAsset {
+	class GLVertexShader : public TextRaw {
 	public:
 		
 		/* Load shader */
-		void load(Storage &storage, std::istream &stream) override;
+		void load(Storage &storage, std::vector<char> &data) override;
 		
 		/* Get shader */
 		const GL::VertexShader& get();
@@ -54,11 +60,11 @@ namespace Engine { namespace Asset {
 	
 	
 	/* Fragment shader */
-	class GLFragmentShader : public BaseAsset {
+	class GLFragmentShader : public TextRaw {
 	public:
 		
 		/* Load shader */
-		void load(Storage &storage, std::istream &stream) override;
+		void load(Storage &storage, std::vector<char> &data) override;
 		
 		/* Get shader */
 		const GL::FragmentShader& get();
@@ -72,11 +78,11 @@ namespace Engine { namespace Asset {
 	
 	
 	/* Geometry shader */
-	class GLGeometryShader : public BaseAsset {
+	class GLGeometryShader : public TextRaw {
 	public:
 		
 		/* Load shader */
-		void load(Storage &storage, std::istream &stream) override;
+		void load(Storage &storage, std::vector<char> &data) override;
 		
 		/* Get shader */
 		const GL::GeometryShader& get();

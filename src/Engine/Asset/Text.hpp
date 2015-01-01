@@ -46,8 +46,8 @@ namespace Engine { namespace Asset {
 		/* Called for each token */
 		virtual void loadToken(
 			Storage &storage,
-			const std::string &token,
-			const std::string &contents
+			const std::string &key,
+			const std::string &value
 		) = 0;
 		
 	};
