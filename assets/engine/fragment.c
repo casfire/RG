@@ -10,12 +10,12 @@ out vec3 color;
 
 void main() {
 	
-	vec3  lightPosition = vec3(0, 0, 0);
-	float lightPower = 40.0;
+	vec3  lightPosition = vec3(10, 10, 5);
+	float lightPower = 200.0;
 	vec3  lightColor = vec3(1, 1, 1);
 	float ambientAmount = 0.3;
-	int   specularSpread = 60;
-	float specularPower = 0.2;
+	int   specularSpread = 10;
+	float specularPower = 0.5;
 	vec3  diffuseColor = texture(uDiffuseSampler, fUV).rgb;
 	
 	float distance = pow(length(lightPosition - fPosition), 2);
