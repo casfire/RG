@@ -69,17 +69,15 @@ BaseAsset* Storage::get(const std::string &key)
 BaseAsset* Storage::load(const std::string &file, BaseAsset *obj)
 {
 	std::ifstream stream;
-	stream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	try {
-		stream.open(file, std::ios::binary);
-	} catch (std::ios::failure &fail) {
+	stream.open(file, std::ios::binary);
+	if (!stream.is_open()) {
 		delete obj;
 		throw NotFoundException(file);
 	}
-	obj->file = file;
-	obj->grabCount = 0;
-	stream.exceptions(std::ifstream::badbit);
 	try {
+		stream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+		obj->file = file;
+		obj->grabCount = 0;
 		obj->load(*this, static_cast<std::istream&>(stream));
 		return obj;
 	} catch (std::ios::failure &fail) {

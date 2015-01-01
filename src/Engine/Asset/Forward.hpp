@@ -15,6 +15,10 @@ namespace Engine { namespace Asset {
 	class CastException;
 	class LoadException;
 	
+	/* Text.hpp */
+	class TextRaw;
+	class TextTokenizer;
+	
 	/* Storage.hpp */
 	class Storage;
 	
