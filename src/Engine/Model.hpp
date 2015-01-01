@@ -5,8 +5,17 @@
 #include "Forward.hpp"
 #include "Node.hpp"
 #include <string>
+#include <vector>
 
 namespace Engine {
+	
+	
+	
+	struct ModelObject {
+		Asset::CFRGeometry *geometry;
+		std::size_t start, end;
+		glm::vec3 diffuse;
+	};
 	
 	
 	
@@ -24,7 +33,8 @@ namespace Engine {
 		void draw() override;
 		
 		MainEngine &engine;
-		Asset::CFRGeometry *geometry;
+		Asset::CFRModel *model;
+		std::vector<ModelObject> objects;
 		
 	};
 	

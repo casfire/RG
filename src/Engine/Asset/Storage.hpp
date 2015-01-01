@@ -31,6 +31,9 @@ namespace Engine { namespace Asset {
 		/* Release asset */
 		void release(BaseAsset &asset);
 		
+		/* Get current path */
+		const std::string& getPath() const;
+		
 	private:
 		
 		/* Storage */

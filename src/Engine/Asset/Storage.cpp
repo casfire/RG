@@ -51,6 +51,11 @@ std::string Storage::pushPath(const std::string &key)
 	return file;
 }
 
+const std::string& Storage::getPath() const
+{
+	return path.top();
+}
+
 void Storage::popPath()
 {
 	path.pop();

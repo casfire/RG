@@ -1,5 +1,6 @@
 #include "CFRModel.hpp"
 #include <sstream>
+#include "Storage.hpp"
 
 using Engine::Asset::CFRModel;
 using Engine::Asset::CFRModelObject;
@@ -51,15 +52,15 @@ void CFRModel::loadToken(
 	}
 	if (version == 0) throw LoadException("Version not found.");
 	if (key.compare("geometry") == 0) {
-		current.geometry = value;
+		current.geometry = storage.getPath() + value;
 	} else if (key.compare("range") == 0) {
 		stream >> current.start >> current.end;
 	} else if (key.compare("diffuse") == 0) {
 		stream >> current.diffuse.x >> current.diffuse.y >> current.diffuse.z;
 	} else if (key.compare("diffuse_map") == 0) {
-		current.diffuse_map = value;
+		current.diffuse_map = storage.getPath() + value;
 	} else if (key.compare("normal_map") == 0) {
-		current.normal_map = value;
+		current.normal_map = storage.getPath() + value;
 	} else if (key.compare("end") == 0) {
 		loadEnd(storage);
 	}

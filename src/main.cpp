@@ -27,7 +27,7 @@ int main() {
 	E::Camera& camera = scene.getCamera();
 	
 	/* Load model and attach to scene */
-	E::Node& cube = engine.loadModel("assets/cube.cfrg");
+	E::Node& cube = engine.loadModel("assets/cube.cfrm");
 	scene.attach(cube);
 	cube.setPosition(glm::vec3(0, 0, -5));
 	
