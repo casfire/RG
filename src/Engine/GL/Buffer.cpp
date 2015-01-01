@@ -109,6 +109,11 @@ void ElementBuffer8::elements(GLsizei count, const uint8_t *elements)
 	this->count = count;
 }
 
+GLsizei ElementBuffer8::getBytes() const
+{
+	return 1;
+}
+
 
 
 /* ElementBuffer16 */
@@ -129,6 +134,11 @@ void ElementBuffer16::elements(GLsizei count, const uint16_t *elements)
 	this->count = count;
 }
 
+GLsizei ElementBuffer16::getBytes() const
+{
+	return 2;
+}
+
 
 
 /* ElementBuffer32 */
@@ -147,6 +157,11 @@ void ElementBuffer32::elements(GLsizei count, const uint32_t *elements)
 {
 	data(sizeof(uint32_t) * count, static_cast<const GLvoid*>(elements));
 	this->count = count;
+}
+
+GLsizei ElementBuffer32::getBytes() const
+{
+	return 4;
 }
 
 

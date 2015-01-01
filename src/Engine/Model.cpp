@@ -61,7 +61,11 @@ void Model::draw(Scene &scene)
 		glActiveTexture(GL_TEXTURE0);
 		objects[i].diffuse->bind();
 		scene.uDiffuseSampler->set1i(GL_TEXTURE0);
-		objects[i].geometry->get().drawTriangles();
+		objects[i].geometry->get().draw(
+			GL_TRIANGLES,
+			objects[i].end - objects[i].start,
+			objects[i].start
+		);
 		objects[i].diffuse->unbind();
 	}
 }

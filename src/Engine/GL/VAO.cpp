@@ -11,7 +11,7 @@ inline GLuint createVAO()
 }
 
 VAO::VAO()
-: Object(createVAO()), type(GL_UNSIGNED_SHORT), count(0)
+: Object(createVAO()), type(GL_UNSIGNED_SHORT), count(0), bytes(0)
 {}
 
 VAO::VAO(const ElementBuffer &elements)
@@ -42,6 +42,7 @@ void VAO::set(const ElementBuffer &elements)
 	unbind();
 	elements.unbind();
 	type = elements.getType();
+	bytes = elements.getBytes();
 	count = elements.getCount();
 }
 
@@ -134,9 +135,9 @@ void VAO::draw(GLenum mode) const
 	unbind();
 }
 
-void VAO::draw(GLenum mode, GLsizei count, GLsizei offset) const
+void VAO::draw(GLenum mode, GLsizei count, GLsizei start) const
 {
 	bind();
-	glDrawElements(mode, count, type, reinterpret_cast<const GLvoid*>(offset));
+	glDrawElements(mode, count, type, reinterpret_cast<const GLvoid*>(start * bytes));
 	unbind();
 }

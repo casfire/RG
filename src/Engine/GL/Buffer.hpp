@@ -54,6 +54,7 @@ namespace Engine { namespace GL {
 		/* Getters */
 		GLenum getType() const;
 		GLsizei getCount() const;
+		virtual GLsizei getBytes() const = 0;
 		
 	protected:
 	
@@ -77,6 +78,9 @@ namespace Engine { namespace GL {
 			GLenum usage = GL_STATIC_DRAW
 		);
 		
+		/* Return 1 */
+		GLsizei getBytes() const override;
+		
 		/* Set elements */
 		void elements(GLsizei count, const std::uint8_t *elements);
 		
@@ -97,6 +101,9 @@ namespace Engine { namespace GL {
 			GLenum usage = GL_STATIC_DRAW
 		);
 		
+		/* Return 2 */
+		GLsizei getBytes() const override;
+		
 		/* Set elements */
 		void elements(GLsizei count, const std::uint16_t *elements);
 		
@@ -108,7 +115,6 @@ namespace Engine { namespace GL {
 	class ElementBuffer32 : public ElementBuffer {
 	public:
 		
-		
 		/* Create element buffer */
 		ElementBuffer32(GLenum usage = GL_STATIC_DRAW);
 		
@@ -117,6 +123,9 @@ namespace Engine { namespace GL {
 			GLsizei count, const std::uint32_t *elements,
 			GLenum usage = GL_STATIC_DRAW
 		);
+		
+		/* Return 4 */
+		GLsizei getBytes() const override;
 		
 		/* Set elements */
 		void elements(GLsizei count, const std::uint32_t *elements);

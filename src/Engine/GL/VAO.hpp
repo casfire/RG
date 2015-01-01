@@ -55,12 +55,12 @@ namespace Engine { namespace GL {
 		void drawTriangleStrip() const;
 		void drawTriangleFan() const;
 		void draw(GLenum mode) const;
-		void draw(GLenum mode, GLsizei count, GLsizei offset) const;
+		void draw(GLenum mode, GLsizei count, GLsizei start) const;
 		
 	private:
 		
 		GLenum type;
-		GLsizei count;
+		GLsizei count, bytes;
 		
 	};
 	
