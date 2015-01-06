@@ -47,8 +47,10 @@ namespace Engine { namespace Asset {
 		
 		std::vector<CFRModelObject> objects;
 		int version;
+		std::string geometry;
 		CFRModelObject current;
 		void resetCurrent();
+		void addCurrent();
 		
 	};
 	

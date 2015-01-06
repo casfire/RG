@@ -42,9 +42,8 @@ namespace Engine { namespace Asset {
 		Uint8  attribPosition[2]; // Vertex position (3 dimensions)
 		Uint8  attribTexCoord[2]; // Vertex UV       (2 dimensions)
 		Uint8  attribNormal  [2]; // Vertex normal   (3 dimensions)
-		Uint8  attribTangent [2]; // Vertex tangent  (3 dimensions)
-		Uint8  attribBinormal[2]; // Vertex binormal (3 dimensions)
-		Uint8  unused[4];
+		Uint8  attribTangent [2]; // Vertex tangent  (4 dimensions)
+		Uint8  unused[6];
 		Uint8  vertices[countVertices * bytesPerVertex ];
 		Uint8  elements[countElements * bytesPerElement];
 		
@@ -52,7 +51,7 @@ namespace Engine { namespace Asset {
 			attribute[0] = Byte offset within a vertex
 			attribute[1] = Attribute type
 			If offset or type is 0xFF, the attribute isn't used
-			
+		
 		Attribute type:
 			Normalize     = type & 0b10000000
 			Variable type = type & 0b01111111
@@ -67,6 +66,10 @@ namespace Engine { namespace Asset {
 			6  - Float          (GL_FLOAT)
 			10 - Double         (GL_DOUBLE)
 			11 - Half float     (GL_HALF_FLOAT)
+		
+		Tangent space:
+			Fourth tangent dimension is either 1 or -1
+			Binormal = cross(tangent.xyz, normal) * tangent.w
 		
 	*/
 	

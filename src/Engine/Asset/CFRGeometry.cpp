@@ -27,9 +27,7 @@ struct CFRGHeader {
 	uint8_t    typeNormal;
 	uint8_t  offsetTangent;
 	uint8_t    typeTangent;
-	uint8_t  offsetBinormal;
-	uint8_t    typeBinormal;
-	uint8_t  unused1, unused2, unused3, unused4;
+	uint8_t  unused1, unused2, unused3, unused4, unused5, unused6;
 	inline void read(std::istream &stream);
 	inline void readVertices(std::istream &stream, std::vector<char> &data);
 	inline void readElements(std::istream &stream, std::vector<char> &data);
@@ -90,7 +88,6 @@ void CFRGeometry::load(Storage&, std::istream &stream)
 	GLenum glTypeTexcoord = getGLType(header.typeTexcoord);
 	GLenum glTypeNormal   = getGLType(header.typeNormal);
 	GLenum glTypeTangent  = getGLType(header.typeTangent);
-	GLenum glTypeBinormal = getGLType(header.typeBinormal);
 	
 	std::vector<char> data;
 	header.readVertices(stream, data);
@@ -110,7 +107,7 @@ void CFRGeometry::load(Storage&, std::istream &stream)
 		vao.enableAttribute(1);
 		vao.attribute(
 			1, array,
-			glTypeTexcoord, 3,
+			glTypeTexcoord, 2,
 			header.bytesPerVertex, header.offsetTexcoord,
 			getGLNormalize(header.typeTexcoord)
 		);
@@ -130,19 +127,9 @@ void CFRGeometry::load(Storage&, std::istream &stream)
 		vao.enableAttribute(3);
 		vao.attribute(
 			3, array,
-			glTypeTangent, 3,
+			glTypeTangent, 4,
 			header.bytesPerVertex, header.offsetTangent,
 			getGLNormalize(header.typeTangent)
-		);
-	}
-	
-	if (header.offsetBinormal != 0xFF && glTypeBinormal != GL_INVALID_ENUM) {
-		vao.enableAttribute(4);
-		vao.attribute(
-			4, array,
-			glTypeBinormal, 3,
-			header.bytesPerVertex, header.offsetBinormal,
-			getGLNormalize(header.typeBinormal)
 		);
 	}
 	

@@ -23,11 +23,7 @@ void CFRModel::loadBegin(Storage&)
 }
 
 void CFRModel::loadEnd(Storage&)
-{
-	if (current.end <= current.start) return;
-	objects.push_back(current);
-	resetCurrent();
-}
+{}
 
 void CFRModel::resetCurrent()
 {
@@ -36,6 +32,13 @@ void CFRModel::resetCurrent()
 	current.diffuse = glm::vec3(0, 0, 0);
 	current.diffuse_map = "";
 	current.normal_map = "";
+}
+
+void CFRModel::addCurrent()
+{
+	if (current.end <= current.start) return;
+	current.geometry = geometry;
+	objects.push_back(current);
 }
 
 void CFRModel::loadToken(
@@ -50,11 +53,17 @@ void CFRModel::loadToken(
 		if (version != 1) throw LoadException("Invalid version.");
 		return;
 	}
-	if (version == 0) throw LoadException("Version not found.");
 	if (key.compare("geometry") == 0) {
-		current.geometry = storage.getPath() + value;
-	} else if (key.compare("range") == 0) {
+		if (!geometry.empty()) throw LoadException("Multiple geometries.");
+		if (value.empty()) throw LoadException("Invalid geometry.");
+		geometry = storage.getPath() + value;
+		return;
+	}
+	if (version == 0) throw LoadException("Version not found.");
+	if (geometry.empty()) throw LoadException("Geometry not found.");
+	if (key.compare("range") == 0) {
 		stream >> current.start >> current.end;
+		addCurrent();
 	} else if (key.compare("diffuse") == 0) {
 		stream >> current.diffuse.x >> current.diffuse.y >> current.diffuse.z;
 	} else if (key.compare("diffuse_map") == 0) {
@@ -62,6 +71,6 @@ void CFRModel::loadToken(
 	} else if (key.compare("normal_map") == 0) {
 		current.normal_map = storage.getPath() + value;
 	} else if (key.compare("end") == 0) {
-		loadEnd(storage);
+		resetCurrent();
 	}
 }

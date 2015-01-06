@@ -34,9 +34,10 @@ Model::Model(MainEngine &engine, const std::string &file)
 			object.diffuse = new GL::Texture2D(1, 1, GL_RGB, GL_FLOAT, pixels.data(), false);
 		}
 		object.diffuse->bind();
+		glGenerateMipmap(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		object.diffuse->unbind();
 		objects.push_back(object);

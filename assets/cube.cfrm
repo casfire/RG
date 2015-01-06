@@ -2,10 +2,7 @@
 version 1
 geometry cube.cfrg
 
+diffuse_map default.cfrt
 range 0 36
-ambient       1 1 1
-diffuse       1 1 1
-specular      1 1 1
-diffuse_map   default.cfrt
 end
 
