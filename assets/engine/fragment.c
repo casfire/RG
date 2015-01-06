@@ -31,8 +31,7 @@ void main() {
 	float ambientAmount = 0.2;
 	float specularPower = 20.0;
 	
-	vec2 uv = vec2(fUV.x, -fUV.y);
-	vec3 colorDiffuse  = texture(uDiffuseSampler, uv).rgb;
+	vec3 colorDiffuse  = texture(uDiffuseSampler, fUV).rgb;
 	vec3 colorSpecular = colorDiffuse;
 	
 	float distance = pow(length(uLightPos - fPositionWorldspace), 2);
