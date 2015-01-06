@@ -22,6 +22,9 @@ namespace Engine {
 		/* Get camera */
 		Camera& getCamera();
 		
+		/* Set light position */
+		void setLightPosition(const glm::vec3 position);
+		
 	private:
 		
 		friend class MainEngine;
@@ -39,7 +42,9 @@ namespace Engine {
 		GL::ProgramUniform *uModelMat;
 		GL::ProgramUniform *uViewMat;
 		GL::ProgramUniform *uProjMat;
+		GL::ProgramUniform *uLightPos;
 		GL::ProgramUniform *uDiffuseSampler;
+		GL::ProgramUniform *uNormalSampler;
 		
 	};
 	

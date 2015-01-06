@@ -109,6 +109,9 @@ int main() {
 			}
 		}
 		
+		/* Set light position */
+		scene.setLightPosition(camera.getPosition() + glm::vec3(0, 5, 0));
+		
 		/* Rotate model */
 		cube.yaw(elapsedFrame.asSeconds());
 		

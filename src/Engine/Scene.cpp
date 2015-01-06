@@ -17,7 +17,9 @@ Scene::Scene(MainEngine &engine)
 	uModelMat = new GL::ProgramUniform(program->get(), "uModelMat");
 	uViewMat  = new GL::ProgramUniform(program->get(), "uViewMat");
 	uProjMat  = new GL::ProgramUniform(program->get(), "uProjMat");
+	uLightPos = new GL::ProgramUniform(program->get(), "uLightPos");
 	uDiffuseSampler = new GL::ProgramUniform(program->get(), "uDiffuseSampler");
+	uNormalSampler  = new GL::ProgramUniform(program->get(), "uNormalSampler");
 }
 
 Scene::~Scene()
@@ -27,6 +29,7 @@ Scene::~Scene()
 	delete uViewMat;
 	delete uProjMat;
 	delete uDiffuseSampler;
+	delete uNormalSampler;
 }
 
 void Scene::draw()
@@ -61,6 +64,13 @@ void Scene::draw()
 	}
 	
 	/* Unbind program */
+	program->get().unbind();
+}
+
+void Scene::setLightPosition(const glm::vec3 position)
+{
+	program->get().bind();
+	uLightPos->set(position);
 	program->get().unbind();
 }
 

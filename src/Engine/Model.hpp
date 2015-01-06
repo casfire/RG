@@ -15,7 +15,9 @@ namespace Engine {
 		Asset::CFRGeometry *geometry = nullptr;
 		std::size_t start, end;
 		Asset::CFRTexture2D *diffuseCFRT = nullptr;
-		const GL::Texture2D *diffuse = nullptr;
+		const GL::Texture2D *diffuse     = nullptr;
+		Asset::CFRTexture2D *normalCFRT  = nullptr;
+		const GL::Texture2D *normal      = nullptr;
 	};
 	
 	
