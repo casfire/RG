@@ -5,6 +5,7 @@
 #include "Forward.hpp"
 #include "Node.hpp"
 #include "Camera.hpp"
+#include "Light.hpp"
 
 namespace Engine {
 	
@@ -22,8 +23,14 @@ namespace Engine {
 		/* Get camera */
 		Camera& getCamera();
 		
-		/* Set light position */
-		void setLightPosition(const glm::vec3 position);
+		/* Get directional light */
+		DirectionalLight& getDirectionalLight();
+		
+		/* Get point light */
+		PointLight& getPointLight();
+		
+		/* Set ambient [0, 1] */
+		void setAmbient(float amount);
 		
 	private:
 		
@@ -38,13 +45,27 @@ namespace Engine {
 		
 		MainEngine &engine;
 		Camera camera;
+		DirectionalLight lightDir;
+		PointLight       lightPoint;
 		Asset::GLProgram *program;
+		
 		GL::ProgramUniform *uModelMat;
 		GL::ProgramUniform *uViewMat;
 		GL::ProgramUniform *uProjMat;
-		GL::ProgramUniform *uLightPos;
+		
 		GL::ProgramUniform *uDiffuseSampler;
 		GL::ProgramUniform *uNormalSampler;
+		
+		GL::ProgramUniform *uAmbient;
+		
+		GL::ProgramUniform *uDirLightColor;
+		GL::ProgramUniform *uDirLightIntensity;
+		GL::ProgramUniform *uDirLightDirection;
+		
+		GL::ProgramUniform *uPointLightColor;
+		GL::ProgramUniform *uPointLightIntensity;
+		GL::ProgramUniform *uPointLightSpread;
+		GL::ProgramUniform *uPointLightPosition;
 		
 	};
 	

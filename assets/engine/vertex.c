@@ -8,7 +8,15 @@ layout(location = 3) in vec4 tangent;
 uniform mat4 uViewMat;
 uniform mat4 uProjMat;
 uniform mat4 uModelMat;
-uniform vec3 uLightPos;
+
+uniform vec3  uDirLightColor;
+uniform float uDirLightIntensity;
+uniform vec3  uDirLightDirection;
+
+uniform vec3  uPointLightColor;
+uniform float uPointLightIntensity;
+uniform float uPointLightSpread;
+uniform vec3  uPointLightPosition;
 
 smooth out vec2 fUV;
 smooth out vec3 fNormal;
@@ -16,7 +24,8 @@ smooth out vec3 fTangent;
 smooth out vec3 fBinormal;
 smooth out vec3 fPositionWorldspace;
 smooth out vec3   fEyeDirCameraspace;
-smooth out vec3 fLightDirCameraspace;
+smooth out vec3 fDirLightDirCameraspace;
+smooth out vec3 fPointLightDirCameraspace;
 
 void main() {
 	
@@ -27,14 +36,11 @@ void main() {
 	
 	gl_Position = matMVP * vec4(position, 1.0f);
 	
-	vec3 lightpos_worldspace  = uLightPos;
 	vec3 position_worldspace  = (matM  * vec4(position,    1)).xyz;
 	vec3   normal_cameraspace = (matMV * vec4(normal,      0)).xyz;
 	vec3  tangent_cameraspace = (matMV * vec4(tangent.xyz, 0)).xyz;
 	vec3 position_cameraspace = (matMV * vec4(position,    1)).xyz;
 	vec3   eyedir_cameraspace = -position_cameraspace;
-	vec3 lightpos_cameraspace = (matV  * vec4(lightpos_worldspace, 1)).xyz;
-	vec3 lightdir_cameraspace = lightpos_cameraspace + eyedir_cameraspace;
 	
 	fUV = uv;
 	fNormal   = normal_cameraspace;
@@ -42,6 +48,8 @@ void main() {
 	fBinormal = normalize(cross(tangent_cameraspace, normal_cameraspace) * tangent.w);
 	fPositionWorldspace  = position_worldspace;
 	fEyeDirCameraspace   = eyedir_cameraspace;
-	fLightDirCameraspace = lightdir_cameraspace;
 	
+	fDirLightDirCameraspace        = (matV * vec4(uDirLightDirection,  0)).xyz;
+	vec3 pointlightpos_cameraspace = (matV * vec4(uPointLightPosition, 1)).xyz;
+	fPointLightDirCameraspace      = pointlightpos_cameraspace + eyedir_cameraspace;
 }

@@ -23,6 +23,10 @@ namespace Engine {
 	/* Model.hpp */
 	class Model;
 	
+	/* Light.hpp */
+	class DirectionalLight;
+	class PointLight;
+	
 	/* Node.hpp */
 	class Node;
 	

@@ -1,8 +1,0 @@
-#CFR Model generated from cube.obj
-version 1
-geometry cube.cfrg
-
-diffuse_map default.cfrt
-range 0 36
-end
-

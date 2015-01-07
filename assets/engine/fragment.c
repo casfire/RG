@@ -6,11 +6,23 @@ smooth in vec3 fTangent;
 smooth in vec3 fBinormal;
 smooth in vec3 fPositionWorldspace;
 smooth in vec3   fEyeDirCameraspace;
-smooth in vec3 fLightDirCameraspace;
+
+smooth in vec3 fDirLightDirCameraspace;
+smooth in vec3 fPointLightDirCameraspace;
 
 uniform sampler2D uDiffuseSampler;
 uniform sampler2D uNormalSampler;
-uniform vec3 uLightPos;
+
+uniform float uAmbient;
+
+uniform vec3  uDirLightColor;
+uniform float uDirLightIntensity;
+uniform vec3  uDirLightDirection;
+
+uniform vec3  uPointLightColor;
+uniform float uPointLightIntensity;
+uniform float uPointLightSpread;
+uniform vec3  uPointLightPosition;
 
 out vec3 color;
 
@@ -25,27 +37,45 @@ vec3 getNormal() {
 
 void main() {
 	
-	vec3  lightColor = vec3(1, 1, 1);
-	float lightPower = 30.0;
-	float specularSpread = 80;
-	float ambientAmount = 0.2;
-	float specularPower = 20.0;
+	/* Constants */
+	float specularSpread = 80; // [1, inf]
+	float specularPower = 0.2; // [0, 1]
 	
-	vec3 colorDiffuse  = texture(uDiffuseSampler, fUV).rgb;
-	vec3 colorSpecular = colorDiffuse;
+	/* Variables */
+	vec3 n, l, E, R, colorDiffuse;
+	float diffuseAmount, specularAmount, attenuation;
 	
-	float distance = pow(length(uLightPos - fPositionWorldspace), 2);
-	vec3 n = normalize(getNormal());
-	vec3 l = normalize(fLightDirCameraspace);
-	float diffuseAmount = clamp(dot(n, l), 0, 1);
+	/* Constant variables */
+	colorDiffuse = texture(uDiffuseSampler, fUV).rgb;
+	n = normalize(getNormal());
+	E = normalize(fEyeDirCameraspace);
 	
-	vec3 E = normalize(fEyeDirCameraspace);
-	vec3 R = reflect(-l, n);
-	float specularAmount = pow(clamp(dot(E, R), 0, 1), specularSpread);
+	/* No light */
+	color = vec3(0, 0, 0);
 	
-	color = 
-		+ ambientAmount  * colorDiffuse
-		+ diffuseAmount  * colorDiffuse  * lightColor * lightPower    / distance
-		+ specularAmount * colorSpecular * lightColor * specularPower / distance;
+	/* Add ambient light */
+	color += uAmbient * colorDiffuse;
+	
+	/* Add diffuse directional light */
+	l = normalize(fDirLightDirCameraspace);
+	diffuseAmount = clamp(dot(n, l), 0, 1);
+	color += diffuseAmount * colorDiffuse * uDirLightColor * uDirLightIntensity;
+	
+	/* Add specular directional light */
+	R = reflect(-l, n);
+	specularAmount = pow(clamp(dot(E, R), 0, 1), specularSpread);
+	color += specularAmount * colorDiffuse * uDirLightColor * specularPower * uDirLightIntensity;
+	
+	/* Add diffuse point light */
+	l = normalize(fPointLightDirCameraspace);
+	diffuseAmount = clamp(dot(n, l), 0, 1);
+	float distance = length(uPointLightPosition - fPositionWorldspace);
+	attenuation = 1.f / (1.f + uPointLightSpread * pow(distance, 2));
+	color += diffuseAmount * colorDiffuse * uPointLightColor * uPointLightIntensity * attenuation;
+	
+	/* Add specular point light */
+	R = reflect(-l, n);
+	specularAmount = pow(clamp(dot(E, R), 0, 1), specularSpread);
+	color += specularAmount * colorDiffuse * uPointLightColor * specularPower * uPointLightIntensity * attenuation;
 	
 }

@@ -9,17 +9,43 @@ using Engine::Node;
 using Engine::Camera;
 using Engine::Scene;
 using Engine::Model;
+using Engine::DirectionalLight;
+using Engine::PointLight;
 
 Scene::Scene(MainEngine &engine)
-: engine(engine), camera(*this)
+: engine(engine), camera(*this),
+  lightDir(engine), lightPoint(engine)
 {
 	program = &engine.storage.grab<Asset::GLProgram>("/assets/engine/program.txt");
+	
 	uModelMat = new GL::ProgramUniform(program->get(), "uModelMat");
 	uViewMat  = new GL::ProgramUniform(program->get(), "uViewMat");
 	uProjMat  = new GL::ProgramUniform(program->get(), "uProjMat");
-	uLightPos = new GL::ProgramUniform(program->get(), "uLightPos");
+	
 	uDiffuseSampler = new GL::ProgramUniform(program->get(), "uDiffuseSampler");
 	uNormalSampler  = new GL::ProgramUniform(program->get(), "uNormalSampler");
+	
+	uAmbient = new GL::ProgramUniform(program->get(), "uAmbient");
+	
+	uDirLightColor     = new GL::ProgramUniform(program->get(), "uDirLightColor");
+	uDirLightIntensity = new GL::ProgramUniform(program->get(), "uDirLightIntensity");
+	uDirLightDirection = new GL::ProgramUniform(program->get(), "uDirLightDirection");
+	
+	uPointLightColor     = new GL::ProgramUniform(program->get(), "uPointLightColor");
+	uPointLightIntensity = new GL::ProgramUniform(program->get(), "uPointLightIntensity");
+	uPointLightSpread    = new GL::ProgramUniform(program->get(), "uPointLightSpread");
+	uPointLightPosition  = new GL::ProgramUniform(program->get(), "uPointLightPosition");
+	
+	/* Defaults */
+	setAmbient(0.2);
+	lightDir.setColor(glm::vec3(1, 1, 1));
+	lightDir.setIntensity(0.5f);
+	lightDir.setDirection(glm::vec3(0.5, 1, 0.5));
+	lightPoint.setColor(glm::vec3(1, 1, 1));
+	lightPoint.setIntensity(5.f);
+	lightPoint.setSpread(0.25f);
+	lightPoint.setPosition(glm::vec3(0, 0, 0));
+	
 }
 
 Scene::~Scene()
@@ -30,6 +56,14 @@ Scene::~Scene()
 	delete uProjMat;
 	delete uDiffuseSampler;
 	delete uNormalSampler;
+	delete uAmbient;
+	delete uDirLightColor;
+	delete uDirLightIntensity;
+	delete uDirLightDirection;
+	delete uPointLightColor;
+	delete uPointLightIntensity;
+	delete uPointLightSpread;
+	delete uPointLightPosition;
 }
 
 void Scene::draw()
@@ -42,6 +76,17 @@ void Scene::draw()
 	
 	/* Set view matrix */
 	uViewMat->set(camera.getViewMatrix());
+	
+	/* Set directional light */
+	uDirLightColor     ->set   (lightDir.getColor());
+	uDirLightIntensity ->set1f (lightDir.getIntensity());
+	uDirLightDirection ->set   (lightDir.getDirection());
+	
+	/* Set point light */
+	uPointLightColor     ->set   (lightPoint.getColor());
+	uPointLightIntensity ->set1f (lightPoint.getIntensity());
+	uPointLightSpread    ->set1f (lightPoint.getSpread());
+	uPointLightPosition  ->set   (lightPoint.getPosition());
 	
 	/* Model matrix stack */
 	std::stack<glm::mat4> matrices;
@@ -67,10 +112,10 @@ void Scene::draw()
 	program->get().unbind();
 }
 
-void Scene::setLightPosition(const glm::vec3 position)
+void Scene::setAmbient(float amount)
 {
 	program->get().bind();
-	uLightPos->set(position);
+	uAmbient->set1f(amount);
 	program->get().unbind();
 }
 
@@ -90,4 +135,14 @@ void Scene::resize(int width, int height)
 Camera& Scene::getCamera()
 {
 	return camera;
+}
+
+DirectionalLight& Scene::getDirectionalLight()
+{
+	return lightDir;
+}
+
+PointLight& Scene::getPointLight()
+{
+	return lightPoint;
 }

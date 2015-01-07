@@ -9,6 +9,7 @@
 #include "Scene.hpp"
 #include "Camera.hpp"
 #include "Model.hpp"
+#include "Light.hpp"
 #include "Node.hpp"
 #include "Transform.hpp"
 #include "Exception.hpp"

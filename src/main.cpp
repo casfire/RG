@@ -1,7 +1,7 @@
 #include "Engine/Engine.hpp"
 #include <SFML/Window.hpp>
 #include <iostream>
-
+#include <glm/gtx/rotate_vector.hpp>
 namespace E = Engine;
 
 int main() {
@@ -22,14 +22,26 @@ int main() {
 	std::cout << "      Renderer: " << engine.getRendererName()   << std::endl;
 	std::cout << "        Vendor: " << engine.getVendorName()     << std::endl;
 	
-	/* Create scene and retrieve camera */
+	/* Create scene, retrieve camera and lights */
 	E::Scene& scene = engine.createScene(window.getSize().x, window.getSize().y);
-	E::Camera& camera = scene.getCamera();
+	E::Camera&           camera     = scene.getCamera();
+	E::PointLight&       lightPoint = scene.getPointLight();
+	E::DirectionalLight& lightDir   = scene.getDirectionalLight();
 	
 	/* Load model and attach to scene */
-	E::Node& cube = engine.loadModel("assets/cube.cfrm");
-	scene.attach(cube);
-	cube.setPosition(glm::vec3(0, 0, -5));
+	E::Node& sphere = engine.loadModel("assets/sphere.cfrm");
+	scene.attach(sphere);
+	
+	/* Set directional light properties */
+	lightDir.setDirection(glm::vec3(0, 1, 0)); // Direction (up)
+	lightDir.setColor    (glm::vec3(1, 1, 1)); // Color (white)
+	lightDir.setIntensity(0.5f);               // Intensity
+	
+	/* Set point light properties */
+	lightPoint.setPosition (glm::vec3(0, 6, 0)); // Position
+	lightPoint.setColor    (glm::vec3(1, 1, 1)); // Color (white)
+	lightPoint.setIntensity(5.f);                // Intensity
+	lightPoint.setSpread   (0.25f);              // Inverse spread
 	
 	/* Main loop */
 	bool running = true, cursorLocked = false;
@@ -109,11 +121,9 @@ int main() {
 			}
 		}
 		
-		/* Set light position */
-		scene.setLightPosition(camera.getPosition() + glm::vec3(0, 5, 0));
-		
-		/* Rotate model */
-		cube.yaw(elapsedFrame.asSeconds());
+		/* Set directional light direction */
+		float rotateSpeed = elapsedFrame.asSeconds();
+		lightDir.setDirection(glm::rotateZ(lightDir.getDirection(), rotateSpeed));
 		
 		/* Draw scene */
 		scene.draw();

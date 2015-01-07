@@ -1,0 +1,8 @@
+#CFR Model generated from sphere.obj
+version 1
+geometry sphere.cfrg
+
+diffuse 1 1 1
+range 0 5760
+end
+
