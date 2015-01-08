@@ -12,11 +12,12 @@ smooth in vec3 fPointLightDirCameraspace;
 
 uniform sampler2D uDiffuseSampler;
 uniform sampler2D uNormalSampler;
-
-uniform float uModelEmit;
-uniform float uModelShine;
+uniform sampler2D uSpecularSampler;
+uniform sampler2D uMaskSampler;
 
 uniform float uAmbient;
+uniform float uModelEmit;
+uniform float uModelSpecularExp;
 
 uniform vec3  uDirLightColor;
 uniform float uDirLightIntensity;
@@ -40,15 +41,16 @@ vec3 getNormal() {
 
 void main() {
 	
-	/* Constants */
-	float specularPower = 0.2; // [0, 1]
-	
 	/* Variables */
 	vec3 n, l, E, R, colorDiffuse;
-	float diffuseAmount, specularAmount, attenuation;
+	float diffuseAmount, specularAmount, attenuation, specularPower;
+	
+	/* Alpha mask */
+	if (texture(uMaskSampler, fUV).r < 0.1) discard;
 	
 	/* Constant variables */
 	colorDiffuse = texture(uDiffuseSampler, fUV).rgb;
+	specularPower = texture(uSpecularSampler, fUV).r;
 	n = normalize(getNormal());
 	E = normalize(fEyeDirCameraspace);
 	
@@ -68,7 +70,7 @@ void main() {
 	
 	/* Add specular directional light */
 	R = reflect(-l, n);
-	specularAmount = pow(clamp(dot(E, R), 0, 1), uModelShine);
+	specularAmount = pow(clamp(dot(E, R), 0, 1), uModelSpecularExp);
 	color += (1 - uModelEmit) * specularAmount * colorDiffuse * uDirLightColor * specularPower * uDirLightIntensity;
 	
 	/* Add diffuse point light */
@@ -80,7 +82,7 @@ void main() {
 	
 	/* Add specular point light */
 	R = reflect(-l, n);
-	specularAmount = pow(clamp(dot(E, R), 0, 1), uModelShine);
+	specularAmount = pow(clamp(dot(E, R), 0, 1), uModelSpecularExp);
 	color += (1 - uModelEmit) * specularAmount * colorDiffuse * uPointLightColor * specularPower * uPointLightIntensity * attenuation;
 	
 }

@@ -22,12 +22,14 @@ Scene::Scene(MainEngine &engine)
 	uViewMat  = new GL::ProgramUniform(program->get(), "uViewMat");
 	uProjMat  = new GL::ProgramUniform(program->get(), "uProjMat");
 	
-	uDiffuseSampler = new GL::ProgramUniform(program->get(), "uDiffuseSampler");
-	uNormalSampler  = new GL::ProgramUniform(program->get(), "uNormalSampler");
+	uDiffuseSampler  = new GL::ProgramUniform(program->get(), "uDiffuseSampler");
+	uNormalSampler   = new GL::ProgramUniform(program->get(), "uNormalSampler");
+	uSpecularSampler = new GL::ProgramUniform(program->get(), "uSpecularSampler");
+	uMaskSampler     = new GL::ProgramUniform(program->get(), "uMaskSampler");
 	
-	uAmbient    = new GL::ProgramUniform(program->get(), "uAmbient");
-	uModelEmit  = new GL::ProgramUniform(program->get(), "uModelEmit");
-	uModelShine = new GL::ProgramUniform(program->get(), "uModelShine");
+	uAmbient          = new GL::ProgramUniform(program->get(), "uAmbient");
+	uModelEmit        = new GL::ProgramUniform(program->get(), "uModelEmit");
+	uModelSpecularExp = new GL::ProgramUniform(program->get(), "uModelSpecularExp");
 	
 	uDirLightColor     = new GL::ProgramUniform(program->get(), "uDirLightColor");
 	uDirLightIntensity = new GL::ProgramUniform(program->get(), "uDirLightIntensity");
@@ -53,15 +55,24 @@ Scene::Scene(MainEngine &engine)
 Scene::~Scene()
 {
 	engine.storage.release(*program);
+	
 	delete uModelMat;
 	delete uViewMat;
 	delete uProjMat;
+	
 	delete uDiffuseSampler;
 	delete uNormalSampler;
+	delete uSpecularSampler;
+	delete uMaskSampler;
+	
 	delete uAmbient;
+	delete uModelEmit;
+	delete uModelSpecularExp;
+	
 	delete uDirLightColor;
 	delete uDirLightIntensity;
 	delete uDirLightDirection;
+	
 	delete uPointLightColor;
 	delete uPointLightIntensity;
 	delete uPointLightSpread;

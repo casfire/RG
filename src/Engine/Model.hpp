@@ -14,11 +14,16 @@ namespace Engine {
 	struct ModelObject {
 		Asset::CFRGeometry *geometry = nullptr;
 		std::size_t start, end;
-		Asset::CFRTexture2D *diffuseCFRT = nullptr;
-		const GL::Texture2D *diffuse     = nullptr;
-		Asset::CFRTexture2D *normalCFRT  = nullptr;
-		const GL::Texture2D *normal      = nullptr;
-		float emit = 0.f, shine = 20;
+		Asset::CFRTexture2D *diffuseCFRT  = nullptr;
+		const GL::Texture2D *diffuse      = nullptr;
+		Asset::CFRTexture2D *normalCFRT   = nullptr;
+		const GL::Texture2D *normal       = nullptr;
+		Asset::CFRTexture2D *specularCFRT = nullptr;
+		const GL::Texture2D *specular     = nullptr;
+		Asset::CFRTexture2D *maskCFRT     = nullptr;
+		const GL::Texture2D *mask         = nullptr;
+		float specular_exp;
+		float emit;
 	};
 	
 	
