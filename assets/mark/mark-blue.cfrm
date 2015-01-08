@@ -1,0 +1,8 @@
+#CFR Model generated from mark.obj
+version 1
+geometry mark.cfrg
+
+diffuse 0 1 0
+range 0 408
+end
+

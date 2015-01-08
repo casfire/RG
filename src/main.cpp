@@ -2,7 +2,9 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 #include <glm/gtx/rotate_vector.hpp>
+
 namespace E = Engine;
+typedef sf::Keyboard Key;
 
 int main() {
 	
@@ -28,20 +30,29 @@ int main() {
 	E::PointLight&       lightPoint = scene.getPointLight();
 	E::DirectionalLight& lightDir   = scene.getDirectionalLight();
 	
-	/* Load model and attach to scene */
-	E::Node& sphere = engine.loadModel("assets/sphere.cfrm");
-	scene.attach(sphere);
-	
 	/* Set directional light properties */
 	lightDir.setDirection(glm::vec3(0, 1, 0)); // Direction (up)
 	lightDir.setColor    (glm::vec3(1, 1, 1)); // Color (white)
 	lightDir.setIntensity(0.5f);               // Intensity
 	
 	/* Set point light properties */
-	lightPoint.setPosition (glm::vec3(0, 6, 0)); // Position
+	lightPoint.setPosition (glm::vec3(1, 3, 1)); // Position
 	lightPoint.setColor    (glm::vec3(1, 1, 1)); // Color (white)
 	lightPoint.setIntensity(5.f);                // Intensity
 	lightPoint.setSpread   (0.25f);              // Inverse spread
+	
+	/* Load and attach cube */
+	E::Node& cube = engine.loadModel("assets/cube/cube.cfrm");
+	scene.attach(cube);
+	cube.setPosition(glm::vec3(0, 0, 2));
+	
+	/* Load and attach sphere */
+	E::Node& sphere = engine.loadModel("assets/sphere/sphere.cfrm");
+	scene.attach(sphere);
+	sphere.setPosition(glm::vec3(0, 0, 0));
+	
+	/* Move camera back */
+	camera.setPosition(glm::vec3(0, 0, 2));
 	
 	/* Main loop */
 	bool running = true, cursorLocked = false;
@@ -53,6 +64,7 @@ int main() {
 		sf::Time elapsedNow = clock.getElapsedTime();
 		sf::Time elapsedFrame = elapsedNow - elapsedLast;
 		elapsedLast = elapsedNow;
+		float elapsedSeconds = elapsedFrame.asSeconds();
 		
 		/* Handle events */
 		sf::Event event;
@@ -82,48 +94,32 @@ int main() {
 		
 		/* Camera movement */
 		if (cursorLocked) {
-			float cameraMoveSpeed = elapsedFrame.asSeconds() * 10;
-			float cameraRotateSpeed = 0.004;
-			float cameraRollSpeed = elapsedFrame.asSeconds();
-			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-			sf::Vector2i windowMid = sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2);
+			float cameraSpeedMove   = elapsedSeconds * 10;
+			float cameraSpeedRotate = 0.004;
+			float cameraSoeedRoll   = elapsedSeconds;
+			sf::Vector2i mousePos   = sf::Mouse::getPosition(window);
+			sf::Vector2i windowMid  = sf::Vector2i(window.getSize()) / 2;
 			if (mousePos != windowMid) {
-				float moveX = cameraRotateSpeed * (mousePos.x - windowMid.x);
-				float moveY = cameraRotateSpeed * (mousePos.y - windowMid.y);
-				camera.yaw(-moveX);
-				camera.setRotation(camera.getRotation() * glm::quat(glm::vec3(-moveY, 0, 0)));
+				glm::vec2 move = glm::vec2(windowMid.x, windowMid.y) - glm::vec2(mousePos.x, mousePos.y);
+				camera.rotateY(move.x * cameraSpeedRotate);
+				camera.rotateX(move.y * cameraSpeedRotate, camera);
 				sf::Mouse::setPosition(windowMid, window);
 			}
-			
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-				camera.setPosition(camera.getPosition() + camera.getRotation() * glm::vec3(0, 0, -cameraMoveSpeed));
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-				camera.setPosition(camera.getPosition() + camera.getRotation() * glm::vec3(0, 0, +cameraMoveSpeed));
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-				camera.setPosition(camera.getPosition() + camera.getRotation() * glm::vec3(-cameraMoveSpeed, 0, 0));
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-				camera.setPosition(camera.getPosition() + camera.getRotation() * glm::vec3(+cameraMoveSpeed, 0, 0));
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-				camera.setRotation(camera.getRotation() * glm::quat(glm::vec3(0, 0, +cameraRollSpeed)));
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
-				camera.setRotation(camera.getRotation() * glm::quat(glm::vec3(0, 0, -cameraRollSpeed)));
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-				camera.translate(glm::vec3(0, cameraMoveSpeed, 0));
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-				camera.translate(glm::vec3(0, -cameraMoveSpeed, 0));
-			}
+			if (Key::isKeyPressed(sf::Keyboard::W)) camera.translateZ(-cameraSpeedMove, camera);
+			if (Key::isKeyPressed(sf::Keyboard::S)) camera.translateZ(+cameraSpeedMove, camera);
+			if (Key::isKeyPressed(sf::Keyboard::A)) camera.translateX(-cameraSpeedMove, camera);
+			if (Key::isKeyPressed(sf::Keyboard::D)) camera.translateX(+cameraSpeedMove, camera);
+			if (Key::isKeyPressed(sf::Keyboard::Q)) camera.roll(+cameraSoeedRoll, camera);
+			if (Key::isKeyPressed(sf::Keyboard::E)) camera.roll(-cameraSoeedRoll, camera);
+			if (Key::isKeyPressed(sf::Keyboard::Space))  camera.translateY(+cameraSpeedMove, camera);
+			if (Key::isKeyPressed(sf::Keyboard::LShift)) camera.translateY(-cameraSpeedMove, camera);
 		}
 		
-		/* Set directional light direction */
-		float rotateSpeed = elapsedFrame.asSeconds();
-		lightDir.setDirection(glm::rotateZ(lightDir.getDirection(), rotateSpeed));
+		/* Rotate directional light */
+		lightDir.setDirection(glm::rotateZ(lightDir.getDirection(), elapsedSeconds));
+		
+		/* Rotate cube */
+		cube.rotateY(elapsedSeconds);
 		
 		/* Draw scene */
 		scene.draw();

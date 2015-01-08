@@ -34,29 +34,53 @@ void Transform::translate(const glm::vec3 &offset)
 	position += offset;
 }
 
+void Transform::translateX(float offset)
+{
+	position.x += offset;
+}
+
+void Transform::translateY(float offset)
+{
+	position.y += offset;
+}
+
+void Transform::translateZ(float offset)
+{
+	position.z += offset;
+}
+
 
 
 /* Relative position */
 
 glm::vec3 Transform::getPosition(const Transform &rel) const
 {
-	// TODO
-	(void) rel;
-	return getPosition();
+	return (position - rel.position) * rel.rotation * rel.scaling;
 }
 
 void Transform::setPosition(const glm::vec3 &pos, const Transform &rel)
 {
-	// TODO
-	(void) rel;
-	setPosition(pos);
+	position = rel.rotation * (pos * rel.scaling);
 }
 
 void Transform::translate(const glm::vec3 &offset, const Transform &rel)
 {
-	// TODO
-	(void) rel;
-	translate(offset);
+	position += rel.rotation * (offset * rel.scaling);
+}
+
+void Transform::translateX(float offset, const Transform &rel)
+{
+	translate(glm::vec3(offset, 0, 0), rel);
+}
+
+void Transform::translateY(float offset, const Transform &rel)
+{
+	translate(glm::vec3(0, offset, 0), rel);
+}
+
+void Transform::translateZ(float offset, const Transform &rel)
+{
+	translate(glm::vec3(0, 0, offset), rel);
 }
 
 
@@ -81,6 +105,21 @@ void Transform::rotate(const glm::quat &rot)
 void Transform::rotate(const glm::vec3 &euler)
 {
 	rotation = glm::quat(euler) * rotation;
+}
+
+void Transform::rotateX(float angle)
+{
+	rotation = glm::quat(glm::vec3(angle, 0, 0)) * rotation;
+}
+
+void Transform::rotateY(float angle)
+{
+	rotation = glm::quat(glm::vec3(0, angle, 0)) * rotation;
+}
+
+void Transform::rotateZ(float angle)
+{
+	rotation = glm::quat(glm::vec3(0, 0, angle)) * rotation;
 }
 
 void Transform::pitch(float angle)
@@ -119,28 +158,37 @@ float Transform::getRoll() const
 
 glm::quat Transform::getRotation(const Transform &rel) const
 {
-	// TODO
-	(void) rel;
-	return getRotation();
+	return rotation * glm::inverse(rel.rotation);
 }
 
 void Transform::setRotation(const glm::quat &rot, const Transform &rel)
 {
-	// TODO
-	(void) rel;
-	setRotation(rot);
+	rotation = rel.rotation * rot * glm::inverse(rel.rotation);
 }
 
 void Transform::rotate(const glm::quat &rot, const Transform &rel)
 {
-	// TODO
-	(void) rel;
-	rotate(rot);
+	rotation = rel.rotation * rot * glm::inverse(rel.rotation) * rotation;
 }
 
 void Transform::rotate(const glm::vec3 &euler, const Transform &rel)
 {
 	rotate(glm::quat(euler), rel);
+}
+
+void Transform::rotateX(float angle, const Transform &rel)
+{
+	rotate(glm::quat(glm::vec3(angle, 0, 0)), rel);
+}
+
+void Transform::rotateY(float angle, const Transform &rel)
+{
+	rotate(glm::quat(glm::vec3(0, angle, 0)), rel);
+}
+
+void Transform::rotateZ(float angle, const Transform &rel)
+{
+	rotate(glm::quat(glm::vec3(0, 0, angle)), rel);
 }
 
 void Transform::pitch(float angle, const Transform &rel)

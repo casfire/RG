@@ -1,0 +1,10 @@
+#CFR Model generated from cube.obj
+version 1
+geometry cube.cfrg
+
+diffuse_map  diffuse.cfrt
+normal_map   normal.cfrt
+specular_map specular.cfrt
+range 0 36
+end
+

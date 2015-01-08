@@ -24,17 +24,26 @@ namespace Engine {
 		glm::vec3 getPosition() const;
 		void setPosition(const glm::vec3 &pos);
 		void translate  (const glm::vec3 &offset);
+		void translateX (float offset);
+		void translateY (float offset);
+		void translateZ (float offset);
 		
 		/* Relative position */
 		glm::vec3 getPosition(const Transform &rel) const;
 		void setPosition(const glm::vec3 &pos,    const Transform &rel);
 		void translate  (const glm::vec3 &offset, const Transform &rel);
+		void translateX (float offset, const Transform &rel);
+		void translateY (float offset, const Transform &rel);
+		void translateZ (float offset, const Transform &rel);
 		
 		/* Local rotation */
 		glm::quat getRotation() const;
 		void setRotation(const glm::quat &rot);
 		void rotate	    (const glm::quat &rot);
 		void rotate	    (const glm::vec3 &euler);
+		void rotateX    (float angle);
+		void rotateY    (float angle);
+		void rotateZ    (float angle);
 		void pitch      (float angle);
 		void yaw        (float angle);
 		void roll       (float angle);
@@ -47,6 +56,9 @@ namespace Engine {
 		void setRotation(const glm::quat &rot,   const Transform &rel);
 		void rotate	    (const glm::quat &rot,   const Transform &rel);
 		void rotate	    (const glm::vec3 &euler, const Transform &rel);
+		void rotateX    (float angle, const Transform &rel);
+		void rotateY    (float angle, const Transform &rel);
+		void rotateZ    (float angle, const Transform &rel);
 		void pitch      (float angle, const Transform &rel);
 		void yaw        (float angle, const Transform &rel);
 		void roll       (float angle, const Transform &rel);
