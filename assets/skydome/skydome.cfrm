@@ -3,7 +3,7 @@ version 1
 geometry skydome.cfrg
 
 diffuse_map sky.cfrt
-emit  1
+emit  1 1 1
 range 0 1440
 end
 

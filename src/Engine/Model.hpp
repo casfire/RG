@@ -22,8 +22,9 @@ namespace Engine {
 		const GL::Texture2D *specular     = nullptr;
 		Asset::CFRTexture2D *maskCFRT     = nullptr;
 		const GL::Texture2D *mask         = nullptr;
+		Asset::CFRTexture2D *emitCFRT     = nullptr;
+		const GL::Texture2D *emit         = nullptr;
 		float specular_exp;
-		float emit;
 	};
 	
 	

@@ -20,11 +20,12 @@ namespace Engine { namespace Asset {
 		glm::vec3   diffuse;
 		std::string diffuse_map;
 		std::string normal_map;
-		float       specular;
+		glm::vec3   specular;
 		float       specular_exp;
 		std::string specular_map;
 		std::string mask_map;
-		float emit;
+		glm::vec3   emit;
+		std::string emit_map;
 	};
 	
 	

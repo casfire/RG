@@ -54,7 +54,7 @@ Model::Model(MainEngine &engine, const std::string &file)
 			object.specularCFRT = &engine.storage.grab<Asset::CFRTexture2D>(obj.specular_map);
 			object.specular = &object.specularCFRT->get();
 		} else {
-			object.specular = createPixelTexture(obj.specular);
+			object.specular = createPixelTexture(obj.specular.x, obj.specular.y, obj.specular.z);
 		}
 		
 		if (!obj.mask_map.empty()) {
@@ -64,8 +64,14 @@ Model::Model(MainEngine &engine, const std::string &file)
 			object.mask = createPixelTexture(1.f);
 		}
 		
+		if (!obj.emit_map.empty()) {
+			object.emitCFRT = &engine.storage.grab<Asset::CFRTexture2D>(obj.emit_map);
+			object.emit = &object.emitCFRT->get();
+		} else {
+			object.emit = createPixelTexture(obj.emit.x, obj.emit.y, obj.emit.z);
+		}
+		
 		object.specular_exp = obj.specular_exp;
-		object.emit = obj.emit;
 		
 		object.diffuse->bind();
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -98,6 +104,14 @@ Model::Model(MainEngine &engine, const std::string &file)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		object.mask->unbind();
 		
+		object.emit->bind();
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		object.emit->unbind();
+		
 		objects.push_back(object);
 	}
 }
@@ -117,6 +131,9 @@ Model::~Model()
 		
 		if (objects[i].maskCFRT == nullptr) delete objects[i].mask;
 		else engine.storage.release(*objects[i].maskCFRT);
+		
+		if (objects[i].emitCFRT == nullptr) delete objects[i].emit;
+		else engine.storage.release(*objects[i].emitCFRT);
 	}
 }
 
@@ -124,7 +141,6 @@ void Model::draw(Scene &scene)
 {
 	for (std::size_t i = 0; i < objects.size(); i++) {
 		
-		scene.uModelEmit ->set1f(objects[i].emit);
 		scene.uModelSpecularExp->set1f(objects[i].specular_exp);
 		
 		glActiveTexture(GL_TEXTURE0);
@@ -143,12 +159,17 @@ void Model::draw(Scene &scene)
 		objects[i].mask->bind();
 		scene.uMaskSampler->set1i(3);
 		
+		glActiveTexture(GL_TEXTURE4);
+		objects[i].emit->bind();
+		scene.uEmitSampler->set1i(4);
+		
 		objects[i].geometry->get().draw(
 			GL_TRIANGLES,
 			objects[i].end - objects[i].start,
 			objects[i].start
 		);
 		
+		objects[i].emit->unbind();
 		objects[i].mask->unbind();
 		objects[i].specular->unbind();
 		objects[i].normal->unbind();

@@ -1,0 +1,9 @@
+#CFR Model generated from light.obj
+version 1
+geometry light.cfrg
+
+diffuse 1 1 1
+emit    1 1 1
+range   0 360
+end
+

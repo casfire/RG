@@ -57,9 +57,9 @@ namespace Engine {
 		GL::ProgramUniform *uNormalSampler;
 		GL::ProgramUniform *uSpecularSampler;
 		GL::ProgramUniform *uMaskSampler;
+		GL::ProgramUniform *uEmitSampler;
 		
 		GL::ProgramUniform *uAmbient;
-		GL::ProgramUniform *uModelEmit;
 		GL::ProgramUniform *uModelSpecularExp;
 		
 		GL::ProgramUniform *uDirLightColor;

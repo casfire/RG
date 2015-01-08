@@ -32,11 +32,12 @@ void CFRModel::resetCurrent()
 	current.diffuse      = glm::vec3(0, 0, 0);
 	current.diffuse_map  = "";
 	current.normal_map   = "";
-	current.specular     = 0.5f;
+	current.specular     = glm::vec3(0.5f, 0.5f, 0.5f);
 	current.specular_exp = 10.f;
 	current.specular_map = "";
 	current.mask_map     = "";
-	current.emit         = 0.f;
+	current.emit         = glm::vec3(0.f, 0.f, 0.f);
+	current.emit_map     = "";
 }
 
 void CFRModel::addCurrent()
@@ -76,7 +77,7 @@ void CFRModel::loadToken(
 	} else if (key.compare("normal_map") == 0) {
 		current.normal_map = storage.getPath() + value;
 	} else if (key.compare("specular") == 0) {
-		stream >> current.specular;
+		stream >> current.specular.x >> current.specular.y >> current.specular.z;
 	} else if (key.compare("specular_exp") == 0) {
 		stream >> current.specular_exp;
 	} else if (key.compare("specular_map") == 0) {
@@ -84,7 +85,9 @@ void CFRModel::loadToken(
 	} else if (key.compare("mask_map") == 0) {
 		current.mask_map = storage.getPath() + value;
 	} else if (key.compare("emit") == 0) {
-		stream >> current.emit;
+		stream >> current.emit.x >> current.emit.y >> current.emit.z;
+	} else if (key.compare("emit_map") == 0) {
+		current.emit_map = storage.getPath() + value;
 	}	else if (key.compare("end") == 0) {
 		resetCurrent();
 	}

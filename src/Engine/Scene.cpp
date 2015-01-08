@@ -26,9 +26,9 @@ Scene::Scene(MainEngine &engine)
 	uNormalSampler   = new GL::ProgramUniform(program->get(), "uNormalSampler");
 	uSpecularSampler = new GL::ProgramUniform(program->get(), "uSpecularSampler");
 	uMaskSampler     = new GL::ProgramUniform(program->get(), "uMaskSampler");
+	uEmitSampler     = new GL::ProgramUniform(program->get(), "uEmitSampler");
 	
 	uAmbient          = new GL::ProgramUniform(program->get(), "uAmbient");
-	uModelEmit        = new GL::ProgramUniform(program->get(), "uModelEmit");
 	uModelSpecularExp = new GL::ProgramUniform(program->get(), "uModelSpecularExp");
 	
 	uDirLightColor     = new GL::ProgramUniform(program->get(), "uDirLightColor");
@@ -64,9 +64,9 @@ Scene::~Scene()
 	delete uNormalSampler;
 	delete uSpecularSampler;
 	delete uMaskSampler;
+	delete uEmitSampler;
 	
 	delete uAmbient;
-	delete uModelEmit;
 	delete uModelSpecularExp;
 	
 	delete uDirLightColor;
