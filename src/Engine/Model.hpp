@@ -18,6 +18,7 @@ namespace Engine {
 		const GL::Texture2D *diffuse     = nullptr;
 		Asset::CFRTexture2D *normalCFRT  = nullptr;
 		const GL::Texture2D *normal      = nullptr;
+		float emit = 0.f, shine = 20;
 	};
 	
 	

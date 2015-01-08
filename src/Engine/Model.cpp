@@ -21,8 +21,10 @@ Model::Model(MainEngine &engine, const std::string &file)
 		const Asset::CFRModelObject& obj = model->get(i);
 		ModelObject object;
 		object.geometry = &engine.storage.grab<Asset::CFRGeometry>(obj.geometry);
-		object.start = obj.start;
-		object.end = obj.end;
+		object.start    = obj.start;
+		object.end      = obj.end;
+		object.emit     = obj.emit;
+		object.shine    = obj.shine;
 		
 		if (!obj.diffuse_map.empty()) {
 			object.diffuseCFRT = &engine.storage.grab<Asset::CFRTexture2D>(obj.diffuse_map);
@@ -81,6 +83,9 @@ Model::~Model()
 void Model::draw(Scene &scene)
 {
 	for (std::size_t i = 0; i < objects.size(); i++) {
+		
+		scene.uModelEmit ->set1f(objects[i].emit);
+		scene.uModelShine->set1f(objects[i].shine);
 		
 		glActiveTexture(GL_TEXTURE0);
 		objects[i].diffuse->bind();

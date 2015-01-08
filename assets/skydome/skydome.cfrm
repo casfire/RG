@@ -1,0 +1,9 @@
+#CFR Model generated from skydome.obj
+version 1
+geometry skydome.cfrg
+
+diffuse_map sky.cfrt
+emit  1
+range 0 1440
+end
+

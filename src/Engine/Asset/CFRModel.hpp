@@ -20,6 +20,7 @@ namespace Engine { namespace Asset {
 		glm::vec3   diffuse;
 		std::string diffuse_map;
 		std::string normal_map;
+		float emit, shine;
 	};
 	
 	

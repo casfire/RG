@@ -41,10 +41,10 @@ int main() {
 	lightPoint.setIntensity(5.f);                // Intensity
 	lightPoint.setSpread   (0.25f);              // Inverse spread
 	
-	/* Load and attach cube */
-	E::Node& cube = engine.loadModel("assets/cube/cube.cfrm");
-	scene.attach(cube);
-	cube.setPosition(glm::vec3(0, 0, 2));
+	/* Load and attach skydome */
+	E::Node& skydome = engine.loadModel("assets/skydome/skydome.cfrm");
+	scene.attach(skydome);
+	skydome.setScale(glm::vec3(200, 200, 200));
 	
 	/* Load and attach sphere */
 	E::Node& sphere = engine.loadModel("assets/sphere/sphere.cfrm");
@@ -117,9 +117,6 @@ int main() {
 		
 		/* Rotate directional light */
 		lightDir.setDirection(glm::rotateZ(lightDir.getDirection(), elapsedSeconds));
-		
-		/* Rotate cube */
-		cube.rotateY(elapsedSeconds);
 		
 		/* Draw scene */
 		scene.draw();

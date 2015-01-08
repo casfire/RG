@@ -25,7 +25,9 @@ Scene::Scene(MainEngine &engine)
 	uDiffuseSampler = new GL::ProgramUniform(program->get(), "uDiffuseSampler");
 	uNormalSampler  = new GL::ProgramUniform(program->get(), "uNormalSampler");
 	
-	uAmbient = new GL::ProgramUniform(program->get(), "uAmbient");
+	uAmbient    = new GL::ProgramUniform(program->get(), "uAmbient");
+	uModelEmit  = new GL::ProgramUniform(program->get(), "uModelEmit");
+	uModelShine = new GL::ProgramUniform(program->get(), "uModelShine");
 	
 	uDirLightColor     = new GL::ProgramUniform(program->get(), "uDirLightColor");
 	uDirLightIntensity = new GL::ProgramUniform(program->get(), "uDirLightIntensity");

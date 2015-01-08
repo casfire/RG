@@ -32,6 +32,8 @@ void CFRModel::resetCurrent()
 	current.diffuse = glm::vec3(0, 0, 0);
 	current.diffuse_map = "";
 	current.normal_map = "";
+	current.emit = 0.f;
+	current.shine = 40.f;
 }
 
 void CFRModel::addCurrent()
@@ -70,7 +72,11 @@ void CFRModel::loadToken(
 		current.diffuse_map = storage.getPath() + value;
 	} else if (key.compare("normal_map") == 0) {
 		current.normal_map = storage.getPath() + value;
-	} else if (key.compare("end") == 0) {
+	} else if (key.compare("emit") == 0) {
+		stream >> current.emit;
+	} else if (key.compare("shine") == 0) {
+		stream >> current.shine;
+	}	else if (key.compare("end") == 0) {
 		resetCurrent();
 	}
 }

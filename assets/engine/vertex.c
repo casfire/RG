@@ -9,6 +9,9 @@ uniform mat4 uViewMat;
 uniform mat4 uProjMat;
 uniform mat4 uModelMat;
 
+uniform float uModelEmit;
+uniform float uModelShine;
+
 uniform vec3  uDirLightColor;
 uniform float uDirLightIntensity;
 uniform vec3  uDirLightDirection;

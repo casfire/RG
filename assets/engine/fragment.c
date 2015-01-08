@@ -13,6 +13,9 @@ smooth in vec3 fPointLightDirCameraspace;
 uniform sampler2D uDiffuseSampler;
 uniform sampler2D uNormalSampler;
 
+uniform float uModelEmit;
+uniform float uModelShine;
+
 uniform float uAmbient;
 
 uniform vec3  uDirLightColor;
@@ -38,7 +41,6 @@ vec3 getNormal() {
 void main() {
 	
 	/* Constants */
-	float specularSpread = 80; // [1, inf]
 	float specularPower = 0.2; // [0, 1]
 	
 	/* Variables */
@@ -53,29 +55,32 @@ void main() {
 	/* No light */
 	color = vec3(0, 0, 0);
 	
+	/* Add emissive light */
+	color += uModelEmit * colorDiffuse;
+	
 	/* Add ambient light */
-	color += uAmbient * colorDiffuse;
+	color += (1 - uModelEmit) * uAmbient * colorDiffuse;
 	
 	/* Add diffuse directional light */
 	l = normalize(fDirLightDirCameraspace);
 	diffuseAmount = clamp(dot(n, l), 0, 1);
-	color += diffuseAmount * colorDiffuse * uDirLightColor * uDirLightIntensity;
+	color += (1 - uModelEmit) * diffuseAmount * colorDiffuse * uDirLightColor * uDirLightIntensity;
 	
 	/* Add specular directional light */
 	R = reflect(-l, n);
-	specularAmount = pow(clamp(dot(E, R), 0, 1), specularSpread);
-	color += specularAmount * colorDiffuse * uDirLightColor * specularPower * uDirLightIntensity;
+	specularAmount = pow(clamp(dot(E, R), 0, 1), uModelShine);
+	color += (1 - uModelEmit) * specularAmount * colorDiffuse * uDirLightColor * specularPower * uDirLightIntensity;
 	
 	/* Add diffuse point light */
 	l = normalize(fPointLightDirCameraspace);
 	diffuseAmount = clamp(dot(n, l), 0, 1);
 	float distance = length(uPointLightPosition - fPositionWorldspace);
 	attenuation = 1.f / (1.f + uPointLightSpread * pow(distance, 2));
-	color += diffuseAmount * colorDiffuse * uPointLightColor * uPointLightIntensity * attenuation;
+	color += (1 - uModelEmit) * diffuseAmount * colorDiffuse * uPointLightColor * uPointLightIntensity * attenuation;
 	
 	/* Add specular point light */
 	R = reflect(-l, n);
-	specularAmount = pow(clamp(dot(E, R), 0, 1), specularSpread);
-	color += specularAmount * colorDiffuse * uPointLightColor * specularPower * uPointLightIntensity * attenuation;
+	specularAmount = pow(clamp(dot(E, R), 0, 1), uModelShine);
+	color += (1 - uModelEmit) * specularAmount * colorDiffuse * uPointLightColor * specularPower * uPointLightIntensity * attenuation;
 	
 }
