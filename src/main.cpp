@@ -10,7 +10,7 @@ int main() {
 	
 	/* Create window and OpenGL context */
 	sf::Window window(sf::VideoMode(800, 600), "Engine", sf::Style::Default);
-	window.setFramerateLimit(60);
+	window.setVerticalSyncEnabled(true);
 	window.setKeyRepeatEnabled(false);
 	
 	/* Create and initialize engine */
@@ -30,26 +30,36 @@ int main() {
 	E::PointLight&       lightPoint = scene.getPointLight();
 	E::DirectionalLight& lightDir   = scene.getDirectionalLight();
 	
-	/* Set directional light properties */
-	lightDir.setDirection(glm::vec3(0, 1, 0)); // Direction (up)
-	lightDir.setColor    (glm::vec3(1, 1, 1)); // Color (white)
-	lightDir.setIntensity(0.5f);               // Intensity
+	/* Enable shadows */
+	scene.setShadowSize(2048, 2048);
+	scene.setShadowDepthBias(0.005);
+	scene.setShadowSamples(4, 4, 6.f);
+	scene.setShadowProjection(-300, 300, -300, 300, -500, 1000);
+	scene.enableShadows();
 	
-	/* Set point light properties */
-	lightPoint.setPosition (glm::vec3(1, 3, 1)); // Position
-	lightPoint.setColor    (glm::vec3(1, 1, 1)); // Color (white)
-	lightPoint.setIntensity(5.f);                // Intensity
-	lightPoint.setSpread   (0.25f);              // Inverse spread
+	/* Set light properties */
+	lightDir.setDirection  (glm::vec3(0.5, 1, 0.5)); // Direction 
+	lightDir.setColor      (glm::vec3(1, 1, 1));     // Color
+	lightDir.setIntensity  (0.5f);                   // Intensity
+	lightPoint.setPosition (glm::vec3(1, 3, 1));     // Position
+	lightPoint.setColor    (glm::vec3(0.8, 0.8, 1)); // Color
+	lightPoint.setIntensity(1.f);                    // Intensity
+	lightPoint.setSpread   (0.001f);                 // Inverse spread
+	scene.setAmbient(0.3);
 	
 	/* Load and attach skydome */
 	E::Node& skydome = engine.loadModel("assets/skydome/skydome.cfrm");
 	scene.attach(skydome);
-	skydome.setScale(glm::vec3(200, 200, 200));
+	skydome.setScale(glm::vec3(2000, 2000, 2000));
+	
+	/* Load and attach light model */
+	E::Node& lightModel = engine.loadModel("assets/light/light.cfrm");
+	scene.attach(lightModel);
 	
 	/* Load and attach sphere */
 	E::Node& sphere = engine.loadModel("assets/sphere/sphere.cfrm");
 	scene.attach(sphere);
-	sphere.setPosition(glm::vec3(0, 0, 0));
+	sphere.setScale(glm::vec3(10, 10, 10));
 	
 	/* Move camera back */
 	camera.setPosition(glm::vec3(0, 0, 2));
@@ -58,6 +68,7 @@ int main() {
 	bool running = true, cursorLocked = false;
 	sf::Clock clock;
 	sf::Time elapsedLast = sf::Time::Zero;
+	float fpsTime = 0, fpsFrames = 0;
 	while (running) {
 		
 		/* Timing */
@@ -65,6 +76,12 @@ int main() {
 		sf::Time elapsedFrame = elapsedNow - elapsedLast;
 		elapsedLast = elapsedNow;
 		float elapsedSeconds = elapsedFrame.asSeconds();
+		fpsTime += elapsedSeconds;
+		fpsFrames++;
+		if (fpsTime > 1) {
+			window.setTitle("Engine - " + std::to_string(fpsFrames / fpsTime) + " fps");
+			fpsFrames = fpsTime = 0.f;
+		}
 		
 		/* Handle events */
 		sf::Event event;
@@ -94,15 +111,23 @@ int main() {
 		
 		/* Camera movement */
 		if (cursorLocked) {
-			float cameraSpeedMove   = elapsedSeconds * 10;
+			float cameraSpeedMove   = elapsedSeconds * 100;
 			float cameraSpeedRotate = 0.004;
 			float cameraSoeedRoll   = elapsedSeconds;
 			sf::Vector2i mousePos   = sf::Mouse::getPosition(window);
 			sf::Vector2i windowMid  = sf::Vector2i(window.getSize()) / 2;
 			if (mousePos != windowMid) {
 				glm::vec2 move = glm::vec2(windowMid.x, windowMid.y) - glm::vec2(mousePos.x, mousePos.y);
-				camera.rotateY(move.x * cameraSpeedRotate);
-				camera.rotateX(move.y * cameraSpeedRotate, camera);
+				if (Key::isKeyPressed(sf::Keyboard::F)) {
+					lightDir.setDirection(glm::rotateX(lightDir.getDirection(), move.x * cameraSpeedRotate));
+					lightDir.setDirection(glm::rotateZ(lightDir.getDirection(), move.y * cameraSpeedRotate));
+					float ambient = glm::normalize(lightDir.getDirection()).y;
+					if (ambient < 0.) ambient = 0.f;
+					scene.setAmbient(0.1 + ambient * 0.3);
+				} else {
+					camera.rotateY(move.x * cameraSpeedRotate);
+					camera.rotateX(move.y * cameraSpeedRotate, camera);
+				}
 				sf::Mouse::setPosition(windowMid, window);
 			}
 			if (Key::isKeyPressed(sf::Keyboard::W)) camera.translateZ(-cameraSpeedMove, camera);
@@ -115,8 +140,11 @@ int main() {
 			if (Key::isKeyPressed(sf::Keyboard::LShift)) camera.translateY(-cameraSpeedMove, camera);
 		}
 		
-		/* Rotate directional light */
-		lightDir.setDirection(glm::rotateZ(lightDir.getDirection(), elapsedSeconds));
+		/* Set point light position*/
+		if (Key::isKeyPressed(sf::Keyboard::V)) {
+			lightPoint.setPosition(camera.getPosition() + camera.getRotation() * glm::vec3(0, 0, -10));
+			lightModel.setPosition(lightPoint.getPosition());
+		}
 		
 		/* Draw scene */
 		scene.draw();

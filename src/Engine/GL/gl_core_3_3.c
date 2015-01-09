@@ -95,6 +95,8 @@ static PROC WinGetProcAddress(const char *name)
 	#endif
 #endif
 
+int ogl_ext_EXT_texture_filter_anisotropic = ogl_LOAD_FAILED;
+
 void (CODEGEN_FUNCPTR *_ptrc_glBlendFunc)(GLenum, GLenum) = NULL;
 void (CODEGEN_FUNCPTR *_ptrc_glClear)(GLbitfield) = NULL;
 void (CODEGEN_FUNCPTR *_ptrc_glClearColor)(GLfloat, GLfloat, GLfloat, GLfloat) = NULL;
@@ -1154,10 +1156,10 @@ typedef struct ogl_StrToExtMap_s
 } ogl_StrToExtMap;
 
 static ogl_StrToExtMap ExtensionMap[1] = {
-	{"", NULL, NULL},
+	{"GL_EXT_texture_filter_anisotropic", &ogl_ext_EXT_texture_filter_anisotropic, NULL},
 };
 
-static int g_extensionMapSize = 0;
+static int g_extensionMapSize = 1;
 
 static ogl_StrToExtMap *FindExtEntry(const char *extensionName)
 {
@@ -1174,6 +1176,7 @@ static ogl_StrToExtMap *FindExtEntry(const char *extensionName)
 
 static void ClearExtensionVars()
 {
+	ogl_ext_EXT_texture_filter_anisotropic = ogl_LOAD_FAILED;
 }
 
 

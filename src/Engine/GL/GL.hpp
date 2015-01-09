@@ -9,5 +9,6 @@
 #include "Buffer.hpp"
 #include "Texture.hpp"
 #include "VAO.hpp"
+#include "FrameBuffer.hpp"
 
 #endif // _ENGINE_GL_HPP_

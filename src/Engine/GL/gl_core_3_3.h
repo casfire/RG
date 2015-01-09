@@ -153,6 +153,11 @@ typedef unsigned int GLhandleARB;
 extern "C" {
 #endif /*__cplusplus*/
 
+extern int ogl_ext_EXT_texture_filter_anisotropic;
+
+#define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
+#define GL_TEXTURE_MAX_ANISOTROPY_EXT 0x84FE
+
 #define GL_ALPHA 0x1906
 #define GL_ALWAYS 0x0207
 #define GL_AND 0x1501
@@ -963,6 +968,7 @@ extern "C" {
 #define GL_TIMESTAMP 0x8E28
 #define GL_TIME_ELAPSED 0x88BF
 #define GL_VERTEX_ATTRIB_ARRAY_DIVISOR 0x88FE
+
 
 extern void (CODEGEN_FUNCPTR *_ptrc_glBlendFunc)(GLenum, GLenum);
 #define glBlendFunc _ptrc_glBlendFunc

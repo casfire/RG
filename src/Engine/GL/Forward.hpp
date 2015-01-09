@@ -45,6 +45,9 @@ namespace Engine { namespace GL {
 	/* VAO.hpp */
 	class VAO;
 	
+	/* FrameBuffer.hpp */
+	class FrameBuffer;
+	
 	
 	
 }} // namespace Engine::GL

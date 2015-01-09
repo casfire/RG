@@ -8,6 +8,7 @@ layout(location = 3) in vec4 tangent;
 uniform mat4 uViewMat;
 uniform mat4 uProjMat;
 uniform mat4 uModelMat;
+uniform mat4 uDepthBiasVP;
 
 uniform float uModelEmit;
 uniform float uModelSpecularExp;
@@ -29,6 +30,7 @@ smooth out vec3 fPositionWorldspace;
 smooth out vec3   fEyeDirCameraspace;
 smooth out vec3 fDirLightDirCameraspace;
 smooth out vec3 fPointLightDirCameraspace;
+smooth out vec4 fShadowCoord;
 
 void main() {
 	
@@ -37,7 +39,7 @@ void main() {
 	mat4 matMVP = uProjMat * matMV;     // Model to view
 	mat4 matV   = uViewMat;             // World to camera
 	
-	gl_Position = matMVP * vec4(position, 1.0f);
+	gl_Position = matMVP * vec4(position, 1);
 	
 	vec3 position_worldspace  = (matM  * vec4(position,    1)).xyz;
 	vec3   normal_cameraspace = (matMV * vec4(normal,      0)).xyz;
@@ -55,4 +57,6 @@ void main() {
 	fDirLightDirCameraspace        = (matV * vec4(uDirLightDirection,  0)).xyz;
 	vec3 pointlightpos_cameraspace = (matV * vec4(uPointLightPosition, 1)).xyz;
 	fPointLightDirCameraspace      = pointlightpos_cameraspace + eyedir_cameraspace;
+	
+	fShadowCoord = uDepthBiasVP * matM * vec4(position, 1);
 }

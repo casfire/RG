@@ -6,6 +6,7 @@
 #include "Node.hpp"
 #include "Camera.hpp"
 #include "Light.hpp"
+#include "GL/GL.hpp"
 
 namespace Engine {
 	
@@ -32,6 +33,26 @@ namespace Engine {
 		/* Set ambient [0, 1] */
 		void setAmbient(float amount);
 		
+		/* Set shadow projection */
+		void setShadowProjection(
+			float left,   float right,
+			float bottom, float top,
+			float near,   float far
+		);
+		
+		/* Set shadow depth bias */
+		void setShadowDepthBias(float bias);
+		
+		/* Set shadow texture size */
+		void setShadowSize(int x, int y);
+		
+		/* Enable/Disable shadows */
+		void enableShadows();
+		void disableShadows();
+		
+		/* Set shadow sample size */
+		void setShadowSamples(int x, int y, float spread);
+		
 	private:
 		
 		friend class MainEngine;
@@ -48,16 +69,22 @@ namespace Engine {
 		DirectionalLight lightDir;
 		PointLight       lightPoint;
 		Asset::GLProgram *program;
+		int width, height;
 		
 		GL::ProgramUniform *uModelMat;
 		GL::ProgramUniform *uViewMat;
 		GL::ProgramUniform *uProjMat;
+		GL::ProgramUniform *uDepthBiasVP;
+		GL::ProgramUniform *uDepthBias;
+		GL::ProgramUniform *uDepthTexelSize;
+		GL::ProgramUniform *uShadowSamples;
 		
 		GL::ProgramUniform *uDiffuseSampler;
 		GL::ProgramUniform *uNormalSampler;
 		GL::ProgramUniform *uSpecularSampler;
 		GL::ProgramUniform *uMaskSampler;
 		GL::ProgramUniform *uEmitSampler;
+		GL::ProgramUniform *uShadowSampler;
 		
 		GL::ProgramUniform *uAmbient;
 		GL::ProgramUniform *uModelSpecularExp;
@@ -70,6 +97,20 @@ namespace Engine {
 		GL::ProgramUniform *uPointLightIntensity;
 		GL::ProgramUniform *uPointLightSpread;
 		GL::ProgramUniform *uPointLightPosition;
+		
+		GL::FrameBuffer    shadowFB;
+		GL::Texture2D      shadowDepth;
+		Asset::GLProgram   *program_depth;
+		GL::ProgramUniform *uDepthVP;
+		GL::ProgramUniform *uDepthM;
+		glm::mat4 depthBiasMatrix;
+		glm::mat4 depthProjectionMatrix;
+		int shadowSizeX, shadowSizeY;
+		int shadowSamplesX, shadowSamplesY;
+		float shadowSamplesSpread;
+		bool shadowEnable;
+		
+		void drawEverything(GL::ProgramUniform *uModelMat);
 		
 	};
 	

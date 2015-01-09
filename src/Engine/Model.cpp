@@ -35,6 +35,7 @@ Model::Model(MainEngine &engine, const std::string &file)
 		object.geometry = &engine.storage.grab<Asset::CFRGeometry>(obj.geometry);
 		object.start    = obj.start;
 		object.end      = obj.end;
+		object.specular_exp = obj.specular_exp;
 		
 		if (!obj.diffuse_map.empty()) {
 			object.diffuseCFRT = &engine.storage.grab<Asset::CFRTexture2D>(obj.diffuse_map);
@@ -71,17 +72,26 @@ Model::Model(MainEngine &engine, const std::string &file)
 			object.emit = createPixelTexture(obj.emit.x, obj.emit.y, obj.emit.z);
 		}
 		
-		object.specular_exp = obj.specular_exp;
-		
 		object.diffuse->bind();
+		if (ogl_ext_EXT_texture_filter_anisotropic != ogl_LOAD_FAILED) {
+			float aniso = 0.f;
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &aniso);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, aniso);
+		}
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		
 		object.diffuse->unbind();
 		
 		object.normal->bind();
+		if (ogl_ext_EXT_texture_filter_anisotropic != ogl_LOAD_FAILED) {
+			float aniso = 0.f;
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &aniso);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, aniso);
+		}
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -90,6 +100,11 @@ Model::Model(MainEngine &engine, const std::string &file)
 		object.normal->unbind();
 		
 		object.specular->bind();
+		if (ogl_ext_EXT_texture_filter_anisotropic != ogl_LOAD_FAILED) {
+			float aniso = 0.f;
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &aniso);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, aniso);
+		}
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -105,6 +120,11 @@ Model::Model(MainEngine &engine, const std::string &file)
 		object.mask->unbind();
 		
 		object.emit->bind();
+		if (ogl_ext_EXT_texture_filter_anisotropic != ogl_LOAD_FAILED) {
+			float aniso = 0.f;
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &aniso);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, aniso);
+		}
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
