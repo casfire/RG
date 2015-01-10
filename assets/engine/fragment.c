@@ -17,8 +17,8 @@ uniform sampler2D uMaskSampler;
 uniform sampler2D uEmitSampler;
 uniform sampler2DShadow uShadowSampler;
 
-uniform float uDepthBias;
-uniform vec2  uDepthTexelSize;
+uniform float uShadowDepthBias;
+uniform vec2  uShadowTexelSize;
 uniform ivec2 uShadowSamples;
 
 uniform float uAmbient;
@@ -45,17 +45,17 @@ vec3 getNormal() {
 }
 
 float getShadowValue() {
-	float bias = uDepthBias;
+	float bias = uShadowDepthBias;
 	float shadowValue = 0.f;
 	vec2 coord = fShadowCoord.xy;
 	ivec2 samples = uShadowSamples;
 	for (int x = 0; x < samples.x; x++) {
 		for (int y = 0; y < samples.y; y++) {
-			vec2 off = uDepthTexelSize * (vec2(x, y) - 0.5) / samples;
+			vec2 off = uShadowTexelSize * (vec2(x, y) / (samples + 1) - 0.5);
 			shadowValue += texture(uShadowSampler, vec3(coord + off, (fShadowCoord.z / fShadowCoord.w) - bias));
 		}
 	}
-	return shadowValue / (samples.x + samples.y);
+	return shadowValue / (samples.x * samples.y);
 }
 
 void main() {

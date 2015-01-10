@@ -66,17 +66,21 @@ namespace Engine {
 		
 		MainEngine &engine;
 		Camera camera;
+		
 		DirectionalLight lightDir;
 		PointLight       lightPoint;
+		int sceneWidth, sceneHeight;
+		
+		/* Main program */
 		Asset::GLProgram *program;
-		int width, height;
 		
 		GL::ProgramUniform *uModelMat;
 		GL::ProgramUniform *uViewMat;
 		GL::ProgramUniform *uProjMat;
-		GL::ProgramUniform *uDepthBiasVP;
-		GL::ProgramUniform *uDepthBias;
-		GL::ProgramUniform *uDepthTexelSize;
+		GL::ProgramUniform *uShadowVP;
+		
+		GL::ProgramUniform *uShadowDepthBias;
+		GL::ProgramUniform *uShadowTexelSize;
 		GL::ProgramUniform *uShadowSamples;
 		
 		GL::ProgramUniform *uDiffuseSampler;
@@ -98,19 +102,25 @@ namespace Engine {
 		GL::ProgramUniform *uPointLightSpread;
 		GL::ProgramUniform *uPointLightPosition;
 		
-		GL::FrameBuffer    shadowFB;
-		GL::Texture2D      shadowDepth;
+		/* Depth program */
 		Asset::GLProgram   *program_depth;
-		GL::ProgramUniform *uDepthVP;
 		GL::ProgramUniform *uDepthM;
-		glm::mat4 depthBiasMatrix;
-		glm::mat4 depthProjectionMatrix;
-		int shadowSizeX, shadowSizeY;
-		int shadowSamplesX, shadowSamplesY;
+		GL::ProgramUniform *uDepthV;
+		GL::ProgramUniform *uDepthP;
+		
+		/* Shadow buffer */
+		GL::FrameBuffer shadowFB;
+		GL::Texture2D   shadowTexture;
+		glm::mat4       shadowMatP;
+		int   shadowSizeX;
+		int   shadowSizeY;
+		int   shadowSamplesX;
+		int   shadowSamplesY;
 		float shadowSamplesSpread;
-		bool shadowEnable;
+		bool  shadowEnable;
 		
 		void drawEverything(GL::ProgramUniform *uModelMat);
+		void updateShadowTexelSize();
 		
 	};
 	

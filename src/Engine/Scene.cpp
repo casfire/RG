@@ -20,11 +20,11 @@ Scene::Scene(MainEngine &engine)
 	uModelMat = new GL::ProgramUniform(program->get(), "uModelMat");
 	uViewMat  = new GL::ProgramUniform(program->get(), "uViewMat");
 	uProjMat  = new GL::ProgramUniform(program->get(), "uProjMat");
+	uShadowVP = new GL::ProgramUniform(program->get(), "uShadowVP");
 	
-	uDepthBiasVP    = new GL::ProgramUniform(program->get(), "uDepthBiasVP");
-	uDepthBias      = new GL::ProgramUniform(program->get(), "uDepthBias");
-	uDepthTexelSize = new GL::ProgramUniform(program->get(), "uDepthTexelSize");
-	uShadowSamples  = new GL::ProgramUniform(program->get(), "uShadowSamples");
+	uShadowDepthBias  = new GL::ProgramUniform(program->get(), "uShadowDepthBias");
+	uShadowTexelSize  = new GL::ProgramUniform(program->get(), "uShadowTexelSize");
+	uShadowSamples    = new GL::ProgramUniform(program->get(), "uShadowSamples");
 	
 	uDiffuseSampler  = new GL::ProgramUniform(program->get(), "uDiffuseSampler");
 	uNormalSampler   = new GL::ProgramUniform(program->get(), "uNormalSampler");
@@ -46,8 +46,9 @@ Scene::Scene(MainEngine &engine)
 	uPointLightPosition  = new GL::ProgramUniform(program->get(), "uPointLightPosition");
 	
 	program_depth = &engine.storage.grab<Asset::GLProgram>("/assets/engine/depth_program.txt");
-	uDepthVP = new GL::ProgramUniform(program_depth->get(), "uDepthVP");
-	uDepthM  = new GL::ProgramUniform(program_depth->get(), "uDepthM");
+	uDepthM = new GL::ProgramUniform(program_depth->get(), "uDepthM");
+	uDepthV = new GL::ProgramUniform(program_depth->get(), "uDepthV");
+	uDepthP = new GL::ProgramUniform(program_depth->get(), "uDepthP");
 	
 	/* Default light properties */
 	setAmbient(0.2);
@@ -65,12 +66,6 @@ Scene::Scene(MainEngine &engine)
 	setShadowSize(1024, 1024);
 	setShadowSamples(4, 4, 4.f);
 	enableShadows();
-	depthBiasMatrix = glm::mat4(
-		0.5, 0.0, 0.0, 0.0, 
-		0.0, 0.5, 0.0, 0.0,
-		0.0, 0.0, 0.5, 0.0,
-		0.5, 0.5, 0.5, 1.0
-	);
 }
 
 Scene::~Scene()
@@ -78,10 +73,10 @@ Scene::~Scene()
 	delete uModelMat;
 	delete uViewMat;
 	delete uProjMat;
+	delete uShadowVP;
 	
-	delete uDepthBiasVP;
-	delete uDepthBias;
-	delete uDepthTexelSize;
+	delete uShadowDepthBias;
+	delete uShadowTexelSize;
 	delete uShadowSamples;
 	
 	delete uDiffuseSampler;
@@ -103,8 +98,9 @@ Scene::~Scene()
 	delete uPointLightSpread;
 	delete uPointLightPosition;
 	
-	delete uDepthVP;
 	delete uDepthM;
+	delete uDepthV;
+	delete uDepthP;
 	engine.storage.release(*program);
 	engine.storage.release(*program_depth);
 }
@@ -135,25 +131,24 @@ void Scene::drawEverything(GL::ProgramUniform *uModelMat) {
 
 void Scene::draw()
 {
-	glm::mat4 depthBiasVP;
+	glm::mat4 shadowMatV;
 	if (shadowEnable) {
 		
-		/* Bind framebuffer & depth program*/
+		/* Bind shadow & depth program*/
 		shadowFB.bind();
 		program_depth->get().bind();
 		
-		/* Calculate and set depthVP */
-		glm::mat4 depthViewMatrix = glm::lookAt(lightDir.getDirection(), glm::vec3(0,0,0), glm::vec3(0,1,0));
-		glm::mat4 depthVP = depthProjectionMatrix * depthViewMatrix;
-		uDepthVP->set(depthVP);
-		depthBiasVP = depthBiasMatrix * depthVP;
+		/* Set depth matrices */
+		shadowMatV = glm::lookAt(camera.getPosition() + lightDir.getDirection(), camera.getPosition(), glm::vec3(0,1,0));
+		uDepthV->set(shadowMatV);
+		uDepthP->set(shadowMatP);
 		
 		/* Draw shadow depth */
 		glViewport(0, 0, shadowSizeX, shadowSizeY);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawEverything(uDepthM);
 		
-		/* Unbind framebuffer & depth program*/
+		/* Unbind shadow & depth program*/
 		program_depth->get().unbind();
 		shadowFB.unbind();
 		
@@ -167,9 +162,18 @@ void Scene::draw()
 	
 	/* Set shadow sampler */
 	glActiveTexture(GL_TEXTURE5);
-	shadowDepth.bind();
+	shadowTexture.bind();
 	uShadowSampler->set1i(5);
-	if (shadowEnable) uDepthBiasVP->set(depthBiasVP);
+	if (shadowEnable) {
+		uShadowVP->set(
+			glm::mat4(
+				0.5, 0.0, 0.0, 0.0, 
+				0.0, 0.5, 0.0, 0.0,
+				0.0, 0.0, 0.5, 0.0,
+				0.5, 0.5, 0.5, 1.0
+			) * shadowMatP * shadowMatV
+		);
+	}
 	
 	/* Set directional light */
 	uDirLightColor     ->set   (lightDir.getColor());
@@ -183,13 +187,20 @@ void Scene::draw()
 	uPointLightPosition  ->set   (lightPoint.getPosition());
 	
 	/* Draw scene */
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, sceneWidth, sceneHeight);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	drawEverything(uModelMat);
 	
 	/* Unbind program */
 	program->get().unbind();
 	
+}
+
+void Scene::updateShadowTexelSize()
+{
+	program->get().bind();
+	uShadowTexelSize->set(shadowSamplesSpread * glm::vec2(1. / shadowSizeX, 1. / shadowSizeY));
+	program->get().unbind();
 }
 
 void Scene::setShadowSamples(int x, int y, float spread)
@@ -199,8 +210,8 @@ void Scene::setShadowSamples(int x, int y, float spread)
 	shadowSamplesSpread = spread;
 	program->get().bind();
 	uShadowSamples->set2i(x, y);
-	uDepthTexelSize->set(shadowSamplesSpread * glm::vec2(1. / shadowSizeX, 1. / shadowSizeY));
 	program->get().unbind();
+	updateShadowTexelSize();
 }
 
 void Scene::enableShadows()
@@ -222,7 +233,7 @@ void Scene::setShadowSize(int x, int y)
 	shadowSizeX = x;
 	shadowSizeY = y;
 	shadowFB.bind();
-	shadowDepth.bind();
+	shadowTexture.bind();
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, x, y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -230,28 +241,26 @@ void Scene::setShadowSize(int x, int y)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowDepth.getObjectID(), 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowTexture.getObjectID(), 0);
 	glDrawBuffer(GL_NONE);
-	shadowDepth.unbind();
+	shadowTexture.unbind();
 	shadowFB.unbind();
-	program->get().bind();
-	uDepthTexelSize->set(shadowSamplesSpread * glm::vec2(1. / shadowSizeX, 1. / shadowSizeY));
-	program->get().unbind();
+	updateShadowTexelSize();
 }
 
 void Scene::setShadowDepthBias(float bias)
 {
 	program->get().bind();
-	uDepthBias->set1f(bias);
+	uShadowDepthBias->set1f(bias);
 	program->get().unbind();
 }
 
 void Scene::setShadowProjection(
-	float left, float right,
+	float left,   float right,
 	float bottom, float top,
-	float near, float far)
+	float near,   float far)
 {
-	depthProjectionMatrix = glm::ortho<float>(left, right, bottom, top, near, far);
+	shadowMatP = glm::ortho<float>(left, right, bottom, top, near, far);
 }
 
 void Scene::setAmbient(float amount)
@@ -270,8 +279,8 @@ void Scene::updateProjection()
 
 void Scene::resize(int width, int height)
 {
-	this->width = width;
-	this->height = height;
+	sceneWidth  = width;
+	sceneHeight = height;
 	camera.setAspect(width, height);
 }
 

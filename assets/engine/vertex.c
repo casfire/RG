@@ -8,7 +8,7 @@ layout(location = 3) in vec4 tangent;
 uniform mat4 uViewMat;
 uniform mat4 uProjMat;
 uniform mat4 uModelMat;
-uniform mat4 uDepthBiasVP;
+uniform mat4 uShadowVP;
 
 uniform float uModelEmit;
 uniform float uModelSpecularExp;
@@ -58,5 +58,5 @@ void main() {
 	vec3 pointlightpos_cameraspace = (matV * vec4(uPointLightPosition, 1)).xyz;
 	fPointLightDirCameraspace      = pointlightpos_cameraspace + eyedir_cameraspace;
 	
-	fShadowCoord = uDepthBiasVP * matM * vec4(position, 1);
+	fShadowCoord = uShadowVP * matM * vec4(position, 1);
 }

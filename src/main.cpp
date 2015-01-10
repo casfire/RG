@@ -33,7 +33,7 @@ int main() {
 	/* Enable shadows */
 	scene.setShadowSize(2048, 2048);
 	scene.setShadowDepthBias(0.005);
-	scene.setShadowSamples(4, 4, 6.f);
+	scene.setShadowSamples(4, 4, 3.f);
 	scene.setShadowProjection(-300, 300, -300, 300, -500, 1000);
 	scene.enableShadows();
 	
