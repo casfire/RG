@@ -12,18 +12,11 @@ namespace Engine { namespace Asset {
 	
 	
 	/* CFR Geometry asset */
-	class CFRGeometry : public BaseAsset {
+	class CFRGeometry : public BaseAsset, public GL::VAO {
 	public:
 		
 		/* Load geometry */
 		void load(Storage &storage, std::istream &stream) override;
-		
-		/* Return loaded geometry */
-		const GL::VAO& get();
-		
-	private:
-		
-		GL::VAO vao;
 		
 	};
 	

@@ -94,8 +94,8 @@ void CFRGeometry::load(Storage&, std::istream &stream)
 	GL::ArrayBuffer array(data.size(), data.data());
 	
 	if (header.offsetPosition != 0xFF && glTypePositon != GL_INVALID_ENUM) {
-		vao.enableAttribute(0);
-		vao.attribute(
+		enableAttribute(0);
+		attribute(
 			0, array,
 			glTypePositon, 3,
 			header.bytesPerVertex, header.offsetPosition,
@@ -104,8 +104,8 @@ void CFRGeometry::load(Storage&, std::istream &stream)
 	}
 	
 	if (header.offsetTexcoord != 0xFF && glTypeTexcoord != GL_INVALID_ENUM) {
-		vao.enableAttribute(1);
-		vao.attribute(
+		enableAttribute(1);
+		attribute(
 			1, array,
 			glTypeTexcoord, 2,
 			header.bytesPerVertex, header.offsetTexcoord,
@@ -114,8 +114,8 @@ void CFRGeometry::load(Storage&, std::istream &stream)
 	}
 	
 	if (header.offsetNormal != 0xFF && glTypeNormal != GL_INVALID_ENUM) {
-		vao.enableAttribute(2);
-		vao.attribute(
+		enableAttribute(2);
+		attribute(
 			2, array,
 			glTypeNormal, 3,
 			header.bytesPerVertex, header.offsetNormal,
@@ -124,8 +124,8 @@ void CFRGeometry::load(Storage&, std::istream &stream)
 	}
 	
 	if (header.offsetTangent != 0xFF && glTypeTangent != GL_INVALID_ENUM) {
-		vao.enableAttribute(3);
-		vao.attribute(
+		enableAttribute(3);
+		attribute(
 			3, array,
 			glTypeTangent, 4,
 			header.bytesPerVertex, header.offsetTangent,
@@ -136,24 +136,19 @@ void CFRGeometry::load(Storage&, std::istream &stream)
 	header.readElements(stream, data);
 	switch (header.bytesPerElement) {
 	case 1:
-		vao.set(GL::ElementBuffer8(
+		set(GL::ElementBuffer8(
 			header.countElements, reinterpret_cast<uint8_t*>(data.data())
 		));
 		break;
 	case 2:
-		vao.set(GL::ElementBuffer16(
+		set(GL::ElementBuffer16(
 			header.countElements, reinterpret_cast<uint16_t*>(data.data())
 		));
 		break;
 	case 4:
-		vao.set(GL::ElementBuffer32(
+		set(GL::ElementBuffer32(
 			header.countElements, reinterpret_cast<uint32_t*>(data.data())
 		));
 		break;
 	}
-}
-
-const GL::VAO& CFRGeometry::get()
-{
-	return vao;
 }

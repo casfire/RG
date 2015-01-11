@@ -183,7 +183,7 @@ void Model::draw(Scene &scene)
 		objects[i].emit->bind();
 		scene.uEmitSampler.set1i(4);
 		
-		objects[i].geometry->get().draw(
+		objects[i].geometry->draw(
 			GL_TRIANGLES,
 			objects[i].end - objects[i].start,
 			objects[i].start
