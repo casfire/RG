@@ -39,35 +39,35 @@ Model::Model(MainEngine &engine, const std::string &file)
 		
 		if (!obj.diffuse_map.empty()) {
 			object.diffuseCFRT = &engine.storage.grab<Asset::CFRTexture2D>(obj.diffuse_map);
-			object.diffuse = &object.diffuseCFRT->get();
+			object.diffuse = object.diffuseCFRT;
 		} else {
 			object.diffuse = createPixelTexture(obj.diffuse.x, obj.diffuse.y, obj.diffuse.z);
 		}
 		
 		if (!obj.normal_map.empty()) {
 			object.normalCFRT = &engine.storage.grab<Asset::CFRTexture2D>(obj.normal_map);
-			object.normal = &object.normalCFRT->get();
+			object.normal = object.normalCFRT;
 		} else {
 			object.normal = createPixelTexture(.5f, .5f, 1.f);
 		}
 		
 		if (!obj.specular_map.empty()) {
 			object.specularCFRT = &engine.storage.grab<Asset::CFRTexture2D>(obj.specular_map);
-			object.specular = &object.specularCFRT->get();
+			object.specular = object.specularCFRT;
 		} else {
 			object.specular = createPixelTexture(obj.specular.x, obj.specular.y, obj.specular.z);
 		}
 		
 		if (!obj.mask_map.empty()) {
 			object.maskCFRT = &engine.storage.grab<Asset::CFRTexture2D>(obj.mask_map);
-			object.mask = &object.maskCFRT->get();
+			object.mask = object.maskCFRT;
 		} else {
 			object.mask = createPixelTexture(1.f);
 		}
 		
 		if (!obj.emit_map.empty()) {
 			object.emitCFRT = &engine.storage.grab<Asset::CFRTexture2D>(obj.emit_map);
-			object.emit = &object.emitCFRT->get();
+			object.emit = object.emitCFRT;
 		} else {
 			object.emit = createPixelTexture(obj.emit.x, obj.emit.y, obj.emit.z);
 		}

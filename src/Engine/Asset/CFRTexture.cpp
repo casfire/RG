@@ -95,15 +95,10 @@ void CFRTexture1D::load(Storage&, std::istream &stream)
 	if (header.height != 1) throw LoadException("Height is not 1.");
 	std::vector<char> pixels;
 	header.readPixels(stream, pixels);
-	texture.setPixels(
+	setPixels(
 		header.width,
 		header.getFormat(), header.getType(), pixels.data()
 	);
-}
-
-const GL::Texture1D& CFRTexture1D::get()
-{
-	return texture;
 }
 
 
@@ -117,15 +112,10 @@ void CFRTexture2D::load(Storage&, std::istream &stream)
 	if (header.depth != 1) throw LoadException("Depth is not 1.");
 	std::vector<char> pixels;
 	header.readPixels(stream, pixels);
-	texture.setPixels(
+	setPixels(
 		header.width, header.height,
 		header.getFormat(), header.getType(), pixels.data()
 	);
-}
-
-const GL::Texture2D& CFRTexture2D::get()
-{
-	return texture;
 }
 
 
@@ -138,13 +128,8 @@ void CFRTexture3D::load(Storage&, std::istream &stream)
 	header.read(stream);
 	std::vector<char> pixels;
 	header.readPixels(stream, pixels);
-	texture.setPixels(
+	setPixels(
 		header.width, header.height, header.depth,
 		header.getFormat(), header.getType(), pixels.data()
 	);
-}
-
-const GL::Texture3D& CFRTexture3D::get()
-{
-	return texture;
 }

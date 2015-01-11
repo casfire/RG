@@ -12,54 +12,33 @@ namespace Engine { namespace Asset {
 	
 	
 	/* CFR 1D Texture asset */
-	class CFRTexture1D : public BaseAsset {
+	class CFRTexture1D : public BaseAsset, public GL::Texture1D {
 	public:
 		
 		/* Load texture */
 		void load(Storage &storage, std::istream &stream) override;
-		
-		/* Return loaded texture */
-		const GL::Texture1D& get();
-		
-	private:
-		
-		GL::Texture1D texture;
 		
 	};
 	
 	
 	
 	/* CFR 2D Texture asset */
-	class CFRTexture2D : public BaseAsset {
+	class CFRTexture2D : public BaseAsset, public GL::Texture2D {
 	public:
 		
 		/* Load texture */
 		void load(Storage &storage, std::istream &stream) override;
-		
-		/* Return loaded texture */
-		const GL::Texture2D& get();
-		
-	private:
-		
-		GL::Texture2D texture;
 		
 	};
 	
 	
 	
 	/* CFR 3D Texture asset */
-	class CFRTexture3D : public BaseAsset {
+	class CFRTexture3D : public BaseAsset, public GL::Texture3D {
 	public:
 		
 		/* Load texture */
 		void load(Storage &storage, std::istream &stream) override;
-		
-		/* Return loaded texture */
-		const GL::Texture3D& get();
-		
-	private:
-		
-		GL::Texture3D texture;
 		
 	};
 	
