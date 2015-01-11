@@ -88,43 +88,41 @@ namespace Engine {
 		bool  shadowEnable;
 		
 		/* Helper methods */
-		void drawEverything(GL::ProgramUniform &uModelMat);
+		void drawEverything(GL::Uniform &uModelMat);
 		void updateShadowTexelSize();
 		
 		/* Uniforms */
-		GL::ProgramUniform uModelMat;
-		GL::ProgramUniform uViewMat;
-		GL::ProgramUniform uProjMat;
-		GL::ProgramUniform uShadowVP;
+		GL::Uniform uModelMat;
+		GL::Uniform uViewMat;
+		GL::Uniform uProjMat;
+		GL::Uniform uShadowVP;
 		
-		GL::ProgramUniform uShadowDepthBias;
-		GL::ProgramUniform uShadowTexelSize;
-		GL::ProgramUniform uShadowSamples;
+		GL::Uniform uShadowDepthBias;
+		GL::Uniform uShadowTexelSize;
+		GL::Uniform uShadowSamples;
 		
-		GL::ProgramUniform uDiffuseSampler;
-		GL::ProgramUniform uNormalSampler;
-		GL::ProgramUniform uSpecularSampler;
-		GL::ProgramUniform uMaskSampler;
-		GL::ProgramUniform uEmitSampler;
-		GL::ProgramUniform uShadowSampler;
+		GL::Uniform uDiffuseSampler;
+		GL::Uniform uNormalSampler;
+		GL::Uniform uSpecularSampler;
+		GL::Uniform uMaskSampler;
+		GL::Uniform uEmitSampler;
+		GL::Uniform uShadowSampler;
 		
-		GL::ProgramUniform uAmbient;
-		GL::ProgramUniform uModelSpecularExp;
+		GL::Uniform uAmbient;
+		GL::Uniform uModelSpecularExp;
 		
-		GL::ProgramUniform uDirLightColor;
-		GL::ProgramUniform uDirLightIntensity;
-		GL::ProgramUniform uDirLightDirection;
+		GL::Uniform uDirLightColor;
+		GL::Uniform uDirLightIntensity;
+		GL::Uniform uDirLightDirection;
 		
-		GL::ProgramUniform uPointLightColor;
-		GL::ProgramUniform uPointLightIntensity;
-		GL::ProgramUniform uPointLightSpread;
-		GL::ProgramUniform uPointLightPosition;
+		GL::Uniform uPointLightColor;
+		GL::Uniform uPointLightIntensity;
+		GL::Uniform uPointLightSpread;
+		GL::Uniform uPointLightPosition;
 		
-		GL::ProgramUniform uDepthM;
-		GL::ProgramUniform uDepthV;
-		GL::ProgramUniform uDepthP;
-		
-		
+		GL::Uniform uDepthM;
+		GL::Uniform uDepthV;
+		GL::Uniform uDepthP;
 		
 	};
 	

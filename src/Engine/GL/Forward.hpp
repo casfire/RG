@@ -25,7 +25,7 @@ namespace Engine { namespace GL {
 	class ProgramLinkException;
 	
 	/* Uniform.hpp */
-	class ProgramUniform;
+	class Uniform;
 	
 	/* Buffer.hpp */
 	class Buffer;

@@ -16,15 +16,15 @@ namespace Engine { namespace GL {
 	
 	
 	/* Program uniform variable */
-	class ProgramUniform {
+	class Uniform {
 	public:
 		
 		/* Create an invalid uniform */
-		ProgramUniform();
+		Uniform();
 		
 		/* Create a new uniform */
-		ProgramUniform(const ProgramUniform &uniform);
-		ProgramUniform(const Program &program, const GLchar *name);
+		Uniform(const Uniform &uniform);
+		Uniform(const Program &program, const GLchar *name);
 		
 		/* Get location of the uniform */
 		GLuint getLocation() const;

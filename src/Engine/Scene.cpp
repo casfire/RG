@@ -69,7 +69,7 @@ Scene::~Scene()
 	engine.storage.release(program_depth);
 }
 
-void Scene::drawEverything(GL::ProgramUniform &uModelMat) {
+void Scene::drawEverything(GL::Uniform &uModelMat) {
 	
 	/* Model matrix stack */
 	std::stack<glm::mat4> matrices;

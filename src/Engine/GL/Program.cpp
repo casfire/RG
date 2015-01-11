@@ -6,7 +6,7 @@
 
 using Engine::GL::Program;
 using Engine::GL::ProgramLinkException;
-using Engine::GL::ProgramUniform;
+using Engine::GL::Uniform;
 
 
 
@@ -94,9 +94,9 @@ bool Program::isAttached(const Shader &shader) const
 	return false;
 }
 
-ProgramUniform Program::getUniform(const GLchar *name) const
+Uniform Program::getUniform(const GLchar *name) const
 {
-	return ProgramUniform(*this, name);
+	return Uniform(*this, name);
 }
 
 

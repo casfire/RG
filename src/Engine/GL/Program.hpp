@@ -51,7 +51,7 @@ namespace Engine { namespace GL {
 		bool isAttached(const Shader &shader) const;
 		
 		/* Retrieve uniform variable */
-		ProgramUniform getUniform(const GLchar *name) const;
+		Uniform getUniform(const GLchar *name) const;
 		
 	};
 	
