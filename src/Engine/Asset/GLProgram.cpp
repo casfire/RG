@@ -18,12 +18,7 @@ typedef std::vector<BaseAsset*>::iterator AssetIterator;
 
 void GLVertexShader::load(Storage&, std::vector<char> &data)
 {
-	shader.compile(static_cast<const GLchar*>(data.data()));
-}
-
-const GL::VertexShader& GLVertexShader::get()
-{
-	return shader;
+	compile(static_cast<const GLchar*>(data.data()));
 }
 
 
@@ -32,12 +27,7 @@ const GL::VertexShader& GLVertexShader::get()
 
 void GLFragmentShader::load(Storage&, std::vector<char> &data)
 {
-	shader.compile(static_cast<const GLchar*>(data.data()));
-}
-
-const GL::FragmentShader& GLFragmentShader::get()
-{
-	return shader;
+	compile(static_cast<const GLchar*>(data.data()));
 }
 
 
@@ -46,12 +36,7 @@ const GL::FragmentShader& GLFragmentShader::get()
 
 void GLGeometryShader::load(Storage&, std::vector<char> &data)
 {
-	shader.compile(static_cast<const GLchar*>(data.data()));
-}
-
-const GL::GeometryShader& GLGeometryShader::get()
-{
-	return shader;
+	compile(static_cast<const GLchar*>(data.data()));
 }
 
 
@@ -63,7 +48,7 @@ void GLProgram::loadBegin(Storage&)
 
 void GLProgram::loadEnd(Storage&)
 {
-	program.link();
+	link();
 }
 
 void GLProgram::loadToken(
@@ -75,15 +60,15 @@ void GLProgram::loadToken(
 	char type = key[0];
 	if (type == 'v') {
 		GLVertexShader& s = storage.grab<GLVertexShader>(value);
-		program.attach(s.get());
+		attach(s);
 		shaders.push_back(&s);
 	} else if (type == 'f') {
 		GLFragmentShader& s = storage.grab<GLFragmentShader>(value);
-		program.attach(s.get());
+		attach(s);
 		shaders.push_back(&s);
 	} else if (type == 'g') {
 		GLGeometryShader& s = storage.grab<GLGeometryShader>(value);
-		program.attach(s.get());
+		attach(s);
 		shaders.push_back(&s);
 	} else {
 		throw LoadException("Invalid shader type '" + std::string(1, type) + "'.");
@@ -97,9 +82,4 @@ void GLProgram::unload(Storage &storage)
 		storage.release(**i);
 	}
 	shaders.clear();
-}
-
-const GL::Program& GLProgram::get()
-{
-	return program;
 }

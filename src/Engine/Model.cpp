@@ -161,27 +161,27 @@ void Model::draw(Scene &scene)
 {
 	for (std::size_t i = 0; i < objects.size(); i++) {
 		
-		scene.uModelSpecularExp->set1f(objects[i].specular_exp);
+		scene.uModelSpecularExp.set1f(objects[i].specular_exp);
 		
 		glActiveTexture(GL_TEXTURE0);
 		objects[i].diffuse->bind();
-		scene.uDiffuseSampler->set1i(0);
+		scene.uDiffuseSampler.set1i(0);
 		
 		glActiveTexture(GL_TEXTURE1);
 		objects[i].normal->bind();
-		scene.uNormalSampler->set1i(1);
+		scene.uNormalSampler.set1i(1);
 		
 		glActiveTexture(GL_TEXTURE2);
 		objects[i].specular->bind();
-		scene.uSpecularSampler->set1i(2);
+		scene.uSpecularSampler.set1i(2);
 		
 		glActiveTexture(GL_TEXTURE3);
 		objects[i].mask->bind();
-		scene.uMaskSampler->set1i(3);
+		scene.uMaskSampler.set1i(3);
 		
 		glActiveTexture(GL_TEXTURE4);
 		objects[i].emit->bind();
-		scene.uEmitSampler->set1i(4);
+		scene.uEmitSampler.set1i(4);
 		
 		objects[i].geometry->get().draw(
 			GL_TRIANGLES,

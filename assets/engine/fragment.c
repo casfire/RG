@@ -51,7 +51,7 @@ float getShadowValue() {
 	ivec2 samples = uShadowSamples;
 	for (int x = 0; x < samples.x; x++) {
 		for (int y = 0; y < samples.y; y++) {
-			vec2 off = uShadowTexelSize * (vec2(x, y) / (samples + 1) - 0.5);
+			vec2 off = ((vec2(x, y) + 0.5) / samples) * uShadowTexelSize;
 			shadowValue += texture(uShadowSampler, vec3(coord + off, (fShadowCoord.z / fShadowCoord.w) - bias));
 		}
 	}

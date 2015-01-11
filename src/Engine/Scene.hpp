@@ -69,44 +69,45 @@ namespace Engine {
 		
 		DirectionalLight lightDir;
 		PointLight       lightPoint;
-		int sceneWidth, sceneHeight;
+		int sceneWidth;
+		int sceneHeight;
 		
-		/* Main program */
-		Asset::GLProgram *program;
+		/* Programs */
+		Asset::GLProgram &program;
+		Asset::GLProgram &program_depth;
 		
-		GL::ProgramUniform *uModelMat;
-		GL::ProgramUniform *uViewMat;
-		GL::ProgramUniform *uProjMat;
-		GL::ProgramUniform *uShadowVP;
+		/* Uniforms */
+		GL::ProgramUniform uModelMat;
+		GL::ProgramUniform uViewMat;
+		GL::ProgramUniform uProjMat;
+		GL::ProgramUniform uShadowVP;
 		
-		GL::ProgramUniform *uShadowDepthBias;
-		GL::ProgramUniform *uShadowTexelSize;
-		GL::ProgramUniform *uShadowSamples;
+		GL::ProgramUniform uShadowDepthBias;
+		GL::ProgramUniform uShadowTexelSize;
+		GL::ProgramUniform uShadowSamples;
 		
-		GL::ProgramUniform *uDiffuseSampler;
-		GL::ProgramUniform *uNormalSampler;
-		GL::ProgramUniform *uSpecularSampler;
-		GL::ProgramUniform *uMaskSampler;
-		GL::ProgramUniform *uEmitSampler;
-		GL::ProgramUniform *uShadowSampler;
+		GL::ProgramUniform uDiffuseSampler;
+		GL::ProgramUniform uNormalSampler;
+		GL::ProgramUniform uSpecularSampler;
+		GL::ProgramUniform uMaskSampler;
+		GL::ProgramUniform uEmitSampler;
+		GL::ProgramUniform uShadowSampler;
 		
-		GL::ProgramUniform *uAmbient;
-		GL::ProgramUniform *uModelSpecularExp;
+		GL::ProgramUniform uAmbient;
+		GL::ProgramUniform uModelSpecularExp;
 		
-		GL::ProgramUniform *uDirLightColor;
-		GL::ProgramUniform *uDirLightIntensity;
-		GL::ProgramUniform *uDirLightDirection;
+		GL::ProgramUniform uDirLightColor;
+		GL::ProgramUniform uDirLightIntensity;
+		GL::ProgramUniform uDirLightDirection;
 		
-		GL::ProgramUniform *uPointLightColor;
-		GL::ProgramUniform *uPointLightIntensity;
-		GL::ProgramUniform *uPointLightSpread;
-		GL::ProgramUniform *uPointLightPosition;
+		GL::ProgramUniform uPointLightColor;
+		GL::ProgramUniform uPointLightIntensity;
+		GL::ProgramUniform uPointLightSpread;
+		GL::ProgramUniform uPointLightPosition;
 		
-		/* Depth program */
-		Asset::GLProgram   *program_depth;
-		GL::ProgramUniform *uDepthM;
-		GL::ProgramUniform *uDepthV;
-		GL::ProgramUniform *uDepthP;
+		GL::ProgramUniform uDepthM;
+		GL::ProgramUniform uDepthV;
+		GL::ProgramUniform uDepthP;
 		
 		/* Shadow buffer */
 		GL::FrameBuffer shadowFB;
@@ -119,7 +120,7 @@ namespace Engine {
 		float shadowSamplesSpread;
 		bool  shadowEnable;
 		
-		void drawEverything(GL::ProgramUniform *uModelMat);
+		void drawEverything(GL::ProgramUniform &uModelMat);
 		void updateShadowTexelSize();
 		
 	};

@@ -14,7 +14,7 @@ namespace Engine { namespace Asset {
 	
 	
 	/* GLSL program */
-	class GLProgram : public TextTokenizer {
+	class GLProgram : public TextTokenizer, public GL::Program {
 	public:
 		
 		/* Load program */
@@ -29,12 +29,8 @@ namespace Engine { namespace Asset {
 		/* Release all shaders */
 		void unload(Storage &storage) override;
 		
-		/* Get program */
-		const GL::Program& get();
-		
 	private:
 		
-		GL::Program program;
 		std::vector<BaseAsset*> shaders;
 		
 	};
@@ -42,54 +38,33 @@ namespace Engine { namespace Asset {
 	
 	
 	/* Vertex shader */
-	class GLVertexShader : public TextRaw {
+	class GLVertexShader : public TextRaw, public GL::VertexShader {
 	public:
 		
 		/* Load shader */
 		void load(Storage &storage, std::vector<char> &data) override;
-		
-		/* Get shader */
-		const GL::VertexShader& get();
-		
-	private:
-		
-		GL::VertexShader shader;
 		
 	};
 	
 	
 	
 	/* Fragment shader */
-	class GLFragmentShader : public TextRaw {
+	class GLFragmentShader : public TextRaw, public GL::FragmentShader {
 	public:
 		
 		/* Load shader */
 		void load(Storage &storage, std::vector<char> &data) override;
-		
-		/* Get shader */
-		const GL::FragmentShader& get();
-		
-	private:
-		
-		GL::FragmentShader shader;
 		
 	};
 	
 	
 	
 	/* Geometry shader */
-	class GLGeometryShader : public TextRaw {
+	class GLGeometryShader : public TextRaw, public GL::GeometryShader {
 	public:
 		
 		/* Load shader */
 		void load(Storage &storage, std::vector<char> &data) override;
-		
-		/* Get shader */
-		const GL::GeometryShader& get();
-		
-	private:
-		
-		GL::GeometryShader shader;
 		
 	};
 	

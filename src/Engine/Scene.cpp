@@ -13,42 +13,43 @@ using Engine::DirectionalLight;
 using Engine::PointLight;
 
 Scene::Scene(MainEngine &engine)
-: engine(engine), camera(*this), lightDir(engine), lightPoint(engine)
+: engine(engine), camera(*this), lightDir(engine), lightPoint(engine),
+  program      (engine.storage.grab<Asset::GLProgram>("/assets/engine/program.txt")),
+  program_depth(engine.storage.grab<Asset::GLProgram>("/assets/engine/depth_program.txt")),
+  
+  uModelMat(program, "uModelMat"),
+  uViewMat (program, "uViewMat" ),
+  uProjMat (program, "uProjMat" ),
+  uShadowVP(program, "uShadowVP"),
+  
+  uShadowDepthBias(program, "uShadowDepthBias"),
+  uShadowTexelSize(program, "uShadowTexelSize"),
+  uShadowSamples  (program, "uShadowSamples"  ),
+  
+  uDiffuseSampler (program, "uDiffuseSampler" ),
+  uNormalSampler  (program, "uNormalSampler"  ),
+  uSpecularSampler(program, "uSpecularSampler"),
+  uMaskSampler    (program, "uMaskSampler"    ),
+  uEmitSampler    (program, "uEmitSampler"    ),
+  uShadowSampler  (program, "uShadowSampler"  ),
+  
+  uAmbient         (program, "uAmbient"         ),
+  uModelSpecularExp(program, "uModelSpecularExp"),
+  
+  uDirLightColor    (program, "uDirLightColor"    ),
+  uDirLightIntensity(program, "uDirLightIntensity"),
+  uDirLightDirection(program, "uDirLightDirection"),
+  
+  uPointLightColor    (program, "uPointLightColor"    ),
+  uPointLightIntensity(program, "uPointLightIntensity"),
+  uPointLightSpread   (program, "uPointLightSpread"   ),
+  uPointLightPosition (program, "uPointLightPosition" ),
+  
+  uDepthM(program_depth, "uDepthM"),
+  uDepthV(program_depth, "uDepthV"),
+  uDepthP(program_depth, "uDepthP")
+  
 {
-	program = &engine.storage.grab<Asset::GLProgram>("/assets/engine/program.txt");
-	
-	uModelMat = new GL::ProgramUniform(program->get(), "uModelMat");
-	uViewMat  = new GL::ProgramUniform(program->get(), "uViewMat");
-	uProjMat  = new GL::ProgramUniform(program->get(), "uProjMat");
-	uShadowVP = new GL::ProgramUniform(program->get(), "uShadowVP");
-	
-	uShadowDepthBias  = new GL::ProgramUniform(program->get(), "uShadowDepthBias");
-	uShadowTexelSize  = new GL::ProgramUniform(program->get(), "uShadowTexelSize");
-	uShadowSamples    = new GL::ProgramUniform(program->get(), "uShadowSamples");
-	
-	uDiffuseSampler  = new GL::ProgramUniform(program->get(), "uDiffuseSampler");
-	uNormalSampler   = new GL::ProgramUniform(program->get(), "uNormalSampler");
-	uSpecularSampler = new GL::ProgramUniform(program->get(), "uSpecularSampler");
-	uMaskSampler     = new GL::ProgramUniform(program->get(), "uMaskSampler");
-	uEmitSampler     = new GL::ProgramUniform(program->get(), "uEmitSampler");
-	uShadowSampler   = new GL::ProgramUniform(program->get(), "uShadowSampler");
-	
-	uAmbient          = new GL::ProgramUniform(program->get(), "uAmbient");
-	uModelSpecularExp = new GL::ProgramUniform(program->get(), "uModelSpecularExp");
-	
-	uDirLightColor     = new GL::ProgramUniform(program->get(), "uDirLightColor");
-	uDirLightIntensity = new GL::ProgramUniform(program->get(), "uDirLightIntensity");
-	uDirLightDirection = new GL::ProgramUniform(program->get(), "uDirLightDirection");
-	
-	uPointLightColor     = new GL::ProgramUniform(program->get(), "uPointLightColor");
-	uPointLightIntensity = new GL::ProgramUniform(program->get(), "uPointLightIntensity");
-	uPointLightSpread    = new GL::ProgramUniform(program->get(), "uPointLightSpread");
-	uPointLightPosition  = new GL::ProgramUniform(program->get(), "uPointLightPosition");
-	
-	program_depth = &engine.storage.grab<Asset::GLProgram>("/assets/engine/depth_program.txt");
-	uDepthM = new GL::ProgramUniform(program_depth->get(), "uDepthM");
-	uDepthV = new GL::ProgramUniform(program_depth->get(), "uDepthV");
-	uDepthP = new GL::ProgramUniform(program_depth->get(), "uDepthP");
 	
 	/* Default light properties */
 	setAmbient(0.2);
@@ -70,42 +71,11 @@ Scene::Scene(MainEngine &engine)
 
 Scene::~Scene()
 {
-	delete uModelMat;
-	delete uViewMat;
-	delete uProjMat;
-	delete uShadowVP;
-	
-	delete uShadowDepthBias;
-	delete uShadowTexelSize;
-	delete uShadowSamples;
-	
-	delete uDiffuseSampler;
-	delete uNormalSampler;
-	delete uSpecularSampler;
-	delete uMaskSampler;
-	delete uEmitSampler;
-	delete uShadowSampler;
-	
-	delete uAmbient;
-	delete uModelSpecularExp;
-	
-	delete uDirLightColor;
-	delete uDirLightIntensity;
-	delete uDirLightDirection;
-	
-	delete uPointLightColor;
-	delete uPointLightIntensity;
-	delete uPointLightSpread;
-	delete uPointLightPosition;
-	
-	delete uDepthM;
-	delete uDepthV;
-	delete uDepthP;
-	engine.storage.release(*program);
-	engine.storage.release(*program_depth);
+	engine.storage.release(program);
+	engine.storage.release(program_depth);
 }
 
-void Scene::drawEverything(GL::ProgramUniform *uModelMat) {
+void Scene::drawEverything(GL::ProgramUniform &uModelMat) {
 	
 	/* Model matrix stack */
 	std::stack<glm::mat4> matrices;
@@ -119,7 +89,7 @@ void Scene::drawEverything(GL::ProgramUniform *uModelMat) {
 	while (!nodes.empty()) {
 		Node *top = nodes.top();
 		matrices.push(matrices.top() * top->getMatrix());
-		uModelMat->set(matrices.top());
+		uModelMat.set(matrices.top());
 		nodes.pop();
 		top->draw(*this);
 		if (!top->pushChildren(nodes)) {
@@ -136,12 +106,12 @@ void Scene::draw()
 		
 		/* Bind shadow & depth program*/
 		shadowFB.bind();
-		program_depth->get().bind();
+		program_depth.bind();
 		
 		/* Set depth matrices */
 		shadowMatV = glm::lookAt(camera.getPosition() + lightDir.getDirection(), camera.getPosition(), glm::vec3(0,1,0));
-		uDepthV->set(shadowMatV);
-		uDepthP->set(shadowMatP);
+		uDepthV.set(shadowMatV);
+		uDepthP.set(shadowMatP);
 		
 		/* Draw shadow depth */
 		glViewport(0, 0, shadowSizeX, shadowSizeY);
@@ -149,23 +119,23 @@ void Scene::draw()
 		drawEverything(uDepthM);
 		
 		/* Unbind shadow & depth program*/
-		program_depth->get().unbind();
+		program_depth.unbind();
 		shadowFB.unbind();
 		
 	}
 	
 	/* Bind program */
-	program->get().bind();
+	program.bind();
 	
 	/* Set view matrix */
-	uViewMat->set(camera.getViewMatrix());
+	uViewMat.set(camera.getViewMatrix());
 	
 	/* Set shadow sampler */
 	glActiveTexture(GL_TEXTURE5);
 	shadowTexture.bind();
-	uShadowSampler->set1i(5);
+	uShadowSampler.set1i(5);
 	if (shadowEnable) {
-		uShadowVP->set(
+		uShadowVP.set(
 			glm::mat4(
 				0.5, 0.0, 0.0, 0.0, 
 				0.0, 0.5, 0.0, 0.0,
@@ -176,15 +146,15 @@ void Scene::draw()
 	}
 	
 	/* Set directional light */
-	uDirLightColor     ->set   (lightDir.getColor());
-	uDirLightIntensity ->set1f (lightDir.getIntensity());
-	uDirLightDirection ->set   (lightDir.getDirection());
+	uDirLightColor    .set   (lightDir.getColor());
+	uDirLightIntensity.set1f (lightDir.getIntensity());
+	uDirLightDirection.set   (lightDir.getDirection());
 	
 	/* Set point light */
-	uPointLightColor     ->set   (lightPoint.getColor());
-	uPointLightIntensity ->set1f (lightPoint.getIntensity());
-	uPointLightSpread    ->set1f (lightPoint.getSpread());
-	uPointLightPosition  ->set   (lightPoint.getPosition());
+	uPointLightColor    .set   (lightPoint.getColor());
+	uPointLightIntensity.set1f (lightPoint.getIntensity());
+	uPointLightSpread   .set1f (lightPoint.getSpread());
+	uPointLightPosition .set   (lightPoint.getPosition());
 	
 	/* Draw scene */
 	glViewport(0, 0, sceneWidth, sceneHeight);
@@ -192,15 +162,15 @@ void Scene::draw()
 	drawEverything(uModelMat);
 	
 	/* Unbind program */
-	program->get().unbind();
+	program.unbind();
 	
 }
 
 void Scene::updateShadowTexelSize()
 {
-	program->get().bind();
-	uShadowTexelSize->set(shadowSamplesSpread * glm::vec2(1. / shadowSizeX, 1. / shadowSizeY));
-	program->get().unbind();
+	program.bind();
+	uShadowTexelSize.set(shadowSamplesSpread * glm::vec2(1. / shadowSizeX, 1. / shadowSizeY));
+	program.unbind();
 }
 
 void Scene::setShadowSamples(int x, int y, float spread)
@@ -208,9 +178,9 @@ void Scene::setShadowSamples(int x, int y, float spread)
 	shadowSamplesX = x;
 	shadowSamplesY = y;
 	shadowSamplesSpread = spread;
-	program->get().bind();
-	uShadowSamples->set2i(x, y);
-	program->get().unbind();
+	program.bind();
+	uShadowSamples.set2i(x, y);
+	program.unbind();
 	updateShadowTexelSize();
 }
 
@@ -250,9 +220,9 @@ void Scene::setShadowSize(int x, int y)
 
 void Scene::setShadowDepthBias(float bias)
 {
-	program->get().bind();
-	uShadowDepthBias->set1f(bias);
-	program->get().unbind();
+	program.bind();
+	uShadowDepthBias.set1f(bias);
+	program.unbind();
 }
 
 void Scene::setShadowProjection(
@@ -265,16 +235,16 @@ void Scene::setShadowProjection(
 
 void Scene::setAmbient(float amount)
 {
-	program->get().bind();
-	uAmbient->set1f(amount);
-	program->get().unbind();
+	program.bind();
+	uAmbient.set1f(amount);
+	program.unbind();
 }
 
 void Scene::updateProjection()
 {
-	program->get().bind();
-	uProjMat->set(camera.getProjectionMatrix());
-	program->get().unbind();
+	program.bind();
+	uProjMat.set(camera.getProjectionMatrix());
+	program.unbind();
 }
 
 void Scene::resize(int width, int height)
