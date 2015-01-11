@@ -76,6 +76,21 @@ namespace Engine {
 		Asset::GLProgram &program;
 		Asset::GLProgram &program_depth;
 		
+		/* Shadow buffer */
+		GL::FrameBuffer shadowFB;
+		GL::Texture2D   shadowTexture;
+		glm::mat4       shadowMatP;
+		int   shadowSizeX;
+		int   shadowSizeY;
+		int   shadowSamplesX;
+		int   shadowSamplesY;
+		float shadowSamplesSpread;
+		bool  shadowEnable;
+		
+		/* Helper methods */
+		void drawEverything(GL::ProgramUniform &uModelMat);
+		void updateShadowTexelSize();
+		
 		/* Uniforms */
 		GL::ProgramUniform uModelMat;
 		GL::ProgramUniform uViewMat;
@@ -109,19 +124,7 @@ namespace Engine {
 		GL::ProgramUniform uDepthV;
 		GL::ProgramUniform uDepthP;
 		
-		/* Shadow buffer */
-		GL::FrameBuffer shadowFB;
-		GL::Texture2D   shadowTexture;
-		glm::mat4       shadowMatP;
-		int   shadowSizeX;
-		int   shadowSizeY;
-		int   shadowSamplesX;
-		int   shadowSamplesY;
-		float shadowSamplesSpread;
-		bool  shadowEnable;
 		
-		void drawEverything(GL::ProgramUniform &uModelMat);
-		void updateShadowTexelSize();
 		
 	};
 	

@@ -6,13 +6,26 @@
 using Engine::GL::ProgramUniform;
 using Engine::GL::Program;
 
+ProgramUniform::ProgramUniform()
+: location(0)
+{}
+
 ProgramUniform::ProgramUniform(const Program &program, const GLchar *name)
 : location(glGetUniformLocation(program.getObjectID(), name))
+{}
+
+ProgramUniform::ProgramUniform(const ProgramUniform &uniform)
+: location(uniform.location)
 {}
 
 GLuint ProgramUniform::getLocation() const
 {
 	return location;
+}
+
+void ProgramUniform::locate(const Program &program, const GLchar *name)
+{
+	location = glGetUniformLocation(program.getObjectID(), name);
 }
 
 void ProgramUniform::set1f(GLfloat v0)
@@ -138,4 +151,19 @@ void ProgramUniform::set(const glm::vec3 &vec)
 void ProgramUniform::set(const glm::vec4 &vec)
 {
 	glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
+}
+
+void ProgramUniform::set(const glm::ivec2 &vec)
+{
+	glUniform2i(location, vec.x, vec.y);
+}
+
+void ProgramUniform::set(const glm::ivec3 &vec)
+{
+	glUniform3i(location, vec.x, vec.y, vec.z);
+}
+
+void ProgramUniform::set(const glm::ivec4 &vec)
+{
+	glUniform4i(location, vec.x, vec.y, vec.z, vec.w);
 }

@@ -15,41 +15,35 @@ using Engine::PointLight;
 Scene::Scene(MainEngine &engine)
 : engine(engine), camera(*this), lightDir(engine), lightPoint(engine),
   program      (engine.storage.grab<Asset::GLProgram>("/assets/engine/program.txt")),
-  program_depth(engine.storage.grab<Asset::GLProgram>("/assets/engine/depth_program.txt")),
-  
-  uModelMat(program, "uModelMat"),
-  uViewMat (program, "uViewMat" ),
-  uProjMat (program, "uProjMat" ),
-  uShadowVP(program, "uShadowVP"),
-  
-  uShadowDepthBias(program, "uShadowDepthBias"),
-  uShadowTexelSize(program, "uShadowTexelSize"),
-  uShadowSamples  (program, "uShadowSamples"  ),
-  
-  uDiffuseSampler (program, "uDiffuseSampler" ),
-  uNormalSampler  (program, "uNormalSampler"  ),
-  uSpecularSampler(program, "uSpecularSampler"),
-  uMaskSampler    (program, "uMaskSampler"    ),
-  uEmitSampler    (program, "uEmitSampler"    ),
-  uShadowSampler  (program, "uShadowSampler"  ),
-  
-  uAmbient         (program, "uAmbient"         ),
-  uModelSpecularExp(program, "uModelSpecularExp"),
-  
-  uDirLightColor    (program, "uDirLightColor"    ),
-  uDirLightIntensity(program, "uDirLightIntensity"),
-  uDirLightDirection(program, "uDirLightDirection"),
-  
-  uPointLightColor    (program, "uPointLightColor"    ),
-  uPointLightIntensity(program, "uPointLightIntensity"),
-  uPointLightSpread   (program, "uPointLightSpread"   ),
-  uPointLightPosition (program, "uPointLightPosition" ),
-  
-  uDepthM(program_depth, "uDepthM"),
-  uDepthV(program_depth, "uDepthV"),
-  uDepthP(program_depth, "uDepthP")
-  
+  program_depth(engine.storage.grab<Asset::GLProgram>("/assets/engine/depth_program.txt"))
 {
+	
+	/* Uniforms */
+	uModelMat.locate(program, "uModelMat");
+	uViewMat .locate(program, "uViewMat" );
+	uProjMat .locate(program, "uProjMat" );
+	uShadowVP.locate(program, "uShadowVP");
+	uShadowDepthBias.locate(program, "uShadowDepthBias");
+	uShadowTexelSize.locate(program, "uShadowTexelSize");
+	uShadowSamples  .locate(program, "uShadowSamples"  );
+	uDiffuseSampler .locate(program, "uDiffuseSampler" );
+	uNormalSampler  .locate(program, "uNormalSampler"  );
+	uSpecularSampler.locate(program, "uSpecularSampler");
+	uMaskSampler    .locate(program, "uMaskSampler"    );
+	uEmitSampler    .locate(program, "uEmitSampler"    );
+	uShadowSampler  .locate(program, "uShadowSampler"  );
+	uAmbient         .locate(program, "uAmbient"         );
+	uModelSpecularExp.locate(program, "uModelSpecularExp");
+	uDirLightColor    .locate(program, "uDirLightColor"    );
+	uDirLightIntensity.locate(program, "uDirLightIntensity");
+	uDirLightDirection.locate(program, "uDirLightDirection");
+	uPointLightColor    .locate(program, "uPointLightColor"    );
+	uPointLightIntensity.locate(program, "uPointLightIntensity");
+	uPointLightSpread   .locate(program, "uPointLightSpread"   );
+	uPointLightPosition .locate(program, "uPointLightPosition" );
+	uDepthM.locate(program_depth, "uDepthM");
+	uDepthV.locate(program_depth, "uDepthV");
+	uDepthP.locate(program_depth, "uDepthP");
 	
 	/* Default light properties */
 	setAmbient(0.2);

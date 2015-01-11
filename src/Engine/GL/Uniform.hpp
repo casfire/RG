@@ -19,11 +19,18 @@ namespace Engine { namespace GL {
 	class ProgramUniform {
 	public:
 		
-		/* Retrieve uniform variable */
+		/* Create an invalid uniform */
+		ProgramUniform();
+		
+		/* Create a new uniform */
+		ProgramUniform(const ProgramUniform &uniform);
 		ProgramUniform(const Program &program, const GLchar *name);
 		
 		/* Get location of the uniform */
 		GLuint getLocation() const;
+		
+		/* Save uniform location */
+		void locate(const Program &program, const GLchar *name);
 		
 		/*  IMPORTANT!
 		  Make sure the program is bound with Program::bind()
@@ -62,9 +69,13 @@ namespace Engine { namespace GL {
 		void set(const glm::vec3 &vec);
 		void set(const glm::vec4 &vec);
 		
+		void set(const glm::ivec2 &vec);
+		void set(const glm::ivec3 &vec);
+		void set(const glm::ivec4 &vec);
+		
 	private:
 		
-		const GLuint location;
+		GLuint location;
 		
 	};
 	
